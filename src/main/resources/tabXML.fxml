@@ -18,15 +18,9 @@
 
     <!-- Main Content -->
     <center>
-        <VBox fx:id="xmlMainContent">
+        <VBox>
             <HBox fx:id="breadCrumbs"/>
-            <VBox fx:id="form"/>
-            <VBox fx:id="chapterDetails"/>
-            <VBox>
-                <HBox fx:id="tableHeader"/>
-                <VBox fx:id="tableContent"/>
-                <Button text="New ..." fx:id="addNewChild"/>
-            </VBox>
+            <VBox fx:id="xmlMainContent"/>
         </VBox>
     </center>
 </BorderPane>

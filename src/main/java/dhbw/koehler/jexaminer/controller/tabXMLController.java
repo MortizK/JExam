@@ -1,18 +1,24 @@
 package dhbw.koehler.jexaminer.controller;
 
-import dhbw.koehler.jexaminer.model.enums.Type;
+import dhbw.koehler.jexaminer.App;
 import dhbw.koehler.jexaminer.service.DataService;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class tabXMLController {
+
+    @FXML
+    public VBox xmlMainContent;
 
     @FXML
     private HBox breadCrumbs;
@@ -20,15 +26,17 @@ public class tabXMLController {
     @FXML
     private TreeView<String> xmlTreeView;
 
-    private DataService dataService;
+    private mainContentController mainContentController;
 
-    public tabXMLController() {
-        this.dataService = new DataService("My Exam");
-    }
+    public tabXMLController() {}
 
     @FXML
     public void initialize() {
         populateTree();
+
+        updateData(new ArrayList<>());
+
+        loadMainContent();
 
         xmlTreeView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -46,9 +54,32 @@ public class tabXMLController {
     }
 
     private void updateData(List<Integer> path) {
+        DataService dataService = App.getDataService(); // Get the DataService
         dataService.updateSelectedFromPath(path);
 
         updateBreadcrumbs(dataService.breadCrumbs, dataService.path);
+
+        if (mainContentController != null) {
+            mainContentController.updateContent();
+        } else {
+            System.out.println("mainContentController is null");
+        }
+    }
+
+    //=== Main Content ===\\
+
+    private void loadMainContent() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/components/mainContent.fxml"));
+            VBox pdfContent = loader.load();
+
+            mainContentController = loader.getController();
+
+            xmlMainContent.getChildren().add(pdfContent);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //=== Breadcrumbs Management ===\\
@@ -116,6 +147,7 @@ public class tabXMLController {
     }
 
     private void populateTree() {
+        DataService dataService = App.getDataService(); // Get the DataService
         if (dataService == null || dataService.exam == null) return;
 
         // Root des TreeView ist der Exam-Name

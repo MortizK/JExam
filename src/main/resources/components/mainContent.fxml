@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="dhbw.koehler.jexaminer.controller.mainContentController"
+            spacing="20"
+            prefHeight="400.0" prefWidth="600.0">
+    <VBox fx:id="form"/>
+    <VBox fx:id="chapterDetails"/>
+    <VBox spacing="10">
+        <HBox fx:id="tableHeader"/>
+        <VBox fx:id="tableContent"/>
+        <Button text="New ..." fx:id="addNewChild"/>
+    </VBox>
+</VBox>
