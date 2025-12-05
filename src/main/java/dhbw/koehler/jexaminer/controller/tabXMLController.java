@@ -3,8 +3,11 @@ package dhbw.koehler.jexaminer.controller;
 import dhbw.koehler.jexaminer.model.enums.Type;
 import dhbw.koehler.jexaminer.service.DataService;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +15,10 @@ import java.util.List;
 public class tabXMLController {
 
     @FXML
-    TreeView<String> xmlTreeView;
+    private HBox breadCrumbs;
+
+    @FXML
+    private TreeView<String> xmlTreeView;
 
     private DataService dataService;
 
@@ -31,10 +37,70 @@ public class tabXMLController {
         });
     }
 
+    //=== Update Logic ===\\
+
     private void handleTreeSelection(TreeItem<String> selectedItem) {
         List<Integer> path = getTreeItemPath(selectedItem);
 
+        updateData(path);
+    }
+
+    private void updateData(List<Integer> path) {
         dataService.updateSelectedFromPath(path);
+
+        updateBreadcrumbs(dataService.breadCrumbs, dataService.path);
+    }
+
+    //=== Breadcrumbs Management ===\\
+
+    private void updateBreadcrumbs(List<String> breadcrumbNames, List<Integer> path) {
+        breadCrumbs.getChildren().clear();
+
+        for (int i = 0; i < breadcrumbNames.size(); i++) {
+            String name = breadcrumbNames.get(i);
+            Button btn = new Button(name);
+            btn.setId("breadcrumb-" + i);
+
+            final int index = i;
+            btn.setOnAction(e -> {
+                List<Integer> newPath = path.subList(0, index);
+                updateData(newPath);
+
+                // Update Selection of TreeView
+                selectTreeItemByPath(newPath);
+            });
+
+            breadCrumbs.getChildren().add(btn);
+
+            if (i < breadcrumbNames.size() - 1) {
+                Label separator = new Label(" / ");
+                breadCrumbs.getChildren().add(separator);
+            }
+        }
+    }
+
+    // === Tree Management ===\\
+
+    private TreeItem<String> getTreeItemByPath(TreeItem<String> root, List<Integer> path) {
+        TreeItem<String> current = root;
+        for (int index : path) {
+            // Path invalid
+            if (current == null || current.getChildren().size() <= index) {
+                return null;
+            }
+            current = current.getChildren().get(index);
+        }
+        return current;
+    }
+
+    private void selectTreeItemByPath(List<Integer> path) {
+        TreeItem<String> root = xmlTreeView.getRoot();
+        TreeItem<String> itemToSelect = getTreeItemByPath(root, path);
+
+        if (itemToSelect != null) {
+            xmlTreeView.getSelectionModel().select(itemToSelect);
+            xmlTreeView.scrollTo(xmlTreeView.getRow(itemToSelect)); // optional: Scrollen
+        }
     }
 
     private List<Integer> getTreeItemPath(TreeItem<String> selectedItem) {

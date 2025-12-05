@@ -53,8 +53,6 @@ public class DataService {
                 this.selectedItem = selectedTask;
                 break;
         }
-
-        System.out.println(breadCrumbs.toString());
     }
 
     public void createExampleData() {
