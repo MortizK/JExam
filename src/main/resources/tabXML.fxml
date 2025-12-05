@@ -13,10 +13,20 @@
     <!-- Sidebar -->
     <left>
         <VBox fx:id="xmlSidebar"/>
+        <TreeView fx:id="xmlTreeView"/>
     </left>
 
     <!-- Main Content -->
     <center>
-        <VBox fx:id="xmlMainContent"/>
+        <VBox fx:id="xmlMainContent">
+            <HBox fx:id="breadCrumbs"/>
+            <VBox fx:id="form"/>
+            <VBox fx:id="chapterDetails"/>
+            <VBox>
+                <HBox fx:id="tableHeader"/>
+                <VBox fx:id="tableContent"/>
+                <Button text="New ..." fx:id="addNewChild"/>
+            </VBox>
+        </VBox>
     </center>
 </BorderPane>

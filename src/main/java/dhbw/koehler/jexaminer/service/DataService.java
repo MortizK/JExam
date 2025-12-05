@@ -1,15 +1,38 @@
 package dhbw.koehler.jexaminer.service;
 
 import dhbw.koehler.jexaminer.model.*;
-import dhbw.koehler.jexaminer.model.enums.Difficulty;
-import dhbw.koehler.jexaminer.model.enums.Scope;
+import dhbw.koehler.jexaminer.model.enums.*;
+
+import java.util.List;
 
 public class DataService {
     public Exam exam;
+    public Object selectedItem;
+    public Type type;
 
     public DataService(String name) {
         this.exam = new Exam((name == null) ? "Exam" : name);
+        this.selectedItem = this.exam;
+        this.type = Type.EXAM;
         createExampleData();
+    }
+
+    public void updateSelectedFromPath(List<Integer> path) {
+        switch(path.size()) {
+            case 0:
+                this.type = Type.EXAM;
+                this.selectedItem = this.exam;
+                break;
+            case 1:
+                this.type = Type.CHAPTER;
+                this.selectedItem = this.exam.getChapters().get(path.getFirst());
+                break;
+            case 2:
+                this.type = Type.TASK;
+                Chapter selectedChapter = this.exam.getChapters().get(path.getFirst());
+                this.selectedItem = selectedChapter.getTasks().get(path.get(1));
+                break;
+        }
     }
 
     public void createExampleData() {
