@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="dhbw.koehler.jexaminer.controller.homeController"
+            prefWidth="800" prefHeight="600">
+
+    <!-- Top Menu -->
+    <top>
+        <MenuBar fx:id="menuBar">
+            <menus>
+                <Menu text="Files" fx:id="menuFiles">
+                    <items>
+                        <MenuItem text="Open" fx:id="menuItemOpen"/>
+                        <MenuItem text="Save" fx:id="menuItemSave"/>
+                        <MenuItem text="Close" fx:id="menuItemClose"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+
+    <!-- Center Tabs -->
+    <center>
+        <TabPane fx:id="mainTabPane">
+
+            <!-- XML Tab -->
+            <Tab text="XML" fx:id="tabXML" closable="false">
+                <BorderPane fx:id="xmlBorderPane">
+
+                    <!-- Sidebar -->
+                    <left>
+                        <VBox fx:id="xmlSidebar"/>
+                    </left>
+
+                    <!-- Main Content -->
+                    <center>
+                        <VBox fx:id="xmlMainContent"/>
+                    </center>
+
+                </BorderPane>
+            </Tab>
+
+            <!-- PDF Tab -->
+            <Tab text="PDF" fx:id="tabPDF" closable="false">
+                <BorderPane fx:id="pdfBorderPane">
+
+                    <!-- Sidebar -->
+                    <left>
+                        <VBox fx:id="pdfSidebar"/>
+                    </left>
+
+                    <!-- Main Content -->
+                    <center>
+                        <VBox fx:id="pdfMainContent"/>
+                    </center>
+
+                </BorderPane>
+            </Tab>
+
+        </TabPane>
+    </center>
+
+</BorderPane>
+
