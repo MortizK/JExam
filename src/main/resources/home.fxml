@@ -20,9 +20,11 @@
             <menus>
                 <Menu text="Files" fx:id="menuFiles">
                     <items>
+                        <MenuItem text="New" fx:id="menuItemNew"/>
                         <MenuItem text="Open" fx:id="menuItemOpen"/>
                         <MenuItem text="Save" fx:id="menuItemSave"/>
-                        <MenuItem text="Close" fx:id="menuItemClose"/>
+                        <MenuItem text="Save As" fx:id="menuItemSaveAs"/>
+                        <MenuItem text="Select Language" fx:id="menuItemSelectLanguage"/>
                     </items>
                 </Menu>
             </menus>
@@ -35,36 +37,12 @@
 
             <!-- XML Tab -->
             <Tab text="XML" fx:id="tabXML" closable="false">
-                <BorderPane fx:id="xmlBorderPane">
-
-                    <!-- Sidebar -->
-                    <left>
-                        <VBox fx:id="xmlSidebar"/>
-                    </left>
-
-                    <!-- Main Content -->
-                    <center>
-                        <VBox fx:id="xmlMainContent"/>
-                    </center>
-
-                </BorderPane>
+                <BorderPane fx:id="xmlBorderPane"/>
             </Tab>
 
             <!-- PDF Tab -->
             <Tab text="PDF" fx:id="tabPDF" closable="false">
-                <BorderPane fx:id="pdfBorderPane">
-
-                    <!-- Sidebar -->
-                    <left>
-                        <VBox fx:id="pdfSidebar"/>
-                    </left>
-
-                    <!-- Main Content -->
-                    <center>
-                        <VBox fx:id="pdfMainContent"/>
-                    </center>
-
-                </BorderPane>
+                <BorderPane fx:id="pdfBorderPane"/>
             </Tab>
 
         </TabPane>

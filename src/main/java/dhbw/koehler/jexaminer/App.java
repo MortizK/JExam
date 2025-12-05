@@ -9,10 +9,14 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("home.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/home.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
         stage.setTitle("J-Examiner");
         stage.setScene(scene);
         stage.show();
+    }
+
+    public FXMLLoader getFXMLLoader(String fxmlFile) {
+        return new FXMLLoader(App.class.getResource(fxmlFile));
     }
 }
