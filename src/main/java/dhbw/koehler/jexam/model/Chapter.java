@@ -30,8 +30,8 @@ public class Chapter extends Item{
     }
 
     // Points
-    public Integer getNumberOfPoints() {
-        Integer numberOfPoints = 0;
+    public Double getNumberOfPoints() {
+        Double numberOfPoints = 0.0;
         for (Task task : this.tasks) {
             numberOfPoints += task.getPoints();
         }

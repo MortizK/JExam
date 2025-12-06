@@ -74,6 +74,7 @@ public class mainContentController {
         // Create Radio Menus for Scope and Difficulty
         formTasks.getChildren().add(createScopeRadioButtons(task));
         formTasks.getChildren().add(createDifficultyRadioButtons(task));
+        formTasks.getChildren().add(createEditPoints(task));
 
         // Update Button Text
         addNewChild.setText("New Variant");
@@ -175,6 +176,31 @@ public class mainContentController {
         box.getChildren().addAll(rbEasy, rbMedium, rbHard);
 
         return box;
+    }
+
+    private HBox createEditPoints(Task task) {
+
+        Double currentPoints = task != null ? task.getPoints() : 0.0;
+
+        // Spinner mit minimal 0, maximal 100, Schrittweite 1
+        Spinner<Double> pointSpinner = new Spinner<>(0F, 100F, currentPoints, 0.5F);
+        pointSpinner.setEditable(true);
+        pointSpinner.setId("pointsSpinner");
+
+        // Task aktualisieren, wenn sich der Wert ändert
+        pointSpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (task != null && newValue != null) {
+                task.setPoints(newValue);
+            }
+        });
+
+        Label label = new Label("Points:");
+        label.setId("pointsLabel");
+
+        HBox container = new HBox(10);
+        container.getChildren().addAll(label, pointSpinner);
+
+        return container;
     }
 
     private VBox variantRow(Variant variant) {

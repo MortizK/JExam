@@ -70,8 +70,6 @@ public class tabXMLController {
 
         if (mainContentController != null) {
             mainContentController.updateContent();
-        } else {
-            System.out.println("mainContentController is null");
         }
     }
 

@@ -9,11 +9,11 @@ import java.util.List;
 public class Task extends Item{
     private String name;
     private List<Variant> variants;
-    private Integer points;
+    private Double points;
     private Difficulty difficulty;
     private Scope scope;
 
-    public Task(String name, Variant variant, Integer points, Difficulty difficulty, Scope scope) {
+    public Task(String name, Variant variant, Double points, Difficulty difficulty, Scope scope) {
         super(name);
         this.points = points;
         this.variants = new ArrayList<>();
@@ -38,10 +38,10 @@ public class Task extends Item{
     }
 
     // Points
-    public Integer getPoints() {
+    public Double getPoints() {
         return points;
     }
-    public void setPoints(Integer points) {
+    public void setPoints(Double points) {
         this.points = points;
     }
 
