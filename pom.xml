@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dhbw.koehler</groupId>
-    <artifactId>J-Examiner</artifactId>
+    <artifactId>JExam</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>J-Examiner</name>
+    <name>JExam</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -69,7 +69,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>dhbw.koehler.jexaminer/dhbw.koehler.jexaminer.HelloApplication</mainClass>
+                            <mainClass>dhbw.koehler.jexam/dhbw.koehler.jexam.Launcher</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

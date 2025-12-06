@@ -1,8 +1,8 @@
-package dhbw.koehler.jexaminer.controller;
+package dhbw.koehler.jexam.controller;
 
-import dhbw.koehler.jexaminer.App;
-import dhbw.koehler.jexaminer.service.DataService;
-import dhbw.koehler.jexaminer.service.EventService;
+import dhbw.koehler.jexam.App;
+import dhbw.koehler.jexam.service.DataService;
+import dhbw.koehler.jexam.service.EventService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;

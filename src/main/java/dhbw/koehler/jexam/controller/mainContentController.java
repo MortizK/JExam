@@ -1,14 +1,13 @@
-package dhbw.koehler.jexaminer.controller;
+package dhbw.koehler.jexam.controller;
 
-import dhbw.koehler.jexaminer.App;
-import dhbw.koehler.jexaminer.model.Chapter;
-import dhbw.koehler.jexaminer.model.Exam;
-import dhbw.koehler.jexaminer.model.Task;
-import dhbw.koehler.jexaminer.model.Variant;
-import dhbw.koehler.jexaminer.model.enums.Difficulty;
-import dhbw.koehler.jexaminer.service.DataService;
-import dhbw.koehler.jexaminer.service.EventService;
-import javafx.event.ActionEvent;
+import dhbw.koehler.jexam.App;
+import dhbw.koehler.jexam.model.Chapter;
+import dhbw.koehler.jexam.model.Exam;
+import dhbw.koehler.jexam.model.Task;
+import dhbw.koehler.jexam.model.Variant;
+import dhbw.koehler.jexam.model.enums.Difficulty;
+import dhbw.koehler.jexam.service.DataService;
+import dhbw.koehler.jexam.service.EventService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

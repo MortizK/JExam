@@ -1,4 +1,4 @@
-package dhbw.koehler.jexaminer.service;
+package dhbw.koehler.jexam.service;
 
 public class EventService {
     private static Runnable onUpdate;

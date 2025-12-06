@@ -11,7 +11,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="dhbw.koehler.jexaminer.controller.homeController"
+            fx:controller="dhbw.koehler.jexam.controller.homeController"
             prefWidth="800" prefHeight="600">
 
     <!-- Top Menu -->

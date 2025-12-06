@@ -1,4 +1,4 @@
-module dhbw.koehler.jexaminer {
+module dhbw.koehler.jexam {
     requires javafx.controls;
     requires javafx.fxml;
 
@@ -6,7 +6,7 @@ module dhbw.koehler.jexaminer {
     requires org.kordamp.bootstrapfx.core;
     requires javafx.graphics;
 
-    opens dhbw.koehler.jexaminer to javafx.fxml;
-    opens dhbw.koehler.jexaminer.controller to javafx.fxml;
-    exports dhbw.koehler.jexaminer;
+    opens dhbw.koehler.jexam to javafx.fxml;
+    opens dhbw.koehler.jexam.controller to javafx.fxml;
+    exports dhbw.koehler.jexam;
 }

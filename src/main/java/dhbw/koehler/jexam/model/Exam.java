@@ -1,4 +1,4 @@
-package dhbw.koehler.jexaminer.model;
+package dhbw.koehler.jexam.model;
 
 import java.util.ArrayList;
 import java.util.List;

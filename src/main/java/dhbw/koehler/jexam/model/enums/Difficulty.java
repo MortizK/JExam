@@ -1,4 +1,4 @@
-package dhbw.koehler.jexaminer.model.enums;
+package dhbw.koehler.jexam.model.enums;
 
 public enum Difficulty {
     EASY,

@@ -1,4 +1,4 @@
-package dhbw.koehler.jexaminer.controller;
+package dhbw.koehler.jexam.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

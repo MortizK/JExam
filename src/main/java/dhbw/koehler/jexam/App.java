@@ -1,6 +1,6 @@
-package dhbw.koehler.jexaminer;
+package dhbw.koehler.jexam;
 
-import dhbw.koehler.jexaminer.service.DataService;
+import dhbw.koehler.jexam.service.DataService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,7 +15,7 @@ public class App extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/home.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
-        stage.setTitle("J-Examiner");
+        stage.setTitle("JExam");
         stage.setScene(scene);
         stage.show();
     }

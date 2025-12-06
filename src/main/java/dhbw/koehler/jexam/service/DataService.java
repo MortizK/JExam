@@ -1,7 +1,7 @@
-package dhbw.koehler.jexaminer.service;
+package dhbw.koehler.jexam.service;
 
-import dhbw.koehler.jexaminer.model.*;
-import dhbw.koehler.jexaminer.model.enums.*;
+import dhbw.koehler.jexam.model.*;
+import dhbw.koehler.jexam.model.enums.*;
 
 import java.util.ArrayList;
 import java.util.List;

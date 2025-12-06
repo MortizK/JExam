@@ -1,7 +1,7 @@
-package dhbw.koehler.jexaminer.model;
+package dhbw.koehler.jexam.model;
 
-import dhbw.koehler.jexaminer.model.enums.Difficulty;
-import dhbw.koehler.jexaminer.model.enums.Scope;
+import dhbw.koehler.jexam.model.enums.Difficulty;
+import dhbw.koehler.jexam.model.enums.Scope;
 
 import java.util.ArrayList;
 import java.util.List;

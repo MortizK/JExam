@@ -1,4 +1,4 @@
-package dhbw.koehler.jexaminer.model;
+package dhbw.koehler.jexam.model;
 
 public class Item {
     private String name;
