@@ -5,10 +5,8 @@ import dhbw.koehler.jexam.service.DataService;
 import dhbw.koehler.jexam.service.EventService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.Cursor;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -99,22 +97,27 @@ public class tabXMLController {
 
         for (int i = 0; i < breadcrumbNames.size(); i++) {
             String name = breadcrumbNames.get(i);
-            Button btn = new Button(name);
-            btn.setId("breadcrumb-" + i);
+
+            Label linkLabel = new Label(name);
+            linkLabel.getStyleClass().addAll("text-primary");
+            linkLabel.setCursor(Cursor.HAND);
 
             final int index = i;
-            btn.setOnAction(e -> {
+            linkLabel.setOnMouseClicked(e -> {
                 List<Integer> newPath = path.subList(0, index);
                 updateData(newPath);
             });
 
-            breadCrumbs.getChildren().add(btn);
+            breadCrumbs.getChildren().add(linkLabel);
 
             if (i < breadcrumbNames.size() - 1) {
                 Label separator = new Label(" / ");
+                separator.getStyleClass().add("text-muted");
                 breadCrumbs.getChildren().add(separator);
             }
         }
+
+        breadCrumbs.setSpacing(2);
     }
 
     // === Tree Management ===\\
@@ -161,11 +164,9 @@ public class tabXMLController {
         TreeItem<String> rootItem = new TreeItem<>(dataService.exam.getName());
         rootItem.setExpanded(true);
 
-        // Kapitel durchlaufen
         dataService.exam.getChapters().forEach(chapter -> {
             TreeItem<String> chapterItem = new TreeItem<>(chapter.getName());
 
-            // Tasks durchlaufen
             chapter.getTasks().forEach(task -> {
                 TreeItem<String> taskItem = new TreeItem<>(task.getName());
                 chapterItem.getChildren().add(taskItem);

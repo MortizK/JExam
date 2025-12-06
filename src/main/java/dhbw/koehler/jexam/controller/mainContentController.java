@@ -15,7 +15,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Box;
 import javafx.scene.text.Text;
+import org.kordamp.bootstrapfx.BootstrapFX;
 
 import java.util.List;
 
@@ -288,23 +290,17 @@ public class mainContentController {
     }
 
     private Button getDeleteVariantButton(Variant variant, VBox row) {
-        Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
-        deleteBtn.setTooltip(new Tooltip("Delete Variant"));
+        Button deleteBtn = getDeleteButton("Delete Variant");
+
         deleteBtn.setOnAction(event -> {
             // Confirmation Dialog
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Delete Variant");
-            alert.setHeaderText("Are you sure you want to delete variant \"" + variant.getName() + "\"?");
-            alert.setContentText("This action cannot be undone.");
-
-            // Show dialog and wait for response
-            alert.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.OK) {
-                    ((Task) App.getDataService().selectedItem).deleteVariant(variant);
-                    tableContent.getChildren().remove(row);
-                    EventService.triggerPdfUpdate();
-                }
-            });
+            showAlert("Delete Variant",
+                    "Are you sure you want to delete variant \"" + variant.getName() + "\"?",
+                    () -> {
+                        ((Task) App.getDataService().selectedItem).deleteVariant(variant);
+                        tableContent.getChildren().remove(row);
+                        EventService.triggerPdfUpdate();
+                    });
         });
         return deleteBtn;
     }
@@ -379,8 +375,7 @@ public class mainContentController {
         row.getChildren().add(scope);
 
         // Edit Button
-        Button editBtn = new Button("✎"); // Icon als Text oder Bild
-        editBtn.setTooltip(new Tooltip("Edit Task"));
+        Button editBtn = getEditButton("Edit Task");
 
         editBtn.setOnAction(event -> {
             DataService dataService = App.getDataService(); // Get the DataService
@@ -399,22 +394,17 @@ public class mainContentController {
     }
 
     private Button getDeleteTaskButton(Task task, HBox row) {
-        Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
-        deleteBtn.setTooltip(new Tooltip("Delete Task"));
-        deleteBtn.setOnAction(event -> {            // Confirmation Dialog
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Delete Task");
-            alert.setHeaderText("Are you sure you want to delete task \"" + task.getName() + "\" with all its Variants?");
-            alert.setContentText("This action cannot be undone.");
+        Button deleteBtn = getDeleteButton("Delete Task");
 
-            // Show dialog and wait for response
-            alert.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.OK) {
-                    ((Chapter) App.getDataService().selectedItem).deleteTask(task);
-                    tableContent.getChildren().remove(row);
-                    EventService.triggerPdfUpdate();
-                }
-            });
+        deleteBtn.setOnAction(event -> {
+            // Confirmation Dialog
+            showAlert("Delete Task",
+                    "Are you sure you want to delete task \"" + task.getName() + "\" with all its Variants?",
+                    () -> {
+                        ((Chapter) App.getDataService().selectedItem).deleteTask(task);
+                        tableContent.getChildren().remove(row);
+                        EventService.triggerPdfUpdate();
+                    });
         });
         return deleteBtn;
     }
@@ -490,8 +480,7 @@ public class mainContentController {
         DataService dataService = App.getDataService(); // Get the DataService
         if (dataService.type == Type.EXAM) {
             // Edit Button
-            Button editBtn = new Button("✎"); // Icon als Text oder Bild
-            editBtn.setTooltip(new Tooltip("Edit Task"));
+            Button editBtn = getEditButton("Edit Task");
 
             editBtn.setOnAction(event -> {
                 dataService.selectedItem = chapter;
@@ -510,24 +499,83 @@ public class mainContentController {
     }
 
     private Button getDeleteChapterButton(Chapter chapter, HBox row) {
-        Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
-        deleteBtn.setTooltip(new Tooltip("Delete Chapter"));
+        Button deleteBtn = getDeleteButton("Delete Chapter");
+
         deleteBtn.setOnAction(event -> {
             // Confirmation Dialog
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Delete Chapter");
-            alert.setHeaderText("Are you sure you want to delete chapter \"" + chapter.getName() + "\" with all its Task and their Variants?");
-            alert.setContentText("This action cannot be undone.");
-
-            // Show dialog and wait for response
-            alert.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.OK) {
-                    ((Exam) App.getDataService().selectedItem).deleteChapter(chapter);
-                    tableContent.getChildren().remove(row);
-                    EventService.triggerPdfUpdate();
-                }
+            showAlert("Delete Chapter",
+                    "Are you sure you want to delete chapter \"" + chapter.getName() + "\" with all its Task and their Variants?",
+                    () -> {
+                ((Exam) App.getDataService().selectedItem).deleteChapter(chapter);
+                tableContent.getChildren().remove(row);
+                EventService.triggerPdfUpdate();
             });
         });
+        return deleteBtn;
+    }
+
+    //=== Alert ===\\
+
+    private void showAlert(String title, String header, Runnable onAccept) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setGraphic(null);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText("This action cannot be undone.");
+
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(
+                BootstrapFX.bootstrapFXStylesheet());
+
+        ButtonType yesButton = new ButtonType("Yes/ Delete", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("No/ Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(yesButton, cancelButton);
+
+        Button yesBtn = (Button) dialogPane.lookupButton(yesButton);
+        yesBtn.getStyleClass().addAll("btn", "btn-danger");
+
+        Button noBtn = (Button) dialogPane.lookupButton(cancelButton);
+        noBtn.getStyleClass().addAll("btn", "btn-primary");
+
+        // Show dialog and wait for response
+        alert.showAndWait().ifPresent(response -> {
+            if (response == yesButton) {
+                onAccept.run();
+            }
+        });
+    }
+
+    //=== Buttons ===\\
+
+    private Button getEditButton(String toolTip) {
+        Button editBtn = new Button("✎"); // Icon als Text oder setze ein Image
+
+        editBtn.setStyle("-fx-background-color: transparent;");
+
+        editBtn.setOnMouseEntered(e -> editBtn.setStyle(
+                "-fx-background-color: rgba(0,255,0,0.1);"));
+
+        editBtn.setOnMouseExited(e -> editBtn.setStyle(
+                "-fx-background-color: transparent;"));
+
+        editBtn.setTooltip(new Tooltip(toolTip));
+
+        return editBtn;
+    }
+
+    private Button getDeleteButton(String toolTip) {
+        Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
+
+        deleteBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: red;");
+
+        deleteBtn.setOnMouseEntered(e -> deleteBtn.setStyle(
+                "-fx-background-color: rgba(255,0,0,0.1); -fx-text-fill: red;"));
+
+        deleteBtn.setOnMouseExited(e -> deleteBtn.setStyle(
+                "-fx-background-color: transparent; -fx-text-fill: red;"));
+
+        deleteBtn.setTooltip(new Tooltip(toolTip));
+
         return deleteBtn;
     }
 
