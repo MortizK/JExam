@@ -4,6 +4,7 @@ import dhbw.koehler.jexaminer.App;
 import dhbw.koehler.jexaminer.model.Chapter;
 import dhbw.koehler.jexaminer.model.Exam;
 import dhbw.koehler.jexaminer.model.Task;
+import dhbw.koehler.jexaminer.model.Variant;
 import dhbw.koehler.jexaminer.model.enums.Difficulty;
 import dhbw.koehler.jexaminer.service.DataService;
 import javafx.fxml.FXML;
@@ -62,7 +63,31 @@ public class mainContentController {
         // Update Button Text
         addNewChild.setText("New Variant");
 
-        // In Progress
+        // Row Content
+        for(Variant variant : task.getVariants()) {
+            tableContent.getChildren().add(variantRow(variant));
+        }
+    }
+
+    private VBox variantRow(Variant variant) {
+        VBox row = new VBox();
+        row.setSpacing(10);
+
+        // Question
+        Label questionHeader = new Label("Question:");
+        row.getChildren().add(questionHeader);
+
+        Label question = new Label(variant.getQuestion());
+        row.getChildren().add(question);
+
+        // Answer
+        Label answerHeader = new Label("Answer:");
+        row.getChildren().add(answerHeader);
+
+        Label answer = new Label(variant.getAnswer());
+        row.getChildren().add(answer);
+
+        return row;
     }
 
     private void loadChapterContent(Chapter chapter) {
