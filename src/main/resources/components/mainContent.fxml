@@ -18,6 +18,8 @@
             <Button fx:id="btnSave" text="Save" onAction="#save"/>
             <Button fx:id="btnCancel" text="Cancel" onAction="#cancel"/>
         </HBox>
+
+        <VBox fx:id="formTasks"/>
     </VBox>
     <VBox fx:id="chapterDetails"/>
     <VBox spacing="10">

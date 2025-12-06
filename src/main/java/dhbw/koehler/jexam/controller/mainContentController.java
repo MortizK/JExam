@@ -6,12 +6,11 @@ import dhbw.koehler.jexam.model.Exam;
 import dhbw.koehler.jexam.model.Task;
 import dhbw.koehler.jexam.model.Variant;
 import dhbw.koehler.jexam.model.enums.Difficulty;
+import dhbw.koehler.jexam.model.enums.Scope;
 import dhbw.koehler.jexam.service.DataService;
 import dhbw.koehler.jexam.service.EventService;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -36,6 +35,9 @@ public class mainContentController {
     public TextField txtName;
 
     @FXML
+    public VBox formTasks;
+
+    @FXML
     public void initialize() {
         loadContent();
     }
@@ -50,6 +52,7 @@ public class mainContentController {
         chapterDetails.getChildren().clear();
         tableContent.getChildren().clear();
         tableHeader.getChildren().clear();
+        formTasks.getChildren().clear();
 
         switch (dataService.type) {
             case EXAM:
@@ -68,6 +71,10 @@ public class mainContentController {
         // Update Form Content
         txtName.setText(task.getName());
 
+        // Create Radio Menus for Scope and Difficulty
+        formTasks.getChildren().add(createScopeRadioButtons(task));
+        formTasks.getChildren().add(createDifficultyRadioButtons(task));
+
         // Update Button Text
         addNewChild.setText("New Variant");
 
@@ -75,6 +82,99 @@ public class mainContentController {
         for(Variant variant : task.getVariants()) {
             tableContent.getChildren().add(variantRow(variant));
         }
+    }
+    private HBox createScopeRadioButtons(Task task) {
+
+        String scopeBaseId = "scopeRadio";
+
+        // RadioButtons
+        RadioButton rbExam = new RadioButton("Exam");
+        rbExam.setId(scopeBaseId + "Exam");
+
+        RadioButton rbMock = new RadioButton("Mock");
+        rbMock.setId(scopeBaseId + "Mock");
+
+        // ToggleGroup
+        ToggleGroup group = new ToggleGroup();
+        rbExam.setToggleGroup(group);
+        rbMock.setToggleGroup(group);
+
+        // Falls Task bereits einen Scope hat → vorauswählen
+        if (task != null) {
+            switch (task.getScope()) {
+                case EXAM -> rbExam.setSelected(true);
+                case MOCK -> rbMock.setSelected(true);
+            }
+        }
+
+        // Event: Auswahl geändert → Task aktualisieren
+        group.selectedToggleProperty().addListener((obs, old, selected) -> {
+            if (selected == null || task == null) return;
+
+            RadioButton rb = (RadioButton) selected;
+            String text = rb.getText();
+
+            switch (text) {
+                case "Exam" -> task.setScope(Scope.EXAM);
+                case "Mock" -> task.setScope(Scope.MOCK);
+            }
+        });
+
+        // Layout
+        HBox scopeBox = new HBox(10);
+        scopeBox.getChildren().addAll(rbExam, rbMock);
+
+        return scopeBox;
+    }
+
+    private HBox createDifficultyRadioButtons(Task task) {
+
+        String baseId = "difficultyRadio";
+
+        // RadioButtons
+        RadioButton rbEasy = new RadioButton("Easy");
+        rbEasy.setId(baseId + "Easy");
+
+        RadioButton rbMedium = new RadioButton("Medium");
+        rbMedium.setId(baseId + "Medium");
+
+        RadioButton rbHard = new RadioButton("Hard");
+        rbHard.setId(baseId + "Hard");
+
+        // ToggleGroup
+        ToggleGroup group = new ToggleGroup();
+        rbEasy.setToggleGroup(group);
+        rbMedium.setToggleGroup(group);
+        rbHard.setToggleGroup(group);
+
+        // Vorauswahl anhand des Tasks
+        if (task != null) {
+            switch (task.getDifficulty()) {
+                case EASY -> rbEasy.setSelected(true);
+                case MEDIUM -> rbMedium.setSelected(true);
+                case HARD -> rbHard.setSelected(true);
+            }
+        }
+
+        // Listener → ändere Difficulty im Task
+        group.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal == null || task == null) return;
+
+            RadioButton rb = (RadioButton) newVal;
+            String text = rb.getText();
+
+            switch (text) {
+                case "Easy" -> task.setDifficulty(Difficulty.EASY);
+                case "Medium" -> task.setDifficulty(Difficulty.MEDIUM);
+                case "Hard" -> task.setDifficulty(Difficulty.HARD);
+            }
+        });
+
+        // Layout
+        HBox box = new HBox(10);
+        box.getChildren().addAll(rbEasy, rbMedium, rbHard);
+
+        return box;
     }
 
     private VBox variantRow(Variant variant) {
