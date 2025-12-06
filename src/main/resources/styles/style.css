@@ -1,5 +1,28 @@
-.root {
-    -fx-font-family: "Segoe UI";
-    -fx-base: #f8f9fa
+.chip {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #333;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1;
+    -fx-padding: 2 8 2 8;
+    -fx-font-size: 12px;
 }
 
+.chip-easy {
+    -fx-background-color: #d4edda;
+    -fx-border-color: #a3d9a5;
+    -fx-text-fill: #155724;
+}
+
+.chip-medium {
+    -fx-background-color: #fff3cd;
+    -fx-border-color: #ffeeba;
+    -fx-text-fill: #856404;
+}
+
+.chip-hard {
+    -fx-background-color: #f8d7da;
+    -fx-border-color: #f5c6cb;
+    -fx-text-fill: #721c24;
+}

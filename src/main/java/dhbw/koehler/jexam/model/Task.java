@@ -54,6 +54,10 @@ public class Task extends Item{
     public Difficulty getDifficulty() {
         return difficulty;
     }
+    public String getFormatedDifficulty() {
+        String diff = difficulty.toString();
+        return diff.charAt(0) + diff.substring(1).toLowerCase();
+    }
     public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
     }
@@ -61,6 +65,10 @@ public class Task extends Item{
     // Scope
     public Scope getScope() {
         return scope;
+    }
+    public String getFormatedScope() {
+        String sc = scope.toString();
+        return sc.charAt(0) + sc.substring(1).toLowerCase();
     }
     public void setScope(Scope scope) {
         this.scope = scope;

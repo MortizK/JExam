@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
 
+import java.util.Objects;
+
 public class App extends Application {
 
     private static DataService dataService = new DataService("My Exam");;
@@ -16,8 +18,9 @@ public class App extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/home.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
-        scene.getStylesheets().add(
-                BootstrapFX.bootstrapFXStylesheet()
+        scene.getStylesheets().addAll(
+                BootstrapFX.bootstrapFXStylesheet(),
+                Objects.requireNonNull(getClass().getResource("/styles/style.css")).toExternalForm()
         );
         stage.setTitle("JExam");
         stage.setScene(scene);

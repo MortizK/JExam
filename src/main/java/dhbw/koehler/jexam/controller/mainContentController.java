@@ -11,10 +11,12 @@ import dhbw.koehler.jexam.model.enums.Type;
 import dhbw.koehler.jexam.service.DataService;
 import dhbw.koehler.jexam.service.EventService;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Box;
 import javafx.scene.text.Text;
 import org.kordamp.bootstrapfx.BootstrapFX;
@@ -259,15 +261,16 @@ public class mainContentController {
         row.setSpacing(10);
 
         // Question
+        HBox question = new HBox();
+        question.setAlignment(Pos.CENTER_LEFT);
         Label questionHeader = new Label("Question:");
+        question.getChildren().add(questionHeader);
         TextArea questionArea = createTextArea(variant.getQuestion());
 
         questionArea.textProperty().addListener((obs, oldText, newText) -> {
             variant.setQuestion(newText);
             questionArea.setPrefHeight(getHeight(questionArea, newText));
         });
-
-        row.getChildren().addAll(questionHeader, questionArea);
 
         // Answer
         Label answerHeader = new Label("Answer:");
@@ -278,13 +281,16 @@ public class mainContentController {
             answerArea.setPrefHeight(getHeight(answerArea, newText));
         });
 
-        row.getChildren().addAll(answerHeader, answerArea);
-
         // Delete Button
         if (size > 1) {
             Button deleteBtn = getDeleteVariantButton(variant, row);
-            row.getChildren().add(deleteBtn);
+            question.getChildren().add(deleteBtn);
         }
+
+        row.getChildren().addAll(
+                question, questionArea,
+                answerHeader, answerArea
+        );
 
         return row;
     }
@@ -356,23 +362,18 @@ public class mainContentController {
         row.getChildren().add(taskName);
 
         // Amounts (2 Labels in 1 column)
-        Label numVariants = new Label(task.getNumberOfVariants().toString());
-        numVariants.setMinWidth(50);
-        row.getChildren().add(numVariants);
+        row.getChildren().addAll(
+                createChip(task.getNumberOfVariants().toString(), "Variants - ", ""),
+                createChip(task.getPoints().toString(), "Points - ", "")
+        );
 
-        Label numPoints = new Label(task.getPoints().toString());
-        numPoints.setMinWidth(50);
-        row.getChildren().add(numPoints);
-
-        // Difficulty
-        Label difficulty = new Label(task.getDifficulty().toString());
-        difficulty.setMinWidth(50);
-        row.getChildren().add(difficulty);
-
-        // Scope
-        Label scope = new Label(task.getScope().toString());
-        scope.setMinWidth(50);
-        row.getChildren().add(scope);
+        // Difficulty & Scope
+        String scopeStyle = "chip-" + task.getScope().toString().toLowerCase();
+        String difficultyStyle = "chip-" + task.getDifficulty().toString().toLowerCase();
+        row.getChildren().addAll(
+                createChip(task.getFormatedScope(), "", scopeStyle),
+                createChip(task.getFormatedDifficulty(), "", difficultyStyle)
+        );
 
         // Edit Button
         Button editBtn = getEditButton("Edit Task");
@@ -449,33 +450,22 @@ public class mainContentController {
         // Name
         Label chapterName = new Label(chapter.getName());
         chapterName.setMinWidth(200);
+        chapterName.getStyleClass().add("fw-bold");
         row.getChildren().add(chapterName);
 
         // Amounts (3 Labels in 1 column)
-        Label numTasks = new Label(chapter.getNumberOfTasks().toString());
-        numTasks.setMinWidth(50);
-        row.getChildren().add(numTasks);
-
-        Label numVariants = new Label(chapter.getNumberOfVariants().toString());
-        numVariants.setMinWidth(50);
-        row.getChildren().add(numVariants);
-
-        Label numPoints = new Label(chapter.getNumberOfPoints().toString());
-        numPoints.setMinWidth(50);
-        row.getChildren().add(numPoints);
+        row.getChildren().addAll(
+                createChip(chapter.getNumberOfTasks().toString(), "Tasks - ", ""),
+                createChip(chapter.getNumberOfVariants().toString(), "Variants - ", ""),
+                createChip(chapter.getNumberOfPoints().toString(), "Points - ", "")
+        );
 
         // Difficulty (3 Labels in 1 column)
-        Label numEasy = new Label(chapter.getNumberOfDifficultyTasks(Difficulty.EASY).toString());
-        numEasy.setMinWidth(50);
-        row.getChildren().add(numEasy);
-
-        Label numMedium = new Label(chapter.getNumberOfDifficultyTasks(Difficulty.MEDIUM).toString());
-        numMedium.setMinWidth(50);
-        row.getChildren().add(numMedium);
-
-        Label numHard = new Label(chapter.getNumberOfDifficultyTasks(Difficulty.HARD).toString());
-        numHard.setMinWidth(50);
-        row.getChildren().add(numHard);
+        row.getChildren().addAll(
+                createChip(chapter.getNumberOfDifficultyTasks(Difficulty.EASY).toString(), "Easy - ", "chip-easy"),
+                createChip(chapter.getNumberOfDifficultyTasks(Difficulty.MEDIUM).toString(), "Medium - ", "chip-medium"),
+                createChip(chapter.getNumberOfDifficultyTasks(Difficulty.HARD).toString(), "Hard - ", "chip-hard")
+        );
 
         DataService dataService = App.getDataService(); // Get the DataService
         if (dataService.type == Type.EXAM) {
@@ -512,6 +502,23 @@ public class mainContentController {
             });
         });
         return deleteBtn;
+    }
+
+    //=== Chip ===\\
+
+    private Label createChip(String text, String before, String styleClass) {
+        Label chip = new Label(text);
+        chip.getStyleClass().addAll("chip", styleClass);
+
+        // Punkt davor
+        Label beforeLabel = new Label(before);
+        beforeLabel.setTextFill(Color.GRAY);
+        chip.setGraphic(beforeLabel);
+        chip.setContentDisplay(ContentDisplay.LEFT);
+
+        chip.setMinWidth(50);
+        chip.setAlignment(Pos.CENTER);
+        return chip;
     }
 
     //=== Alert ===\\
