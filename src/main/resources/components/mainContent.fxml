@@ -9,8 +9,7 @@
 <VBox xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="dhbw.koehler.jexam.controller.mainContentController"
-            spacing="20"
-            prefHeight="400.0" prefWidth="600.0">
+            spacing="20">
     <VBox fx:id="form">
         <TextField fx:id="txtName" promptText="Chapter Name"/>
 
@@ -22,9 +21,11 @@
         <VBox fx:id="formTasks"/>
     </VBox>
     <VBox fx:id="chapterDetails"/>
-    <VBox spacing="10">
-        <HBox fx:id="tableHeader"/>
-        <VBox fx:id="tableContent"/>
-        <Button text="New ..." fx:id="addNewChild"/>
-    </VBox>
+        <VBox spacing="10">
+            <HBox fx:id="tableHeader"/>
+            <ScrollPane fitToWidth="true">
+                <VBox fx:id="tableContent"/>
+            </ScrollPane>
+            <Button text="New ..." fx:id="addNewChild"/>
+        </VBox>
 </VBox>

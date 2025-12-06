@@ -8,8 +8,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="dhbw.koehler.jexam.controller.tabXMLController"
-            prefHeight="400.0" prefWidth="600.0">
+            fx:controller="dhbw.koehler.jexam.controller.tabXMLController">
     <!-- Sidebar -->
     <left>
         <VBox fx:id="xmlSidebar"/>
@@ -20,7 +19,7 @@
     <center>
         <VBox>
             <HBox fx:id="breadCrumbs"/>
-            <VBox fx:id="xmlMainContent"/>
+            <VBox fx:id="xmlMainContent" VBox.vgrow="ALWAYS"/>
         </VBox>
     </center>
 </BorderPane>

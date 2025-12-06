@@ -487,7 +487,7 @@ public class mainContentController {
             // Confirmation Dialog
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Delete Chapter");
-            alert.setHeaderText("Are you sure you want to delete chapter \"" + chapter.getName() + "\" with all its Task their Variants?");
+            alert.setHeaderText("Are you sure you want to delete chapter \"" + chapter.getName() + "\" with all its Task and their Variants?");
             alert.setContentText("This action cannot be undone.");
 
             // Show dialog and wait for response
