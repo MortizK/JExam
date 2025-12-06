@@ -1,31 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="dhbw.koehler.jexam.controller.mainContentController"
-            spacing="20">
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="dhbw.koehler.jexam.controller.mainContentController"
+      spacing="20">
+
+    <styleClass>
+        <String fx:value="padding-md"/>
+    </styleClass>
+
+    <!-- Form -->
     <VBox fx:id="form">
-        <TextField fx:id="txtName" promptText="Chapter Name"/>
+        <styleClass>
+            <String fx:value="panel"/>
+            <String fx:value="panel-default"/>
+            <String fx:value="padding-md"/>
+        </styleClass>
+
+        <TextField fx:id="txtName" promptText="Chapter Name">
+            <styleClass>
+                <String fx:value="form-control"/>
+            </styleClass>
+        </TextField>
 
         <HBox spacing="10">
-            <Button fx:id="btnSave" text="Save" onAction="#save"/>
-            <Button fx:id="btnCancel" text="Cancel" onAction="#cancel"/>
+            <Button fx:id="btnSave" text="Save" onAction="#save">
+                <styleClass>
+                    <String fx:value="btn"/>
+                    <String fx:value="btn-primary"/>
+                </styleClass>
+            </Button>
+            <Button fx:id="btnCancel" text="Cancel" onAction="#cancel">
+                <styleClass>
+                    <String fx:value="btn"/>
+                    <String fx:value="btn-secondary"/>
+                </styleClass>
+            </Button>
         </HBox>
 
-        <VBox fx:id="formTasks"/>
+        <VBox fx:id="formTasks" spacing="10"/>
     </VBox>
-    <VBox fx:id="chapterDetails"/>
+
+    <!-- Chapter Details -->
+    <VBox fx:id="chapterDetails" spacing="15">
+        <styleClass>
+            <String fx:value="panel"/>
+            <String fx:value="panel-default"/>
+            <String fx:value="padding-md"/>
+        </styleClass>
+
         <VBox spacing="10">
-            <HBox fx:id="tableHeader"/>
+            <HBox fx:id="tableHeader">
+                <styleClass>
+                    <String fx:value="bg-light"/>
+                    <String fx:value="padding-sm"/>
+                </styleClass>
+            </HBox>
+
             <ScrollPane fitToWidth="true">
-                <VBox fx:id="tableContent"/>
+                <styleClass>
+                    <String fx:value="panel-body"/>
+                </styleClass>
+                <VBox fx:id="tableContent" spacing="5"/>
             </ScrollPane>
-            <Button text="New ..." fx:id="addNewChild"/>
+
+            <Button text="New ..." fx:id="addNewChild">
+                <styleClass>
+                    <String fx:value="btn"/>
+                    <String fx:value="btn-success"/>
+                </styleClass>
+            </Button>
         </VBox>
+    </VBox>
+
 </VBox>

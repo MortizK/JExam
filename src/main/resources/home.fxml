@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
@@ -17,6 +13,11 @@
     <!-- Top Menu -->
     <top>
         <MenuBar fx:id="menuBar">
+            <styleClass>
+                <String fx:value="bg-primary"/>
+                <String fx:value="text-white"/>
+                <String fx:value="padding-sm"/>
+            </styleClass>
             <menus>
                 <Menu text="Files" fx:id="menuFiles">
                     <items>
@@ -34,19 +35,35 @@
     <!-- Center Tabs -->
     <center>
         <TabPane fx:id="mainTabPane">
+            <styleClass>
+                <String fx:value="tab-pane-primary"/>
+            </styleClass>
 
             <!-- XML Tab -->
             <Tab text="XML" fx:id="tabXML" closable="false">
-                <BorderPane fx:id="xmlBorderPane"/>
+                <BorderPane fx:id="xmlBorderPane">
+                    <styleClass>
+                        <String fx:value="padding-md"/>
+                        <String fx:value="bg-white"/>
+                        <String fx:value="panel"/>
+                        <String fx:value="panel-default"/>
+                    </styleClass>
+                </BorderPane>
             </Tab>
 
             <!-- PDF Tab -->
             <Tab text="PDF" fx:id="tabPDF" closable="false">
-                <BorderPane fx:id="pdfBorderPane"/>
+                <BorderPane fx:id="pdfBorderPane">
+                    <styleClass>
+                        <String fx:value="padding-md"/>
+                        <String fx:value="bg-white"/>
+                        <String fx:value="panel"/>
+                        <String fx:value="panel-default"/>
+                    </styleClass>
+                </BorderPane>
             </Tab>
 
         </TabPane>
     </center>
 
 </BorderPane>
-

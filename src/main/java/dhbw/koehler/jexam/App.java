@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.kordamp.bootstrapfx.BootstrapFX;
 
 public class App extends Application {
 
@@ -15,6 +16,9 @@ public class App extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/home.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
+        scene.getStylesheets().add(
+                BootstrapFX.bootstrapFXStylesheet()
+        );
         stage.setTitle("JExam");
         stage.setScene(scene);
         stage.show();

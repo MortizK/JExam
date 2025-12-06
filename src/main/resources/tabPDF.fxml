@@ -1,24 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="dhbw.koehler.jexam.controller.tabPDFController">
+
     <!-- Sidebar -->
     <left>
-        <VBox>
-            <VBox fx:id="pdfSidebar"/>
-            <HBox fx:id="generation"/>
+        <VBox spacing="10" prefWidth="260">
+            <styleClass>
+                <String fx:value="panel"/>
+                <String fx:value="panel-default"/>
+                <String fx:value="padding-md"/>
+            </styleClass>
+
+            <!-- Kapitel-Liste -->
+            <VBox fx:id="pdfSidebar" spacing="8">
+                <styleClass>
+                    <String fx:value="panel-body"/>
+                </styleClass>
+            </VBox>
+
+            <!-- PDF Generierungsbereich -->
+            <HBox fx:id="generation" spacing="10">
+                <styleClass>
+                    <String fx:value="padding-sm"/>
+                </styleClass>
+                <!-- Hier Buttons etc -->
+            </HBox>
+
         </VBox>
     </left>
 
     <!-- Main Content -->
     <center>
-        <VBox fx:id="pdfMainContent"/>
+        <VBox fx:id="pdfMainContent" spacing="12">
+            <styleClass>
+                <String fx:value="panel"/>
+                <String fx:value="panel-default"/>
+                <String fx:value="padding-md"/>
+                <String fx:value="bg-white"/>
+            </styleClass>
+        </VBox>
     </center>
+
 </BorderPane>
