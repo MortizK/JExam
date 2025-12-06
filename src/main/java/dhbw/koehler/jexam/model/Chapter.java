@@ -41,6 +41,22 @@ public class Chapter extends Item{
         return numberOfPoints;
     }
 
+    public List<Double> getPossiblePoints() {
+        List<Double> points = new ArrayList<>();
+
+        for (Task task : this.tasks) {
+            points.add(task.getPoints());
+        }
+
+        if (points.isEmpty()) {
+            points.add(0.0);
+        }
+
+        // FEATURE MISSING: needs to be the sorted combinatoric of all possible point combinations
+
+        return points;
+    }
+
     // Variants
     public Integer getNumberOfVariants() {
         Integer numberOfVariants = 0;

@@ -30,6 +30,10 @@ public class tabPDFController {
 
     @FXML
     public void initialize() {
+        DataService dataService = App.getDataService(); // Get the DataService
+        chapterList = dataService.exam.getChapters();
+        cutOff = chapterList.size();
+
         loadSidebar();
         loadOperations();
     }
@@ -42,43 +46,83 @@ public class tabPDFController {
     }
 
     private void loadSidebar() {
-        DataService dataService = App.getDataService(); // Get the DataService
-        chapterList = dataService.exam.getChapters();
-        cutOff = chapterList.size();
-
         pdfSidebar.getChildren().clear();
         Label include = new Label("Change Order of the Chapters:");
         pdfSidebar.getChildren().add(include);
+
+        if (cutOff == 0) {
+            addCutOff();
+        }
 
         int index = 0;
         for (Chapter chapter : chapterList) {
             createChapter(chapter);
             index++;
             if (index == cutOff) {
-                Label exclude = new Label("Excluded from PDF generation:");
-                pdfSidebar.getChildren().add(exclude);
+                addCutOff();
             }
         }
+    }
+
+    private void addCutOff() {
+        Label include = new Label("Change Order of the Chapters:");
+        pdfSidebar.getChildren().add(include);
     }
 
     private void createChapter(Chapter chapter) {
         HBox row = new HBox();
 
         Label chapterName = new Label(chapter.getName());
-        MenuButton pointsDropDown = createPointsMenuButton(new double[] {1.0, 2.0, 3.0});
+        MenuButton pointsDropDown = createPointsMenuButton(chapter.getPossiblePoints()); // FEATURE MISSING: these points should be saved on this Tab
 
         Button btnUp = new Button("UP");
+        btnUp.setOnAction(e -> {
+            moveChapter(chapter, -1);
+        });
+
         Button btnDown = new Button("DOWN");
+        btnDown.setOnAction(e -> {
+            moveChapter(chapter, 1);
+        });
 
         row.getChildren().addAll(chapterName, pointsDropDown,  btnUp, btnDown);
 
         pdfSidebar.getChildren().add(row);
     }
 
-    private MenuButton createPointsMenuButton(double[] options) {
-        MenuButton menuButton = new MenuButton(String.valueOf(options[0]));
+    private void moveChapter(Chapter chapter, int direction) {
+        int index = chapterList.indexOf(chapter);
+        int newIndex = index + direction;
 
-        for (double value : options) {
+        // System.out.println("Direction:" + direction + " \tnewIndex:" + newIndex + " \tcutOff:" + cutOff);
+
+        // Move the cutOff, if needed
+        if (direction == 1 && newIndex == cutOff) {
+            cutOff--;
+            loadSidebar();
+            return;
+        } else if (direction == -1 && newIndex == cutOff - 1) {
+            cutOff++;
+            loadSidebar();
+            return;
+        }
+
+        // Check for the ending
+        if (newIndex < 0 || newIndex >= chapterList.size()) {
+            return;
+        }
+
+        // swap Chapter
+        chapterList.remove(index);
+        chapterList.add(newIndex, chapter);
+
+        loadSidebar();
+    }
+
+    private MenuButton createPointsMenuButton(List<Double> points) {
+        MenuButton menuButton = new MenuButton(String.valueOf(points.getFirst()));
+
+        for (double value : points) {
             MenuItem item = new MenuItem(String.valueOf(value));
             item.setOnAction(e -> menuButton.setText(String.valueOf(value)));
             menuButton.getItems().add(item);
