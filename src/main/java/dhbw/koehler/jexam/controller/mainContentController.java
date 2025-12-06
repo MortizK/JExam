@@ -317,7 +317,7 @@ public class mainContentController {
         addNewChild.setText("New Task");
 
         // Update chapterDetails
-        chapterDetails.getChildren().add(chapterRow(chapter));
+        chapterDetails.getChildren().add(chapterRow(chapter, 0));
 
         // Loading the Header
         HBox header = new HBox();
@@ -342,13 +342,15 @@ public class mainContentController {
         tableHeader.getChildren().add(header);
 
         // Loading the rows
+        int index = 0;
         for (Task task : chapter.getTasks()) {
-            tableContent.getChildren().add(taskRow(task));
+            tableContent.getChildren().add(taskRow(task, index));
+            index++;
         }
 
     }
 
-    private HBox taskRow(Task task) {
+    private HBox taskRow(Task task, int index) {
         HBox row = new HBox();
         row.setSpacing(10);
 
@@ -375,6 +377,19 @@ public class mainContentController {
         Label scope = new Label(task.getScope().toString());
         scope.setMinWidth(50);
         row.getChildren().add(scope);
+
+        // Edit Button
+        Button editBtn = new Button("✏"); // Icon als Text oder Bild
+        editBtn.setTooltip(new Tooltip("Edit Task"));
+
+        editBtn.setOnAction(event -> {
+            DataService dataService = App.getDataService(); // Get the DataService
+            dataService.selectedItem = task;
+            dataService.path.add(index);
+            EventService.triggerUpdate();
+        });
+
+        row.getChildren().add(editBtn);
 
         // Delete Button
         Button deleteBtn = getDeleteTaskButton(task, row);
@@ -430,12 +445,14 @@ public class mainContentController {
         tableHeader.getChildren().add(header);
 
         // Loading the rows
+        int index = 0;
         for (Chapter chapter : exam.getChapters()) {
-            tableContent.getChildren().add(chapterRow(chapter));
+            tableContent.getChildren().add(chapterRow(chapter, index));
+            index++;
         }
     }
 
-    private HBox chapterRow(Chapter chapter) {
+    private HBox chapterRow(Chapter chapter, int index) {
         HBox row = new HBox();
         row.setSpacing(10);
 
@@ -470,9 +487,21 @@ public class mainContentController {
         numHard.setMinWidth(50);
         row.getChildren().add(numHard);
 
-        // Delete Button
         DataService dataService = App.getDataService(); // Get the DataService
         if (dataService.type == Type.EXAM) {
+            // Edit Button
+            Button editBtn = new Button("✏"); // Icon als Text oder Bild
+            editBtn.setTooltip(new Tooltip("Edit Task"));
+
+            editBtn.setOnAction(event -> {
+                dataService.selectedItem = chapter;
+                dataService.path.add(index);
+                EventService.triggerUpdate();
+            });
+
+            row.getChildren().add(editBtn);
+
+            // Delete Button
             Button deleteBtn = getDeleteChapterButton(chapter, row);
             row.getChildren().add(deleteBtn);
         }
