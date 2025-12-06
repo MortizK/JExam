@@ -3,12 +3,14 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="dhbw.koehler.jexam.controller.tabPDFController">
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<SplitPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="dhbw.koehler.jexam.controller.tabPDFController">
 
-    <!-- Sidebar -->
-    <left>
+    <items>
+        <!-- Sidebar -->
         <VBox spacing="10" prefWidth="260">
             <styleClass>
                 <String fx:value="panel"/>
@@ -17,11 +19,16 @@
             </styleClass>
 
             <!-- Kapitel-Liste -->
-            <VBox fx:id="pdfSidebar" spacing="8">
+            <ScrollPane fitToWidth="true">
                 <styleClass>
                     <String fx:value="panel-body"/>
                 </styleClass>
-            </VBox>
+                <VBox fx:id="pdfSidebar" spacing="8">
+                    <styleClass>
+                        <String fx:value="panel-body"/>
+                    </styleClass>
+                </VBox>
+            </ScrollPane>
 
             <!-- PDF Generierungsbereich -->
             <HBox fx:id="generation" spacing="10">
@@ -30,12 +37,9 @@
                 </styleClass>
                 <!-- Hier Buttons etc -->
             </HBox>
-
         </VBox>
-    </left>
 
-    <!-- Main Content -->
-    <center>
+        <!-- Main Content -->
         <VBox fx:id="pdfMainContent" spacing="12">
             <styleClass>
                 <String fx:value="panel"/>
@@ -44,6 +48,5 @@
                 <String fx:value="bg-white"/>
             </styleClass>
         </VBox>
-    </center>
-
-</BorderPane>
+    </items>
+</SplitPane>

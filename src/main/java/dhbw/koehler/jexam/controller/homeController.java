@@ -2,9 +2,9 @@ package dhbw.koehler.jexam.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.layout.BorderPane;
 import dhbw.koehler.jexam.service.EventService;
 
 import java.io.IOException;
@@ -13,8 +13,8 @@ public class homeController {
     public Tab tabXML;
     public Tab tabPDF;
     public TabPane mainTabPane;
-    @FXML BorderPane xmlBorderPane;
-    @FXML BorderPane pdfBorderPane;
+    @FXML SplitPane xmlBorderPane;
+    @FXML SplitPane pdfBorderPane;
 
     public void initialize() {
         loadXMLTabContent();
@@ -35,13 +35,15 @@ public class homeController {
         try {
             // XML Tab FXML laden
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/tabXML.fxml"));
-            BorderPane xmlContent = loader.load();
+            SplitPane xmlContent = loader.load();
+            xmlContent.setDividerPosition(0, 0.15);
 
             // Optional: Zugriff auf den Controller
             tabXMLController controller = loader.getController();
 
             // In xmlBorderPane einfügen
-            xmlBorderPane.setCenter(xmlContent);
+            xmlBorderPane.getItems().clear();
+            xmlBorderPane.getItems().add(xmlContent);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,13 +54,15 @@ public class homeController {
         try {
             // PDF Tab FXML laden
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/tabPDF.fxml"));
-            BorderPane pdfContent = loader.load();
+            SplitPane pdfContent = loader.load();
+            pdfContent.setDividerPosition(0, 0.4);
 
             // Optional: Zugriff auf den Controller
             tabPDFController controller = loader.getController();
 
             // In pdfBorderPane einfügen
-            pdfBorderPane.setCenter(pdfContent);
+            pdfBorderPane.getItems().clear();
+            pdfBorderPane.getItems().add(pdfContent);
 
         } catch (IOException e) {
             e.printStackTrace();

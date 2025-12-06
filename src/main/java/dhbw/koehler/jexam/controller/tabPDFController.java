@@ -5,6 +5,8 @@ import dhbw.koehler.jexam.model.Chapter;
 import dhbw.koehler.jexam.service.DataService;
 import dhbw.koehler.jexam.service.EventService;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
@@ -48,7 +50,12 @@ public class tabPDFController {
         generation.getChildren().clear();
 
         Button generateExam = new Button("Generate Exam");
+        generateExam.getStyleClass().addAll("btn", "btn-success");
+
         Button generateMock = new Button("Generate Mock Exam");
+        generateMock.getStyleClass().addAll("btn", "btn-primary");
+
+        HBox.setMargin(generateExam, new Insets(0, 10, 0, 0));
 
         generation.getChildren().addAll(generateExam, generateMock);
     }
@@ -57,6 +64,7 @@ public class tabPDFController {
         pdfSidebar.getChildren().clear();
 
         Label include = new Label("Change Order of the Chapters:");
+        include.getStyleClass().addAll("h5", "mb-3");
 
         pdfSidebar.getChildren().add(include);
 
@@ -72,31 +80,42 @@ public class tabPDFController {
                 addCutOff();
             }
         }
+
+        pdfSidebar.setPadding(new Insets(10));
+        pdfSidebar.setSpacing(5);
     }
 
     private void addCutOff() {
-        Label include = new Label("Change Order of the Chapters:");
-        pdfSidebar.getChildren().add(include);
+        Label cutOffLabel = new Label("Exclude from PDF generation:");
+        cutOffLabel.getStyleClass().addAll("h5", "mb-2");
+        pdfSidebar.getChildren().add(cutOffLabel);
     }
 
     private void createChapter(Chapter chapter) {
         HBox row = new HBox();
+        row.setSpacing(10);
+        row.setAlignment(Pos.CENTER_LEFT);
 
         Label chapterName = new Label(chapter.getName());
+        chapterName.getStyleClass().addAll("fw-bold");
+
         MenuButton pointsDropDown = createPointsMenuButton(chapter.getPossiblePoints()); // FEATURE MISSING: these points should be saved on this Tab
+        pointsDropDown.getStyleClass().addAll("btn", "btn-secondary", "btn-sm");
 
         Button btnUp = new Button("UP");
+        btnUp.getStyleClass().addAll("btn", "btn-outline-primary", "btn-sm");
         btnUp.setOnAction(e -> {
             moveChapter(chapter, -1);
         });
 
         Button btnDown = new Button("DOWN");
+        btnDown.getStyleClass().addAll("btn", "btn-outline-primary", "btn-sm");
         btnDown.setOnAction(e -> {
             moveChapter(chapter, 1);
         });
 
         row.getChildren().addAll(chapterName, pointsDropDown,  btnUp, btnDown);
-
+        row.setPadding(new Insets(5));
         pdfSidebar.getChildren().add(row);
     }
 
@@ -131,6 +150,7 @@ public class tabPDFController {
 
     private MenuButton createPointsMenuButton(List<Double> points) {
         MenuButton menuButton = new MenuButton(String.valueOf(points.getFirst()));
+        menuButton.getStyleClass().addAll("btn", "btn-info", "btn-sm");
 
         for (double value : points) {
             MenuItem item = new MenuItem(String.valueOf(value));

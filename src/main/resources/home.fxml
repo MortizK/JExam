@@ -41,26 +41,26 @@
 
             <!-- XML Tab -->
             <Tab text="XML" fx:id="tabXML" closable="false">
-                <BorderPane fx:id="xmlBorderPane">
+                <SplitPane fx:id="xmlBorderPane">
                     <styleClass>
                         <String fx:value="padding-md"/>
                         <String fx:value="bg-white"/>
                         <String fx:value="panel"/>
                         <String fx:value="panel-default"/>
                     </styleClass>
-                </BorderPane>
+                </SplitPane>
             </Tab>
 
             <!-- PDF Tab -->
             <Tab text="PDF" fx:id="tabPDF" closable="false">
-                <BorderPane fx:id="pdfBorderPane">
+                <SplitPane fx:id="pdfBorderPane">
                     <styleClass>
                         <String fx:value="padding-md"/>
                         <String fx:value="bg-white"/>
                         <String fx:value="panel"/>
                         <String fx:value="panel-default"/>
                     </styleClass>
-                </BorderPane>
+                </SplitPane>
             </Tab>
 
         </TabPane>
