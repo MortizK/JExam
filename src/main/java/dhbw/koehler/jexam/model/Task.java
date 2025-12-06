@@ -29,7 +29,11 @@ public class Task extends Item{
     public void setVariants(List<Variant> variants) {
         this.variants = variants;
     }
-    // Needs: Delete Single one, but leave at least one
+    public void deleteVariant(Variant variant) {
+        if(variants.size() > 1) {
+            this.variants.remove(variant);
+        }
+    }
     @Override
     public void addVariant(Variant variant) {
         this.variants.add(variant);

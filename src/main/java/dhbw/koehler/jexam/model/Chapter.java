@@ -21,7 +21,9 @@ public class Chapter extends Item{
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
-    // Needs: Delete Single one
+    public void deleteTask(Task task) {
+        this.tasks.remove(task);
+    }
     @Override
     public void addTask(Task task) {
         this.tasks.add(task);

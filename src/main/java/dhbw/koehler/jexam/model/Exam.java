@@ -19,7 +19,9 @@ public class Exam extends Item {
     public void setChapters(List<Chapter> chapters) {
         this.chapters = chapters;
     }
-    // Needs: Delete Single one
+    public void deleteChapter(Chapter chapter) {
+        this.chapters.remove(chapter);
+    }
     @Override
     public void addChapter(Chapter chapter) {
         this.chapters.add(chapter);

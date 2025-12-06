@@ -7,6 +7,7 @@ import dhbw.koehler.jexam.model.Task;
 import dhbw.koehler.jexam.model.Variant;
 import dhbw.koehler.jexam.model.enums.Difficulty;
 import dhbw.koehler.jexam.model.enums.Scope;
+import dhbw.koehler.jexam.model.enums.Type;
 import dhbw.koehler.jexam.service.DataService;
 import dhbw.koehler.jexam.service.EventService;
 import javafx.fxml.FXML;
@@ -247,6 +248,16 @@ public class mainContentController {
         Label answer = new Label(variant.getAnswer());
         row.getChildren().add(answer);
 
+        // Delete Button
+        Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
+        deleteBtn.setTooltip(new Tooltip("Delete Variant"));
+        deleteBtn.setOnAction(event -> {
+            ((Task) App.getDataService().selectedItem).deleteVariant(variant);
+            tableContent.getChildren().remove(row);
+            EventService.triggerUpdate();
+        });
+        row.getChildren().add(deleteBtn);
+
         return row;
     }
 
@@ -317,6 +328,16 @@ public class mainContentController {
         scope.setMinWidth(50);
         row.getChildren().add(scope);
 
+        // Delete Button
+        Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
+        deleteBtn.setTooltip(new Tooltip("Delete Task"));
+        deleteBtn.setOnAction(event -> {
+            ((Chapter) App.getDataService().selectedItem).deleteTask(task);
+            tableContent.getChildren().remove(row);
+            EventService.triggerUpdate();
+        });
+        row.getChildren().add(deleteBtn);
+
         return  row;
     }
 
@@ -378,13 +399,27 @@ public class mainContentController {
         numEasy.setMinWidth(50);
         row.getChildren().add(numEasy);
 
-        Label numMedium =  new Label(chapter.getNumberOfDifficultyTasks(Difficulty.MEDIUM).toString());
+        Label numMedium = new Label(chapter.getNumberOfDifficultyTasks(Difficulty.MEDIUM).toString());
         numMedium.setMinWidth(50);
         row.getChildren().add(numMedium);
 
         Label numHard = new Label(chapter.getNumberOfDifficultyTasks(Difficulty.HARD).toString());
         numHard.setMinWidth(50);
         row.getChildren().add(numHard);
+
+        // Delete Button
+        DataService dataService = App.getDataService(); // Get the DataService
+        if (dataService.type == Type.EXAM) {
+            Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
+            deleteBtn.setTooltip(new Tooltip("Delete Chapter"));
+            deleteBtn.setOnAction(event -> {
+
+                ((Exam) App.getDataService().selectedItem).deleteChapter(chapter);
+                tableContent.getChildren().remove(row);
+                EventService.triggerUpdate();
+            });
+            row.getChildren().add(deleteBtn);
+        }
 
         return row;
     }
