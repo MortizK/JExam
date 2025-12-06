@@ -379,7 +379,7 @@ public class mainContentController {
         row.getChildren().add(scope);
 
         // Edit Button
-        Button editBtn = new Button("✏"); // Icon als Text oder Bild
+        Button editBtn = new Button("✎"); // Icon als Text oder Bild
         editBtn.setTooltip(new Tooltip("Edit Task"));
 
         editBtn.setOnAction(event -> {
@@ -490,7 +490,7 @@ public class mainContentController {
         DataService dataService = App.getDataService(); // Get the DataService
         if (dataService.type == Type.EXAM) {
             // Edit Button
-            Button editBtn = new Button("✏"); // Icon als Text oder Bild
+            Button editBtn = new Button("✎"); // Icon als Text oder Bild
             editBtn.setTooltip(new Tooltip("Edit Task"));
 
             editBtn.setOnAction(event -> {
