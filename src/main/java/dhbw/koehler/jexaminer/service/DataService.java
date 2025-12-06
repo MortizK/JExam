@@ -5,6 +5,7 @@ import dhbw.koehler.jexaminer.model.enums.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class DataService {
     public Exam exam;
@@ -20,7 +21,7 @@ public class DataService {
         this.path = new ArrayList<>();
         this.breadCrumbs = new ArrayList<>();
         this.breadCrumbs.add(this.exam.getName());
-        createExampleData();
+        createRandomExampleData();
     }
 
     public void updateSelectedFromPath(List<Integer> path) {
@@ -74,5 +75,40 @@ public class DataService {
 
         this.exam.addChapter(chapter1);
         this.exam.addChapter(chapter2);
+    }
+
+    public void createRandomExampleData() {
+        int numChapters = 4;
+        int maxTasks = 10; // Can be zero
+        int maxVariants = 3; // Always at least 1
+
+        for (int c = 0; c < numChapters; c++) {
+            Chapter chapter = new Chapter("Chapter " + c);
+
+            int nTasks = new Random().nextInt(maxTasks + 1);
+            for (int t = 0; t < nTasks; t++) {
+                Variant startVariant = new Variant("Question 0", "Answer 0");
+
+                Difficulty[] difficultys = Difficulty.values();
+                Difficulty difficulty = difficultys[new Random().nextInt(difficultys.length)];
+
+                Scope[]  scopes = Scope.values();
+                Scope scope = scopes[new Random().nextInt(scopes.length)];
+
+                int points = new Random().nextInt(15) + 1;
+
+                Task task = new Task("Task " + c, startVariant, points, difficulty, scope);
+
+                int nVariants = new Random().nextInt(maxVariants + 1);
+                for (int v = 1; v < nVariants; v++) {
+                    Variant variant = new Variant("Question " + v, "Answer " + v);
+                    task.addVariant(variant);
+                }
+
+                chapter.addTask(task);
+            }
+
+            this.exam.addChapter(chapter);
+        }
     }
 }
