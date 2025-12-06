@@ -13,7 +13,9 @@ import dhbw.koehler.jexam.service.EventService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 import java.util.List;
 
@@ -233,23 +235,48 @@ public class mainContentController {
         return container;
     }
 
+    private double getHeight(TextArea textArea, String newText) {
+        Text text = new Text(newText);
+        text.setFont(textArea.getFont());
+        text.setWrappingWidth(textArea.getWidth() - 10);
+        return text.getLayoutBounds().getHeight() + 20;
+    }
+
+    private TextArea createTextArea(String text) {
+        TextArea textArea = new TextArea(text);
+        textArea.setWrapText(true);
+        textArea.setMinHeight(Region.USE_PREF_SIZE);
+        textArea.setMaxHeight(Region.USE_PREF_SIZE);
+        textArea.setPrefHeight(getHeight(textArea, text));
+
+        return textArea;
+    }
+
     private VBox variantRow(Variant variant, int size) {
         VBox row = new VBox();
         row.setSpacing(10);
 
         // Question
         Label questionHeader = new Label("Question:");
-        row.getChildren().add(questionHeader);
+        TextArea questionArea = createTextArea(variant.getQuestion());
 
-        Label question = new Label(variant.getQuestion());
-        row.getChildren().add(question);
+        questionArea.textProperty().addListener((obs, oldText, newText) -> {
+            variant.setQuestion(newText);
+            questionArea.setPrefHeight(getHeight(questionArea, newText));
+        });
+
+        row.getChildren().addAll(questionHeader, questionArea);
 
         // Answer
         Label answerHeader = new Label("Answer:");
-        row.getChildren().add(answerHeader);
+        TextArea answerArea = createTextArea(variant.getAnswer());
 
-        Label answer = new Label(variant.getAnswer());
-        row.getChildren().add(answer);
+        answerArea.textProperty().addListener((obs, oldText, newText) -> {
+            variant.setAnswer(newText);
+            answerArea.setPrefHeight(getHeight(answerArea, newText));
+        });
+
+        row.getChildren().addAll(answerHeader, answerArea);
 
         // Delete Button
         if (size > 1) {
