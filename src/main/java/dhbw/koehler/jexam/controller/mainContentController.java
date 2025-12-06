@@ -70,7 +70,7 @@ public class mainContentController {
                 break;
         }
 
-        EventService.triggerUpdate();
+        EventService.triggerPdfUpdate();
     }
 
     public void updateContent() {
@@ -302,7 +302,7 @@ public class mainContentController {
                 if (response == ButtonType.OK) {
                     ((Task) App.getDataService().selectedItem).deleteVariant(variant);
                     tableContent.getChildren().remove(row);
-                    EventService.triggerUpdate();
+                    EventService.triggerPdfUpdate();
                 }
             });
         });
@@ -386,7 +386,7 @@ public class mainContentController {
             DataService dataService = App.getDataService(); // Get the DataService
             dataService.selectedItem = task;
             dataService.path.add(index);
-            EventService.triggerUpdate();
+            EventService.triggerPdfUpdate();
         });
 
         row.getChildren().add(editBtn);
@@ -412,7 +412,7 @@ public class mainContentController {
                 if (response == ButtonType.OK) {
                     ((Chapter) App.getDataService().selectedItem).deleteTask(task);
                     tableContent.getChildren().remove(row);
-                    EventService.triggerUpdate();
+                    EventService.triggerPdfUpdate();
                 }
             });
         });
@@ -496,7 +496,7 @@ public class mainContentController {
             editBtn.setOnAction(event -> {
                 dataService.selectedItem = chapter;
                 dataService.path.add(index);
-                EventService.triggerUpdate();
+                EventService.triggerPdfUpdate();
             });
 
             row.getChildren().add(editBtn);
@@ -524,7 +524,7 @@ public class mainContentController {
                 if (response == ButtonType.OK) {
                     ((Exam) App.getDataService().selectedItem).deleteChapter(chapter);
                     tableContent.getChildren().remove(row);
-                    EventService.triggerUpdate();
+                    EventService.triggerPdfUpdate();
                 }
             });
         });
@@ -538,10 +538,10 @@ public class mainContentController {
 
         dataService.selectedItem.setName(txtName.getText());
 
-        EventService.triggerUpdate();
+        EventService.triggerPdfUpdate();
     }
 
     public void cancel() {
-        EventService.triggerUpdate();
+        EventService.triggerPdfUpdate();
     }
 }

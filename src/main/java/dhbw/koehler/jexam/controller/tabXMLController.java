@@ -33,7 +33,7 @@ public class tabXMLController {
 
     @FXML
     public void initialize() {
-        EventService.setOnUpdate(this::reload);
+        EventService.setPdfUpdate(this::reload);
 
         populateTree();
 

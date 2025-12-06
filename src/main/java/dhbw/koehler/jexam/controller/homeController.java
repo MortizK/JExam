@@ -2,17 +2,33 @@ package dhbw.koehler.jexam.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
+import dhbw.koehler.jexam.service.EventService;
 
 import java.io.IOException;
 
 public class homeController {
+    public Tab tabXML;
+    public Tab tabPDF;
+    public TabPane mainTabPane;
     @FXML BorderPane xmlBorderPane;
     @FXML BorderPane pdfBorderPane;
 
     public void initialize() {
         loadXMLTabContent();
         loadPDFTabContent();
+
+        // Event Listener to update the Tabs, when unloaded
+        mainTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+           if (newTab == tabXML) {
+               EventService.triggerPdfUpdate();
+           }
+           if (newTab == tabPDF) {
+               EventService.triggerXmlUpdate();
+           }
+        });
     }
 
     private void loadXMLTabContent() {

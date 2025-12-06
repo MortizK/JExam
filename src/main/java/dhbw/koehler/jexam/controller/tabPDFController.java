@@ -3,8 +3,8 @@ package dhbw.koehler.jexam.controller;
 import dhbw.koehler.jexam.App;
 import dhbw.koehler.jexam.model.Chapter;
 import dhbw.koehler.jexam.service.DataService;
+import dhbw.koehler.jexam.service.EventService;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
@@ -12,6 +12,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class tabPDFController {
@@ -24,12 +25,17 @@ public class tabPDFController {
     @FXML
     public HBox generation;
 
-    public List<Chapter> chapterList;
+    public List<Chapter> chapterList = new ArrayList<>();
 
     public int cutOff;
 
     @FXML
     public void initialize() {
+        EventService.setXmlUpdate(this::reload);
+        reload();
+    }
+
+    private void reload() {
         DataService dataService = App.getDataService(); // Get the DataService
         chapterList = dataService.exam.getChapters();
         cutOff = chapterList.size();
@@ -39,6 +45,8 @@ public class tabPDFController {
     }
 
     private void loadOperations() {
+        generation.getChildren().clear();
+
         Button generateExam = new Button("Generate Exam");
         Button generateMock = new Button("Generate Mock Exam");
 
@@ -47,7 +55,9 @@ public class tabPDFController {
 
     private void loadSidebar() {
         pdfSidebar.getChildren().clear();
+
         Label include = new Label("Change Order of the Chapters:");
+
         pdfSidebar.getChildren().add(include);
 
         if (cutOff == 0) {
