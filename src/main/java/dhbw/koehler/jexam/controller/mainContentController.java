@@ -253,17 +253,33 @@ public class mainContentController {
 
         // Delete Button
         if (size > 1) {
-            Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
-            deleteBtn.setTooltip(new Tooltip("Delete Variant"));
-            deleteBtn.setOnAction(event -> {
-                ((Task) App.getDataService().selectedItem).deleteVariant(variant);
-                tableContent.getChildren().remove(row);
-                EventService.triggerUpdate();
-            });
+            Button deleteBtn = getDeleteVariantButton(variant, row);
             row.getChildren().add(deleteBtn);
         }
 
         return row;
+    }
+
+    private Button getDeleteVariantButton(Variant variant, VBox row) {
+        Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
+        deleteBtn.setTooltip(new Tooltip("Delete Variant"));
+        deleteBtn.setOnAction(event -> {
+            // Confirmation Dialog
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Delete Variant");
+            alert.setHeaderText("Are you sure you want to delete variant \"" + variant.getName() + "\"?");
+            alert.setContentText("This action cannot be undone.");
+
+            // Show dialog and wait for response
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    ((Task) App.getDataService().selectedItem).deleteVariant(variant);
+                    tableContent.getChildren().remove(row);
+                    EventService.triggerUpdate();
+                }
+            });
+        });
+        return deleteBtn;
     }
 
     private void loadChapterContent(Chapter chapter) {
@@ -334,16 +350,31 @@ public class mainContentController {
         row.getChildren().add(scope);
 
         // Delete Button
-        Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
-        deleteBtn.setTooltip(new Tooltip("Delete Task"));
-        deleteBtn.setOnAction(event -> {
-            ((Chapter) App.getDataService().selectedItem).deleteTask(task);
-            tableContent.getChildren().remove(row);
-            EventService.triggerUpdate();
-        });
+        Button deleteBtn = getDeleteTaskButton(task, row);
         row.getChildren().add(deleteBtn);
 
         return  row;
+    }
+
+    private Button getDeleteTaskButton(Task task, HBox row) {
+        Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
+        deleteBtn.setTooltip(new Tooltip("Delete Task"));
+        deleteBtn.setOnAction(event -> {            // Confirmation Dialog
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Delete Task");
+            alert.setHeaderText("Are you sure you want to delete task \"" + task.getName() + "\" with all its Variants?");
+            alert.setContentText("This action cannot be undone.");
+
+            // Show dialog and wait for response
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    ((Chapter) App.getDataService().selectedItem).deleteTask(task);
+                    tableContent.getChildren().remove(row);
+                    EventService.triggerUpdate();
+                }
+            });
+        });
+        return deleteBtn;
     }
 
     private void loadExamContent(Exam exam) {
@@ -415,18 +446,33 @@ public class mainContentController {
         // Delete Button
         DataService dataService = App.getDataService(); // Get the DataService
         if (dataService.type == Type.EXAM) {
-            Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
-            deleteBtn.setTooltip(new Tooltip("Delete Chapter"));
-            deleteBtn.setOnAction(event -> {
-
-                ((Exam) App.getDataService().selectedItem).deleteChapter(chapter);
-                tableContent.getChildren().remove(row);
-                EventService.triggerUpdate();
-            });
+            Button deleteBtn = getDeleteChapterButton(chapter, row);
             row.getChildren().add(deleteBtn);
         }
 
         return row;
+    }
+
+    private Button getDeleteChapterButton(Chapter chapter, HBox row) {
+        Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
+        deleteBtn.setTooltip(new Tooltip("Delete Chapter"));
+        deleteBtn.setOnAction(event -> {
+            // Confirmation Dialog
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Delete Chapter");
+            alert.setHeaderText("Are you sure you want to delete chapter \"" + chapter.getName() + "\" with all its Task their Variants?");
+            alert.setContentText("This action cannot be undone.");
+
+            // Show dialog and wait for response
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    ((Exam) App.getDataService().selectedItem).deleteChapter(chapter);
+                    tableContent.getChildren().remove(row);
+                    EventService.triggerUpdate();
+                }
+            });
+        });
+        return deleteBtn;
     }
 
     //=== From Handler ===\\
