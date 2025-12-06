@@ -14,4 +14,10 @@ public class Item {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void addChapter(Chapter chapter) {};
+
+    public void addTask(Task task) {}
+
+    public void addVariant(Variant variant) {};
 }

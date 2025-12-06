@@ -30,6 +30,7 @@ public class Task extends Item{
         this.variants = variants;
     }
     // Needs: Delete Single one, but leave at least one
+    @Override
     public void addVariant(Variant variant) {
         this.variants.add(variant);
     }

@@ -40,6 +40,32 @@ public class mainContentController {
     @FXML
     public void initialize() {
         loadContent();
+
+        addNewChild.setOnAction(e -> {
+           createNewChild();
+        });
+    }
+
+    private void createNewChild() {
+        DataService dataService = App.getDataService(); // Get the DataService
+
+        Variant variant = new Variant("New Question", "New Answer");
+
+        switch (dataService.type) {
+            case EXAM:
+                Chapter chapter = new Chapter("New Chapter");
+                dataService.selectedItem.addChapter(chapter);
+                break;
+            case CHAPTER:
+                Task task = new Task("New Task", variant, 1.0, Difficulty.EASY, Scope.EXAM);
+                dataService.selectedItem.addTask(task);
+                break;
+            case TASK:
+                dataService.selectedItem.addVariant(variant);
+                break;
+        }
+
+        EventService.triggerUpdate();
     }
 
     public void updateContent() {
@@ -182,8 +208,8 @@ public class mainContentController {
 
         Double currentPoints = task != null ? task.getPoints() : 0.0;
 
-        // Spinner mit minimal 0, maximal 100, Schrittweite 1
-        Spinner<Double> pointSpinner = new Spinner<>(0F, 100F, currentPoints, 0.5F);
+        // Spinner mit minimal 0, maximal 100, Schrittweite 0.5
+        Spinner<Double> pointSpinner = new Spinner<>(0.0, 100.0, currentPoints, 0.5);
         pointSpinner.setEditable(true);
         pointSpinner.setId("pointsSpinner");
 
@@ -370,6 +396,7 @@ public class mainContentController {
 
         dataService.selectedItem.setName(txtName.getText());
 
+        // BUG: Closes all Chapters of the TreeView
         EventService.triggerUpdate();
     }
 
