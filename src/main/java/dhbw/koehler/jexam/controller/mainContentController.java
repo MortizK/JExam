@@ -15,6 +15,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.util.List;
+
 public class mainContentController {
 
     @FXML
@@ -107,8 +109,9 @@ public class mainContentController {
         addNewChild.setText("New Variant");
 
         // Row Content
-        for(Variant variant : task.getVariants()) {
-            tableContent.getChildren().add(variantRow(variant));
+        List<Variant> variants = task.getVariants();
+        for(Variant variant : variants) {
+            tableContent.getChildren().add(variantRow(variant, variants.size()));
         }
     }
     private HBox createScopeRadioButtons(Task task) {
@@ -230,7 +233,7 @@ public class mainContentController {
         return container;
     }
 
-    private VBox variantRow(Variant variant) {
+    private VBox variantRow(Variant variant, int size) {
         VBox row = new VBox();
         row.setSpacing(10);
 
@@ -249,14 +252,16 @@ public class mainContentController {
         row.getChildren().add(answer);
 
         // Delete Button
-        Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
-        deleteBtn.setTooltip(new Tooltip("Delete Variant"));
-        deleteBtn.setOnAction(event -> {
-            ((Task) App.getDataService().selectedItem).deleteVariant(variant);
-            tableContent.getChildren().remove(row);
-            EventService.triggerUpdate();
-        });
-        row.getChildren().add(deleteBtn);
+        if (size > 1) {
+            Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
+            deleteBtn.setTooltip(new Tooltip("Delete Variant"));
+            deleteBtn.setOnAction(event -> {
+                ((Task) App.getDataService().selectedItem).deleteVariant(variant);
+                tableContent.getChildren().remove(row);
+                EventService.triggerUpdate();
+            });
+            row.getChildren().add(deleteBtn);
+        }
 
         return row;
     }
