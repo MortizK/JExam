@@ -5,21 +5,13 @@ import dhbw.koehler.jexaminer.model.enums.Difficulty;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Chapter {
+public class Chapter extends Item{
     private String name;
     private List<Task> tasks;
 
     public Chapter(String name) {
-        this.name = name;
+        super(name);
         this.tasks = new ArrayList<Task>();
-    }
-
-    // Name
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
     }
 
     // Tasks

@@ -6,7 +6,7 @@ import dhbw.koehler.jexaminer.model.enums.Scope;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Task {
+public class Task extends Item{
     private String name;
     private List<Variant> variants;
     private Integer points;
@@ -14,20 +14,12 @@ public class Task {
     private Scope scope;
 
     public Task(String name, Variant variant, Integer points, Difficulty difficulty, Scope scope) {
-        this.name = name;
+        super(name);
         this.points = points;
         this.variants = new ArrayList<>();
         this.variants.add(variant);
         this.difficulty = difficulty;
         this.scope = scope;
-    }
-
-    // Name
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
     }
 
     // Variants Handling

@@ -3,21 +3,13 @@ package dhbw.koehler.jexaminer.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Exam {
+public class Exam extends Item {
     private String name;
     private List<Chapter> chapters;
 
     public Exam(String name) {
-        this.name = name;
+        super(name);
         this.chapters = new ArrayList<>();
-    }
-
-    // Name
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
     }
 
     // Chapters

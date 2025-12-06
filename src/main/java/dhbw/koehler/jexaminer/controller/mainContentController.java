@@ -7,9 +7,12 @@ import dhbw.koehler.jexaminer.model.Task;
 import dhbw.koehler.jexaminer.model.Variant;
 import dhbw.koehler.jexaminer.model.enums.Difficulty;
 import dhbw.koehler.jexaminer.service.DataService;
+import dhbw.koehler.jexaminer.service.EventService;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -29,6 +32,9 @@ public class mainContentController {
 
     @FXML
     public Button addNewChild;
+
+    @FXML
+    public TextField txtName;
 
     @FXML
     public void initialize() {
@@ -60,6 +66,9 @@ public class mainContentController {
     }
 
     private void loadTaskContent(Task task) {
+        // Update Form Content
+        txtName.setText(task.getName());
+
         // Update Button Text
         addNewChild.setText("New Variant");
 
@@ -91,6 +100,9 @@ public class mainContentController {
     }
 
     private void loadChapterContent(Chapter chapter) {
+        // Update Form Content
+        txtName.setText(chapter.getName());
+
         // Update Button Text
         addNewChild.setText("New Task");
 
@@ -158,6 +170,9 @@ public class mainContentController {
     }
 
     private void loadExamContent(Exam exam) {
+        // Update Form Content
+        txtName.setText(exam.getName());
+
         // Update Button Text
         addNewChild.setText("New Chapter");
 
@@ -221,5 +236,19 @@ public class mainContentController {
         row.getChildren().add(numHard);
 
         return row;
+    }
+
+    //=== From Handler ===\\
+
+    public void save() {
+        DataService dataService = App.getDataService(); // Get the DataService
+
+        dataService.selectedItem.setName(txtName.getText());
+
+        EventService.triggerUpdate();
+    }
+
+    public void cancel() {
+        EventService.triggerUpdate();
     }
 }

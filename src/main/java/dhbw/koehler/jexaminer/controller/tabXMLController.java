@@ -2,6 +2,7 @@ package dhbw.koehler.jexaminer.controller;
 
 import dhbw.koehler.jexaminer.App;
 import dhbw.koehler.jexaminer.service.DataService;
+import dhbw.koehler.jexaminer.service.EventService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -32,6 +33,8 @@ public class tabXMLController {
 
     @FXML
     public void initialize() {
+        EventService.setOnUpdate(this::reload);
+
         populateTree();
 
         updateData(new ArrayList<>());
@@ -46,6 +49,12 @@ public class tabXMLController {
     }
 
     //=== Update Logic ===\\
+
+    private void reload() {
+        DataService dataService = App.getDataService(); // Get the DataService
+        populateTree();
+        updateData(dataService.path);
+    }
 
     private void handleTreeSelection(TreeItem<String> selectedItem) {
         List<Integer> path = getTreeItemPath(selectedItem);
@@ -71,11 +80,11 @@ public class tabXMLController {
     private void loadMainContent() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/components/mainContent.fxml"));
-            VBox pdfContent = loader.load();
+            VBox xmlContent = loader.load();
 
             mainContentController = loader.getController();
 
-            xmlMainContent.getChildren().add(pdfContent);
+            xmlMainContent.getChildren().add(xmlContent);
 
         } catch (IOException e) {
             e.printStackTrace();

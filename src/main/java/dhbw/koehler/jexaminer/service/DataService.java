@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class DataService {
     public Exam exam;
-    public Object selectedItem;
+    public Item selectedItem;
     public Type type;
     public List<Integer> path;
     public List<String> breadCrumbs;
