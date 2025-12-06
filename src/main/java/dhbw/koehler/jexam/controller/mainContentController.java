@@ -538,7 +538,6 @@ public class mainContentController {
 
         dataService.selectedItem.setName(txtName.getText());
 
-        // BUG: Closes all Chapters of the TreeView
         EventService.triggerUpdate();
     }
 

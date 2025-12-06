@@ -68,6 +68,9 @@ public class tabXMLController {
 
         updateBreadcrumbs(dataService.breadCrumbs, dataService.path);
 
+        // Update Selection of TreeView
+        selectTreeItemByPath(path);
+
         if (mainContentController != null) {
             mainContentController.updateContent();
         }
@@ -103,9 +106,6 @@ public class tabXMLController {
             btn.setOnAction(e -> {
                 List<Integer> newPath = path.subList(0, index);
                 updateData(newPath);
-
-                // Update Selection of TreeView
-                selectTreeItemByPath(newPath);
             });
 
             breadCrumbs.getChildren().add(btn);
