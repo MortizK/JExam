@@ -1,15 +1,15 @@
-package dhbw.koehler.jexam.controller;
+package jexam.controller;
 
-import dhbw.koehler.jexam.App;
-import dhbw.koehler.jexam.model.Chapter;
-import dhbw.koehler.jexam.model.Exam;
-import dhbw.koehler.jexam.model.Task;
-import dhbw.koehler.jexam.model.Variant;
-import dhbw.koehler.jexam.model.enums.Difficulty;
-import dhbw.koehler.jexam.model.enums.Scope;
-import dhbw.koehler.jexam.model.enums.Type;
-import dhbw.koehler.jexam.service.DataService;
-import dhbw.koehler.jexam.service.EventService;
+import jexam.App;
+import jexam.model.Chapter;
+import jexam.model.Exam;
+import jexam.model.Task;
+import jexam.model.Variant;
+import jexam.model.enums.Difficulty;
+import jexam.model.enums.Scope;
+import jexam.model.enums.Type;
+import jexam.service.DataService;
+import jexam.service.EventService;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -43,7 +43,7 @@ public class mainContentController {
     public Button addNewChild;
 
     @FXML
-    public TextField txtName;
+    public TextField parentName;
 
     @FXML
     public VBox formTasks;
@@ -56,13 +56,13 @@ public class mainContentController {
         loadContent();
 
         // Dynamically change the width of the TextField
-        txtName.textProperty().addListener((obs, oldText, newText) -> {
+        parentName.textProperty().addListener((obs, oldText, newText) -> {
             Text text = new Text(newText);
-            text.setFont(txtName.getFont());
+            text.setFont(parentName.getFont());
             double width = text.getLayoutBounds().getWidth() + 20; // +Padding
             double minWidth = 100;
-            txtName.setMinWidth(Math.max(minWidth, width));
-            txtName.setMaxWidth(Math.max(minWidth, width));
+            parentName.setMinWidth(Math.max(minWidth, width));
+            parentName.setMaxWidth(Math.max(minWidth, width));
         });
 
         addNewChild.setOnAction(e -> {
@@ -119,7 +119,7 @@ public class mainContentController {
 
     private void loadTaskContent(Task task) {
         // Update Form Content
-        txtName.setText(task.getName());
+        parentName.setText(task.getName());
         changeLabel.setText("Change Chapter Name");
 
         // Create Radio Menus for Scope and Difficulty
@@ -135,7 +135,7 @@ public class mainContentController {
         // Row Content
         List<Variant> variants = task.getVariants();
         for(Variant variant : variants) {
-            tableContent.getChildren().add(variantRow(variant, variants.size()));
+            tableContent.getChildren().add(createVariantComponent(variant, variants.size()));
         }
     }
 
@@ -276,7 +276,7 @@ public class mainContentController {
         return textArea;
     }
 
-    private VBox variantRow(Variant variant, int size) {
+    private VBox createVariantComponent(Variant variant, int numRows) {
         VBox row = new VBox();
         row.setSpacing(10);
 
@@ -304,7 +304,7 @@ public class mainContentController {
         });
 
         // Delete Button
-        if (size > 1) {
+        if (numRows > 1) {
             Button deleteBtn = getDeleteVariantButton(variant, row);
             question.getChildren().addAll(growing(), deleteBtn);
         }
@@ -318,7 +318,7 @@ public class mainContentController {
     }
 
     private Button getDeleteVariantButton(Variant variant, VBox row) {
-        Button deleteBtn = getDeleteButton("Delete Variant");
+        Button deleteBtn = createDeleteButton("Delete Variant");
 
         deleteBtn.setOnAction(event -> {
             // Confirmation Dialog
@@ -333,16 +333,16 @@ public class mainContentController {
         return deleteBtn;
     }
 
-    private void loadChapterContent(Chapter chapter, Integer width1, Integer width2) {
+    private void loadChapterContent(Chapter chapter, Integer col1Width, Integer col2Width) {
         // Update Form Content
-        txtName.setText(chapter.getName());
+        parentName.setText(chapter.getName());
         changeLabel.setText("Change Chapter Name");
 
         // Update Button Text
         addNewChild.setText("New Task");
 
         // Update chapterDetails
-        chapterDetails.getChildren().add(chapterRow(chapter));
+        chapterDetails.getChildren().add(createChapterComponent(chapter));
 
         // Loading the Header
         HBox header = new HBox();
@@ -350,12 +350,12 @@ public class mainContentController {
 
         Label name = new Label("Name");
         name.getStyleClass().add("fw-bold");
-        name.setMinWidth(width1);
+        name.setMinWidth(col1Width);
         header.getChildren().add(name);
 
         Label amounts = new Label("Amounts");
         amounts.getStyleClass().add("fw-bold");
-        amounts.setMinWidth(width2);
+        amounts.setMinWidth(col2Width);
         header.getChildren().add(amounts);
 
         Label scope = new Label("Scope");
@@ -371,13 +371,13 @@ public class mainContentController {
         // Loading the rows
         int index = 0;
         for (Task task : chapter.getTasks()) {
-            tableContent.getChildren().add(taskRow(task, index, width1, width2));
+            tableContent.getChildren().add(createTaskComponent(task, index, col1Width, col2Width));
             index++;
         }
 
     }
 
-    private HBox taskRow(Task task, int index, Integer width1, Integer width2) {
+    private HBox createTaskComponent(Task task, int index, Integer width1, Integer width2) {
         HBox row = new HBox();
         row.setSpacing(10);
 
@@ -406,7 +406,7 @@ public class mainContentController {
         row.getChildren().add(difficulty);
 
         // Edit Button
-        Button editBtn = getEditButton("Edit Task");
+        Button editBtn = createEditButton("Edit Task");
 
         editBtn.setOnAction(event -> {
             DataService dataService = App.getDataService(); // Get the DataService
@@ -424,7 +424,7 @@ public class mainContentController {
     }
 
     private Button getDeleteTaskButton(Task task, HBox row) {
-        Button deleteBtn = getDeleteButton("Delete Task");
+        Button deleteBtn = createDeleteButton("Delete Task");
 
         deleteBtn.setOnAction(event -> {
             // Confirmation Dialog
@@ -439,9 +439,9 @@ public class mainContentController {
         return deleteBtn;
     }
 
-    private void loadExamContent(Exam exam, Integer width1, Integer width2) {
+    private void loadExamContent(Exam exam, Integer col1Width, Integer col2Width) {
         // Update Form Content
-        txtName.setText(exam.getName());
+        parentName.setText(exam.getName());
         changeLabel.setText("Change Exam Name");
 
         // Update Button Text
@@ -453,12 +453,12 @@ public class mainContentController {
 
         Label name = new Label("Name");
         name.getStyleClass().add("fw-bold");
-        name.setMinWidth(width1);
+        name.setMinWidth(col1Width);
         header.getChildren().add(name);
 
         Label amounts = new Label("Amounts");
         amounts.getStyleClass().add("fw-bold");
-        amounts.setMinWidth(width2);
+        amounts.setMinWidth(col2Width);
         header.getChildren().add(amounts);
 
         Label difficulty = new Label("Difficulty");
@@ -470,16 +470,16 @@ public class mainContentController {
         // Loading the rows
         int index = 0;
         for (Chapter chapter : exam.getChapters()) {
-            tableContent.getChildren().add(chapterRow(chapter, index, width1, width2));
+            tableContent.getChildren().add(createChapterComponent(chapter, index, col1Width, col2Width));
             index++;
         }
     }
 
-    private HBox chapterRow(Chapter chapter) {
-        return chapterRow(chapter, 0, 200, 320);
+    private HBox createChapterComponent(Chapter chapter) {
+        return createChapterComponent(chapter, 0, 200, 320);
     }
 
-    private HBox chapterRow(Chapter chapter, int index, Integer width1, Integer width2) {
+    private HBox createChapterComponent(Chapter chapter, int index, Integer width1, Integer width2) {
         HBox row = new HBox();
         row.setSpacing(10);
 
@@ -510,7 +510,7 @@ public class mainContentController {
         DataService dataService = App.getDataService(); // Get the DataService
         if (dataService.type == Type.EXAM) {
             // Edit Button
-            Button editBtn = getEditButton("Edit Task");
+            Button editBtn = createEditButton("Edit Task");
 
             editBtn.setOnAction(event -> {
                 dataService.selectedItem = chapter;
@@ -528,7 +528,7 @@ public class mainContentController {
     }
 
     private Button getDeleteChapterButton(Chapter chapter, HBox row) {
-        Button deleteBtn = getDeleteButton("Delete Chapter");
+        Button deleteBtn = createDeleteButton("Delete Chapter");
 
         deleteBtn.setOnAction(event -> {
             // Confirmation Dialog
@@ -613,7 +613,7 @@ public class mainContentController {
 
     //=== Buttons ===\\
 
-    private Button getEditButton(String toolTip) {
+    private Button createEditButton(String toolTip) {
         Button editBtn = new Button("✎"); // Icon als Text oder setze ein Image
         editBtn.setCursor(Cursor.HAND);
 
@@ -630,7 +630,7 @@ public class mainContentController {
         return editBtn;
     }
 
-    private Button getDeleteButton(String toolTip) {
+    private Button createDeleteButton(String toolTip) {
         Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
         deleteBtn.setCursor(Cursor.HAND);
 
@@ -652,7 +652,7 @@ public class mainContentController {
     public void save() {
         DataService dataService = App.getDataService(); // Get the DataService
 
-        dataService.selectedItem.setName(txtName.getText());
+        dataService.selectedItem.setName(parentName.getText());
 
         EventService.triggerPdfUpdate();
     }

@@ -1,11 +1,10 @@
-package dhbw.koehler.jexam.model;
+package jexam.model;
 
-import dhbw.koehler.jexam.model.enums.Difficulty;
+import jexam.model.enums.Difficulty;
 
 import java.util.*;
 
 public class Chapter extends Item{
-    private String name;
     private List<Task> tasks;
 
     public Chapter(String name) {
@@ -40,7 +39,7 @@ public class Chapter extends Item{
         return numberOfPoints;
     }
 
-    public List<Double> getPossiblePoints() {
+    public List<Double> getPossiblePointCombinations() {
         List<Double> points = new ArrayList<>();
         for (Task task : this.tasks) {
             points.add(task.getPoints());

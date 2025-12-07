@@ -1,8 +1,8 @@
-package dhbw.koehler.jexam.controller;
+package jexam.controller;
 
-import dhbw.koehler.jexam.App;
-import dhbw.koehler.jexam.service.DataService;
-import dhbw.koehler.jexam.service.EventService;
+import jexam.App;
+import jexam.service.DataService;
+import jexam.service.EventService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
@@ -26,8 +26,6 @@ public class tabXMLController {
     private TreeView<String> xmlTreeView;
 
     private mainContentController mainContentController;
-
-    public tabXMLController() {}
 
     @FXML
     public void initialize() {

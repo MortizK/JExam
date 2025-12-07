@@ -1,10 +1,9 @@
-package dhbw.koehler.jexam.model;
+package jexam.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Exam extends Item {
-    private String name;
     private List<Chapter> chapters;
 
     public Exam(String name) {

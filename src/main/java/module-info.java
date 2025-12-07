@@ -6,7 +6,7 @@ module dhbw.koehler.jexam {
     requires org.kordamp.bootstrapfx.core;
     requires javafx.graphics;
 
-    opens dhbw.koehler.jexam to javafx.fxml;
-    opens dhbw.koehler.jexam.controller to javafx.fxml;
-    exports dhbw.koehler.jexam;
+    opens jexam to javafx.fxml;
+    opens jexam.controller to javafx.fxml;
+    exports jexam;
 }

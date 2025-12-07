@@ -1,4 +1,4 @@
-package dhbw.koehler.jexam.service;
+package jexam.service;
 
 public class EventService {
     private static Runnable onXmlUpdate;

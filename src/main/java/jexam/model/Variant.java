@@ -1,4 +1,4 @@
-package dhbw.koehler.jexam.model;
+package jexam.model;
 
 public class Variant extends Item {
 

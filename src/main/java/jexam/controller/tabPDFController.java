@@ -1,9 +1,9 @@
-package dhbw.koehler.jexam.controller;
+package jexam.controller;
 
-import dhbw.koehler.jexam.App;
-import dhbw.koehler.jexam.model.Chapter;
-import dhbw.koehler.jexam.service.DataService;
-import dhbw.koehler.jexam.service.EventService;
+import jexam.App;
+import jexam.model.Chapter;
+import jexam.service.DataService;
+import jexam.service.EventService;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -98,7 +98,7 @@ public class tabPDFController {
 
         Label chapterName = new Label(chapter.getName());
 
-        MenuButton pointsDropDown = createPointsMenuButton(chapter.getPossiblePoints()); // FEATURE MISSING: these points should be saved on this Tab
+        MenuButton pointsDropDown = createPointsMenuButton(chapter.getPossiblePointCombinations()); // FEATURE MISSING: these points should be saved on this Tab
         pointsDropDown.getStyleClass().addAll("btn", "btn-secondary", "btn-sm");
 
         Button btnUp = new Button("UP");

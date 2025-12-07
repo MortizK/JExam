@@ -1,13 +1,12 @@
-package dhbw.koehler.jexam.model;
+package jexam.model;
 
-import dhbw.koehler.jexam.model.enums.Difficulty;
-import dhbw.koehler.jexam.model.enums.Scope;
+import jexam.model.enums.Difficulty;
+import jexam.model.enums.Scope;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Task extends Item{
-    private String name;
     private List<Variant> variants;
     private Double points;
     private Difficulty difficulty;

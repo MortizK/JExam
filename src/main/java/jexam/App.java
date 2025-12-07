@@ -1,11 +1,10 @@
-package dhbw.koehler.jexam;
+package jexam;
 
-import dhbw.koehler.jexam.service.DataService;
+import jexam.service.DataService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.kordamp.bootstrapfx.BootstrapFX;
 
 import java.util.Objects;
 

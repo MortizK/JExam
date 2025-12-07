@@ -1,4 +1,4 @@
-package dhbw.koehler.jexam.model.enums;
+package jexam.model.enums;
 
 public enum Type {
     EXAM,

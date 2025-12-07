@@ -7,7 +7,7 @@
 <?import javafx.geometry.Insets?>
 <SplitPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           fx:controller="dhbw.koehler.jexam.controller.tabXMLController">
+           fx:controller="jexam.controller.tabXMLController">
 
     <!-- Sidebar -->
     <VBox spacing="10" prefWidth="240">

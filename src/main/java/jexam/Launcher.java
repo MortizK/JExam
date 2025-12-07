@@ -1,4 +1,4 @@
-package dhbw.koehler.jexam;
+package jexam;
 
 import javafx.application.Application;
 

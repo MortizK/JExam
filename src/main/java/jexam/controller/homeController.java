@@ -1,11 +1,11 @@
-package dhbw.koehler.jexam.controller;
+package jexam.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import dhbw.koehler.jexam.service.EventService;
+import jexam.service.EventService;
 
 import java.io.IOException;
 

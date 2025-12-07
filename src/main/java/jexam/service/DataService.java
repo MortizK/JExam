@@ -1,7 +1,11 @@
-package dhbw.koehler.jexam.service;
+package jexam.service;
 
-import dhbw.koehler.jexam.model.*;
-import dhbw.koehler.jexam.model.enums.*;
+import jexam.model.*;
+import jexam.model.enums.*;
+import jexam.model.*;
+import jexam.model.enums.Difficulty;
+import jexam.model.enums.Scope;
+import jexam.model.enums.Type;
 
 import java.util.ArrayList;
 import java.util.List;
