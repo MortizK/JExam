@@ -18,13 +18,12 @@
             <String fx:value="padding-md"/>
         </styleClass>
 
-        <TextField fx:id="txtName" promptText="Chapter Name" maxWidth="100">
-            <styleClass>
-                <String fx:value="form-control"/>
-            </styleClass>
-        </TextField>
-
-        <HBox spacing="10">
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="txtName" promptText="Chapter Name" maxWidth="100">
+                <styleClass>
+                    <String fx:value="form-control"/>
+                </styleClass>
+            </TextField>
             <Button fx:id="btnSave" text="Save" onAction="#save">
                 <styleClass>
                     <String fx:value="btn"/>

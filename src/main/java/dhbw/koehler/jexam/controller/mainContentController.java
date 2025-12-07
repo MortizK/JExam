@@ -13,8 +13,10 @@ import dhbw.koehler.jexam.service.EventService;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -102,10 +104,10 @@ public class mainContentController {
 
         switch (dataService.type) {
             case EXAM:
-                loadExamContent((Exam) dataService.selectedItem);
+                loadExamContent((Exam) dataService.selectedItem, 200, 320);
                 break;
             case CHAPTER:
-                loadChapterContent((Chapter) dataService.selectedItem);
+                loadChapterContent((Chapter) dataService.selectedItem, 200, 220);
                 break;
             case TASK:
                 loadTaskContent((Task) dataService.selectedItem);
@@ -291,7 +293,7 @@ public class mainContentController {
         // Delete Button
         if (size > 1) {
             Button deleteBtn = getDeleteVariantButton(variant, row);
-            question.getChildren().add(deleteBtn);
+            question.getChildren().addAll(growing(), deleteBtn);
         }
 
         row.getChildren().addAll(
@@ -318,7 +320,7 @@ public class mainContentController {
         return deleteBtn;
     }
 
-    private void loadChapterContent(Chapter chapter) {
+    private void loadChapterContent(Chapter chapter, Integer width1, Integer width2) {
         // Update Form Content
         txtName.setText(chapter.getName());
 
@@ -326,61 +328,64 @@ public class mainContentController {
         addNewChild.setText("New Task");
 
         // Update chapterDetails
-        chapterDetails.getChildren().add(chapterRow(chapter, 0));
+        chapterDetails.getChildren().add(chapterRow(chapter));
 
         // Loading the Header
         HBox header = new HBox();
         header.setSpacing(10);
 
         Label name = new Label("Name");
-        name.setMinWidth(200);
+        name.setMinWidth(width1);
         header.getChildren().add(name);
 
         Label amounts = new Label("Amounts");
-        amounts.setMinWidth(100);
+        amounts.setMinWidth(width2);
         header.getChildren().add(amounts);
 
-        Label difficulty = new Label("Difficulty");
-        difficulty.setMinWidth(50);
-        header.getChildren().add(difficulty);
-
         Label scope = new Label("Scope");
-        scope.setMinWidth(50);
         header.getChildren().add(scope);
+
+        Label difficulty = new Label("Difficulty");
+        header.getChildren().add(difficulty);
 
         tableHeader.getChildren().add(header);
 
         // Loading the rows
         int index = 0;
         for (Task task : chapter.getTasks()) {
-            tableContent.getChildren().add(taskRow(task, index));
+            tableContent.getChildren().add(taskRow(task, index, width1, width2));
             index++;
         }
 
     }
 
-    private HBox taskRow(Task task, int index) {
+    private HBox taskRow(Task task, int index, Integer width1, Integer width2) {
         HBox row = new HBox();
         row.setSpacing(10);
 
         // Name
         Label taskName = new Label(task.getName());
-        taskName.setMinWidth(200);
+        taskName.setMinWidth(width1);
         row.getChildren().add(taskName);
 
         // Amounts (2 Labels in 1 column)
-        row.getChildren().addAll(
+        HBox amounts = new HBox(10);
+        amounts.getChildren().addAll(
                 createChip(task.getNumberOfVariants().toString(), "Variants - ", ""),
                 createChip(task.getPoints().toString(), "Points - ", "")
         );
+        amounts.setMinWidth(width2);
+        row.getChildren().add(amounts);
 
         // Difficulty & Scope
+        HBox difficulty = new HBox(10);
         String scopeStyle = "chip-" + task.getScope().toString().toLowerCase();
         String difficultyStyle = "chip-" + task.getDifficulty().toString().toLowerCase();
-        row.getChildren().addAll(
+        difficulty.getChildren().addAll(
                 createChip(task.getFormatedScope(), "", scopeStyle),
                 createChip(task.getFormatedDifficulty(), "", difficultyStyle)
         );
+        row.getChildren().add(difficulty);
 
         // Edit Button
         Button editBtn = getEditButton("Edit Task");
@@ -392,11 +397,10 @@ public class mainContentController {
             EventService.triggerPdfUpdate();
         });
 
-        row.getChildren().add(editBtn);
-
         // Delete Button
         Button deleteBtn = getDeleteTaskButton(task, row);
-        row.getChildren().add(deleteBtn);
+
+        row.getChildren().addAll(growing(), editBtn, deleteBtn);
 
         return  row;
     }
@@ -417,7 +421,7 @@ public class mainContentController {
         return deleteBtn;
     }
 
-    private void loadExamContent(Exam exam) {
+    private void loadExamContent(Exam exam, Integer width1, Integer width2) {
         // Update Form Content
         txtName.setText(exam.getName());
 
@@ -429,50 +433,58 @@ public class mainContentController {
         header.setSpacing(10);
 
         Label name = new Label("Name");
-        name.setMinWidth(200);
+        name.setMinWidth(width1);
         header.getChildren().add(name);
 
         Label amounts = new Label("Amounts");
-        amounts.setMinWidth(150);
+        amounts.setMinWidth(width2);
         header.getChildren().add(amounts);
 
-        Label questions = new Label("Questions");
-        questions.setMinWidth(150);
-        header.getChildren().add(questions);
+        Label difficulty = new Label("Difficulty");
+        header.getChildren().add(difficulty);
 
         tableHeader.getChildren().add(header);
 
         // Loading the rows
         int index = 0;
         for (Chapter chapter : exam.getChapters()) {
-            tableContent.getChildren().add(chapterRow(chapter, index));
+            tableContent.getChildren().add(chapterRow(chapter, index, width1, width2));
             index++;
         }
     }
 
-    private HBox chapterRow(Chapter chapter, int index) {
+    private HBox chapterRow(Chapter chapter) {
+        return chapterRow(chapter, 0, 200, 320);
+    }
+
+    private HBox chapterRow(Chapter chapter, int index, Integer width1, Integer width2) {
         HBox row = new HBox();
         row.setSpacing(10);
 
         // Name
         Label chapterName = new Label(chapter.getName());
-        chapterName.setMinWidth(200);
+        chapterName.setMinWidth(width1);
         chapterName.getStyleClass().add("fw-bold");
         row.getChildren().add(chapterName);
 
         // Amounts (3 Labels in 1 column)
-        row.getChildren().addAll(
+        HBox amounts = new HBox(10);
+        amounts.getChildren().addAll(
                 createChip(chapter.getNumberOfTasks().toString(), "Tasks - ", ""),
                 createChip(chapter.getNumberOfVariants().toString(), "Variants - ", ""),
                 createChip(chapter.getNumberOfPoints().toString(), "Points - ", "")
         );
+        amounts.setMinWidth(width2);
+        row.getChildren().add(amounts);
 
         // Difficulty (3 Labels in 1 column)
-        row.getChildren().addAll(
+        HBox difficulty = new HBox(10);
+        difficulty.getChildren().addAll(
                 createChip(chapter.getNumberOfDifficultyTasks(Difficulty.EASY).toString(), "Easy - ", "chip-easy"),
                 createChip(chapter.getNumberOfDifficultyTasks(Difficulty.MEDIUM).toString(), "Medium - ", "chip-medium"),
                 createChip(chapter.getNumberOfDifficultyTasks(Difficulty.HARD).toString(), "Hard - ", "chip-hard")
         );
+        row.getChildren().add(difficulty);
 
         DataService dataService = App.getDataService(); // Get the DataService
         if (dataService.type == Type.EXAM) {
@@ -485,11 +497,10 @@ public class mainContentController {
                 EventService.triggerPdfUpdate();
             });
 
-            row.getChildren().add(editBtn);
-
             // Delete Button
             Button deleteBtn = getDeleteChapterButton(chapter, row);
-            row.getChildren().add(deleteBtn);
+
+            row.getChildren().addAll(growing(), editBtn, deleteBtn);
         }
 
         return row;
@@ -509,6 +520,12 @@ public class mainContentController {
             });
         });
         return deleteBtn;
+    }
+
+    private HBox growing() {
+        HBox grow = new HBox();
+        HBox.setHgrow(grow, Priority.ALWAYS);
+        return grow;
     }
 
     //=== Chip ===\\
