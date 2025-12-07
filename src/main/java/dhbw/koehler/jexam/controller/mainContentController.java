@@ -50,6 +50,16 @@ public class mainContentController {
     public void initialize() {
         loadContent();
 
+        // Dynamically change the width of the TextField
+        txtName.textProperty().addListener((obs, oldText, newText) -> {
+            Text text = new Text(newText);
+            text.setFont(txtName.getFont());
+            double width = text.getLayoutBounds().getWidth() + 20; // +Padding
+            double minWidth = 100;
+            txtName.setMinWidth(Math.max(minWidth, width));
+            txtName.setMaxWidth(Math.max(minWidth, width));
+        });
+
         addNewChild.setOnAction(e -> {
            createNewChild();
         });
@@ -234,6 +244,7 @@ public class mainContentController {
         label.setId("pointsLabel");
 
         HBox container = new HBox(10);
+        container.setAlignment(Pos.CENTER_LEFT);
         container.getChildren().addAll(label, pointSpinner);
 
         return container;

@@ -8,20 +8,17 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="dhbw.koehler.jexam.controller.mainContentController"
       spacing="20">
-
     <styleClass>
         <String fx:value="padding-md"/>
     </styleClass>
 
     <!-- Form -->
-    <VBox fx:id="form">
+    <VBox fx:id="form" spacing="10">
         <styleClass>
-            <String fx:value="panel"/>
-            <String fx:value="panel-default"/>
             <String fx:value="padding-md"/>
         </styleClass>
 
-        <TextField fx:id="txtName" promptText="Chapter Name">
+        <TextField fx:id="txtName" promptText="Chapter Name" maxWidth="100">
             <styleClass>
                 <String fx:value="form-control"/>
             </styleClass>
@@ -48,8 +45,6 @@
     <!-- Chapter Details -->
     <VBox fx:id="chapterDetails" spacing="15">
         <styleClass>
-            <String fx:value="panel"/>
-            <String fx:value="panel-default"/>
             <String fx:value="padding-md"/>
         </styleClass>
     </VBox>

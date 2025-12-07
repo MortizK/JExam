@@ -4,38 +4,40 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.geometry.Insets?>
 <SplitPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="dhbw.koehler.jexam.controller.tabXMLController">
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="dhbw.koehler.jexam.controller.tabXMLController">
 
-    <items>
-        <!-- Sidebar -->
-        <VBox spacing="10" prefWidth="240">
+    <!-- Sidebar -->
+    <VBox spacing="10" prefWidth="240">
+        <styleClass>
+            <String fx:value="panel"/>
+            <String fx:value="panel-default"/>
+            <String fx:value="padding-md"/>
+        </styleClass>
+
+        <TreeView fx:id="xmlTreeView" VBox.vgrow="ALWAYS">
             <styleClass>
-                <String fx:value="panel"/>
-                <String fx:value="panel-default"/>
-                <String fx:value="padding-md"/>
+                <String fx:value="list-group"/>
             </styleClass>
+        </TreeView>
 
-            <TreeView fx:id="xmlTreeView" VBox.vgrow="ALWAYS">
-                <styleClass>
-                    <String fx:value="list-group"/>
-                </styleClass>
-            </TreeView>
+    </VBox>
 
-        </VBox>
+    <!-- Main Content -->
+    <VBox spacing="10">
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+        <styleClass>
+            <String fx:value="panel"/>
+            <String fx:value="panel-default"/>
+            <String fx:value="padding-md"/>
+            <String fx:value="bg-white"/>
+        </styleClass>
 
-        <!-- Main Content -->
-        <VBox spacing="10">
-            <styleClass>
-                <String fx:value="panel"/>
-                <String fx:value="panel-default"/>
-                <String fx:value="padding-md"/>
-                <String fx:value="bg-white"/>
-            </styleClass>
-
-            <HBox fx:id="breadCrumbs" spacing="8"/>
-            <VBox fx:id="xmlMainContent" VBox.vgrow="ALWAYS"/>
-        </VBox>
-    </items>
+        <HBox fx:id="breadCrumbs" spacing="8"/>
+        <VBox fx:id="xmlMainContent" VBox.vgrow="ALWAYS"/>
+    </VBox>
 </SplitPane>
