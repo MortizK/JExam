@@ -11,6 +11,7 @@ import dhbw.koehler.jexam.model.enums.Type;
 import dhbw.koehler.jexam.service.DataService;
 import dhbw.koehler.jexam.service.EventService;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -117,9 +118,11 @@ public class mainContentController {
         txtName.setText(task.getName());
 
         // Create Radio Menus for Scope and Difficulty
-        formTasks.getChildren().add(createScopeRadioButtons(task));
-        formTasks.getChildren().add(createDifficultyRadioButtons(task));
-        formTasks.getChildren().add(createEditPoints(task));
+        formTasks.getChildren().addAll(
+                createScopeRadioButtons(task),
+                createDifficultyRadioButtons(task),
+                createEditPoints(task)
+        );
 
         // Update Button Text
         addNewChild.setText("New Variant");
@@ -130,16 +133,14 @@ public class mainContentController {
             tableContent.getChildren().add(variantRow(variant, variants.size()));
         }
     }
+
     private HBox createScopeRadioButtons(Task task) {
 
         String scopeBaseId = "scopeRadio";
 
         // RadioButtons
-        RadioButton rbExam = new RadioButton("Exam");
-        rbExam.setId(scopeBaseId + "Exam");
-
-        RadioButton rbMock = new RadioButton("Mock");
-        rbMock.setId(scopeBaseId + "Mock");
+        ToggleButton rbExam = createRadioChip("Exam", "chip-exam-radio");
+        ToggleButton rbMock = createRadioChip("Mock", "chip-mock-radio");
 
         // ToggleGroup
         ToggleGroup group = new ToggleGroup();
@@ -158,7 +159,7 @@ public class mainContentController {
         group.selectedToggleProperty().addListener((obs, old, selected) -> {
             if (selected == null || task == null) return;
 
-            RadioButton rb = (RadioButton) selected;
+            ToggleButton rb = (ToggleButton) selected;
             String text = rb.getText();
 
             switch (text) {
@@ -179,14 +180,9 @@ public class mainContentController {
         String baseId = "difficultyRadio";
 
         // RadioButtons
-        RadioButton rbEasy = new RadioButton("Easy");
-        rbEasy.setId(baseId + "Easy");
-
-        RadioButton rbMedium = new RadioButton("Medium");
-        rbMedium.setId(baseId + "Medium");
-
-        RadioButton rbHard = new RadioButton("Hard");
-        rbHard.setId(baseId + "Hard");
+        ToggleButton rbEasy = createRadioChip("Easy", "chip-easy-radio");
+        ToggleButton rbMedium = createRadioChip("Medium", "chip-medium-radio");
+        ToggleButton rbHard = createRadioChip("Hard", "chip-hard-radio");
 
         // ToggleGroup
         ToggleGroup group = new ToggleGroup();
@@ -207,7 +203,7 @@ public class mainContentController {
         group.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal == null || task == null) return;
 
-            RadioButton rb = (RadioButton) newVal;
+            ToggleButton rb = (ToggleButton) newVal;
             String text = rb.getText();
 
             switch (text) {
@@ -531,6 +527,19 @@ public class mainContentController {
         chip.setAlignment(Pos.CENTER);
         return chip;
     }
+
+    private ToggleButton createRadioChip(String text, String styleClass) {
+        ToggleButton rb = new ToggleButton(text);
+
+        rb.setId(text + "-radio");
+
+        rb.getStyleClass().addAll("chip", "chip-radio", styleClass);
+
+        rb.setPadding(new Insets(2, 10, 2, 10));
+
+        return rb;
+    }
+
 
     //=== Alert ===\\
 
