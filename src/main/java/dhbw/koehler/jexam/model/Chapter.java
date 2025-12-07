@@ -2,8 +2,7 @@ package dhbw.koehler.jexam.model;
 
 import dhbw.koehler.jexam.model.enums.Difficulty;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Chapter extends Item{
     private String name;
@@ -43,18 +42,32 @@ public class Chapter extends Item{
 
     public List<Double> getPossiblePoints() {
         List<Double> points = new ArrayList<>();
-
         for (Task task : this.tasks) {
             points.add(task.getPoints());
         }
 
         if (points.isEmpty()) {
             points.add(0.0);
+            return points;
         }
 
-        // FEATURE MISSING: needs to be the sorted combinatoric of all possible point combinations
+        // Working with Sets to avoid duplicates
+        Set<Double> possiblePointsSet = new HashSet<>();
+        possiblePointsSet.add(0.0);
 
-        return points;
+        for (Double p : points) {
+            Set<Double> newSums = new HashSet<>();
+            for (Double existingSum : possiblePointsSet) {
+                newSums.add(existingSum + p);
+            }
+            possiblePointsSet.addAll(newSums);
+        }
+
+        // Sorting
+        List<Double> possiblePoints = new ArrayList<>(possiblePointsSet);
+        possiblePoints.removeFirst(); // Removing the Zero
+        Collections.sort(possiblePoints);
+        return possiblePoints;
     }
 
     // Variants
