@@ -13,12 +13,25 @@ public class homeController {
     public Tab tabXML;
     public Tab tabPDF;
     public TabPane mainTabPane;
+    public TabPane tabHeaderPane;
     @FXML SplitPane xmlBorderPane;
     @FXML SplitPane pdfBorderPane;
 
     public void initialize() {
         loadXMLTabContent();
         loadPDFTabContent();
+
+        // Cross Update the different Tab Buttons
+        tabHeaderPane.getSelectionModel().selectedIndexProperty().addListener((obs, oldIndex, newIndex) -> {
+            if (newIndex != null && newIndex.intValue() >= 0) {
+                mainTabPane.getSelectionModel().select(newIndex.intValue());
+            }
+        });
+        mainTabPane.getSelectionModel().selectedIndexProperty().addListener((obs, oldIndex, newIndex) -> {
+            if (newIndex != null && newIndex.intValue() >= 0) {
+                tabHeaderPane.getSelectionModel().select(newIndex.intValue());
+            }
+        });
 
         // Event Listener to update the Tabs, when unloaded
         mainTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {

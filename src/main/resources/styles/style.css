@@ -37,3 +37,11 @@
     -fx-border-color: #f5c6cb;
     -fx-text-fill: #721c24;
 }
+
+.tab-hide-header.tab-pane .tab-header-area {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-max-height: 0;
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+}
