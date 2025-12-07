@@ -102,6 +102,11 @@ public class tabXMLController {
             linkLabel.getStyleClass().addAll("text-primary");
             linkLabel.setCursor(Cursor.HAND);
 
+            if (i == breadcrumbNames.size() - 1) {
+                linkLabel.getStyleClass().remove("text-primary");
+                linkLabel.getStyleClass().add("breadcrumb-active");
+            }
+
             final int index = i;
             linkLabel.setOnMouseClicked(e -> {
                 List<Integer> newPath = path.subList(0, index);

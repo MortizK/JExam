@@ -18,8 +18,7 @@ public class App extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/home.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
-        scene.getStylesheets().addAll(
-                BootstrapFX.bootstrapFXStylesheet(),
+        scene.getStylesheets().add(
                 Objects.requireNonNull(getClass().getResource("/styles/style.css")).toExternalForm()
         );
         stage.setTitle("JExam");

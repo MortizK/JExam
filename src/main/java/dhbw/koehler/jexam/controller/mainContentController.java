@@ -13,18 +13,17 @@ import dhbw.koehler.jexam.service.EventService;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
+import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Box;
 import javafx.scene.text.Text;
-import org.kordamp.bootstrapfx.BootstrapFX;
 
 import java.util.List;
+import java.util.Objects;
 
 public class mainContentController {
 
@@ -48,6 +47,9 @@ public class mainContentController {
 
     @FXML
     public VBox formTasks;
+
+    @FXML
+    public Label changeLabel;
 
     @FXML
     public void initialize() {
@@ -118,6 +120,7 @@ public class mainContentController {
     private void loadTaskContent(Task task) {
         // Update Form Content
         txtName.setText(task.getName());
+        changeLabel.setText("Change Chapter Name");
 
         // Create Radio Menus for Scope and Difficulty
         formTasks.getChildren().addAll(
@@ -136,7 +139,7 @@ public class mainContentController {
         }
     }
 
-    private HBox createScopeRadioButtons(Task task) {
+    private VBox createScopeRadioButtons(Task task) {
 
         String scopeBaseId = "scopeRadio";
 
@@ -174,10 +177,15 @@ public class mainContentController {
         HBox scopeBox = new HBox(10);
         scopeBox.getChildren().addAll(rbExam, rbMock);
 
-        return scopeBox;
+        VBox scopeHeading = new VBox(10);
+        Label heading = new Label("Select Scope");
+        heading.getStyleClass().add("fw-bold");
+        scopeHeading.getChildren().addAll(heading, scopeBox);
+
+        return scopeHeading;
     }
 
-    private HBox createDifficultyRadioButtons(Task task) {
+    private VBox createDifficultyRadioButtons(Task task) {
 
         String baseId = "difficultyRadio";
 
@@ -216,13 +224,18 @@ public class mainContentController {
         });
 
         // Layout
-        HBox box = new HBox(10);
-        box.getChildren().addAll(rbEasy, rbMedium, rbHard);
+        HBox difficultyBox = new HBox(10);
+        difficultyBox.getChildren().addAll(rbEasy, rbMedium, rbHard);
 
-        return box;
+        VBox difficultyHeading = new VBox(10);
+        Label heading = new Label("Select Difficulty");
+        heading.getStyleClass().add("fw-bold");
+        difficultyHeading.getChildren().addAll(heading, difficultyBox);
+
+        return difficultyHeading;
     }
 
-    private HBox createEditPoints(Task task) {
+    private VBox createEditPoints(Task task) {
 
         Double currentPoints = task != null ? task.getPoints() : 0.0;
 
@@ -238,14 +251,12 @@ public class mainContentController {
             }
         });
 
-        Label label = new Label("Points:");
-        label.setId("pointsLabel");
+        VBox pointsHeading = new VBox(10);
+        Label heading = new Label("Enter Points");
+        heading.getStyleClass().add("fw-bold");
+        pointsHeading.getChildren().addAll(heading, pointSpinner);
 
-        HBox container = new HBox(10);
-        container.setAlignment(Pos.CENTER_LEFT);
-        container.getChildren().addAll(label, pointSpinner);
-
-        return container;
+        return pointsHeading;
     }
 
     private double getHeight(TextArea textArea, String newText) {
@@ -273,6 +284,7 @@ public class mainContentController {
         HBox question = new HBox();
         question.setAlignment(Pos.CENTER_LEFT);
         Label questionHeader = new Label("Question:");
+        questionHeader.getStyleClass().add("fw-bold");
         question.getChildren().add(questionHeader);
         TextArea questionArea = createTextArea(variant.getQuestion());
 
@@ -283,6 +295,7 @@ public class mainContentController {
 
         // Answer
         Label answerHeader = new Label("Answer:");
+        answerHeader.getStyleClass().add("fw-bold");
         TextArea answerArea = createTextArea(variant.getAnswer());
 
         answerArea.textProperty().addListener((obs, oldText, newText) -> {
@@ -310,7 +323,7 @@ public class mainContentController {
         deleteBtn.setOnAction(event -> {
             // Confirmation Dialog
             showAlert("Delete Variant",
-                    "Are you sure you want to delete variant \"" + variant.getName() + "\"?",
+                    "You are about to delete variant \"" + variant.getName() + "\"?",
                     () -> {
                         ((Task) App.getDataService().selectedItem).deleteVariant(variant);
                         tableContent.getChildren().remove(row);
@@ -323,6 +336,7 @@ public class mainContentController {
     private void loadChapterContent(Chapter chapter, Integer width1, Integer width2) {
         // Update Form Content
         txtName.setText(chapter.getName());
+        changeLabel.setText("Change Chapter Name");
 
         // Update Button Text
         addNewChild.setText("New Task");
@@ -335,17 +349,21 @@ public class mainContentController {
         header.setSpacing(10);
 
         Label name = new Label("Name");
+        name.getStyleClass().add("fw-bold");
         name.setMinWidth(width1);
         header.getChildren().add(name);
 
         Label amounts = new Label("Amounts");
+        amounts.getStyleClass().add("fw-bold");
         amounts.setMinWidth(width2);
         header.getChildren().add(amounts);
 
         Label scope = new Label("Scope");
+        scope.getStyleClass().add("fw-bold");
         header.getChildren().add(scope);
 
         Label difficulty = new Label("Difficulty");
+        difficulty.getStyleClass().add("fw-bold");
         header.getChildren().add(difficulty);
 
         tableHeader.getChildren().add(header);
@@ -411,7 +429,7 @@ public class mainContentController {
         deleteBtn.setOnAction(event -> {
             // Confirmation Dialog
             showAlert("Delete Task",
-                    "Are you sure you want to delete task \"" + task.getName() + "\" with all its Variants?",
+                    "You are about to delete task \"" + task.getName() + "\" with all its Variants?",
                     () -> {
                         ((Chapter) App.getDataService().selectedItem).deleteTask(task);
                         tableContent.getChildren().remove(row);
@@ -424,6 +442,7 @@ public class mainContentController {
     private void loadExamContent(Exam exam, Integer width1, Integer width2) {
         // Update Form Content
         txtName.setText(exam.getName());
+        changeLabel.setText("Change Exam Name");
 
         // Update Button Text
         addNewChild.setText("New Chapter");
@@ -433,14 +452,17 @@ public class mainContentController {
         header.setSpacing(10);
 
         Label name = new Label("Name");
+        name.getStyleClass().add("fw-bold");
         name.setMinWidth(width1);
         header.getChildren().add(name);
 
         Label amounts = new Label("Amounts");
+        amounts.getStyleClass().add("fw-bold");
         amounts.setMinWidth(width2);
         header.getChildren().add(amounts);
 
         Label difficulty = new Label("Difficulty");
+        difficulty.getStyleClass().add("fw-bold");
         header.getChildren().add(difficulty);
 
         tableHeader.getChildren().add(header);
@@ -464,7 +486,6 @@ public class mainContentController {
         // Name
         Label chapterName = new Label(chapter.getName());
         chapterName.setMinWidth(width1);
-        chapterName.getStyleClass().add("fw-bold");
         row.getChildren().add(chapterName);
 
         // Amounts (3 Labels in 1 column)
@@ -512,7 +533,7 @@ public class mainContentController {
         deleteBtn.setOnAction(event -> {
             // Confirmation Dialog
             showAlert("Delete Chapter",
-                    "Are you sure you want to delete chapter \"" + chapter.getName() + "\" with all its Task and their Variants?",
+                    "You are about to delete chapter \"" + chapter.getName() + "\" with all its Task and their Variants?",
                     () -> {
                 ((Exam) App.getDataService().selectedItem).deleteChapter(chapter);
                 tableContent.getChildren().remove(row);
@@ -569,10 +590,11 @@ public class mainContentController {
 
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.getStylesheets().add(
-                BootstrapFX.bootstrapFXStylesheet());
+                Objects.requireNonNull(getClass().getResource("/styles/style.css")).toExternalForm()
+        );
 
-        ButtonType yesButton = new ButtonType("Yes/ Delete", ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelButton = new ButtonType("No/ Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType yesButton = new ButtonType("Delete", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(yesButton, cancelButton);
 
         Button yesBtn = (Button) dialogPane.lookupButton(yesButton);
@@ -593,6 +615,7 @@ public class mainContentController {
 
     private Button getEditButton(String toolTip) {
         Button editBtn = new Button("✎"); // Icon als Text oder setze ein Image
+        editBtn.setCursor(Cursor.HAND);
 
         editBtn.setStyle("-fx-background-color: transparent;");
 
@@ -609,6 +632,7 @@ public class mainContentController {
 
     private Button getDeleteButton(String toolTip) {
         Button deleteBtn = new Button("🗑"); // Icon als Text oder setze ein Image
+        deleteBtn.setCursor(Cursor.HAND);
 
         deleteBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: red;");
 

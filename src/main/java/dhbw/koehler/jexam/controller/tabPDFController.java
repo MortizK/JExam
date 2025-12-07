@@ -64,7 +64,7 @@ public class tabPDFController {
         pdfSidebar.getChildren().clear();
 
         Label include = new Label("Change Order of the Chapters:");
-        include.getStyleClass().addAll("h5", "mb-3");
+        include.getStyleClass().addAll("h5", "mb-3", "fw-bold");
 
         pdfSidebar.getChildren().add(include);
 
@@ -87,7 +87,7 @@ public class tabPDFController {
 
     private void addCutOff() {
         Label cutOffLabel = new Label("Exclude from PDF generation:");
-        cutOffLabel.getStyleClass().addAll("h5", "mb-2");
+        cutOffLabel.getStyleClass().addAll("h5", "mb-2", "fw-bold");
         pdfSidebar.getChildren().add(cutOffLabel);
     }
 
@@ -97,7 +97,6 @@ public class tabPDFController {
         row.setAlignment(Pos.CENTER_LEFT);
 
         Label chapterName = new Label(chapter.getName());
-        chapterName.getStyleClass().addAll("fw-bold");
 
         MenuButton pointsDropDown = createPointsMenuButton(chapter.getPossiblePoints()); // FEATURE MISSING: these points should be saved on this Tab
         pointsDropDown.getStyleClass().addAll("btn", "btn-secondary", "btn-sm");

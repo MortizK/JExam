@@ -45,3 +45,89 @@
     -fx-min-height: 0;
     -fx-pref-height: 0;
 }
+
+.btn {
+    -fx-font-size: 14px;
+    -fx-padding: 2 6 2 6;
+    -fx-background-radius: 3px;
+    -fx-border-radius: 3px;
+    -fx-border-width: 1px;
+    -fx-border-color: #aaa;
+    -fx-text-fill: #333;
+    -fx-background-color: #e0e0e0;
+    -fx-cursor: hand;
+}
+
+.menu-button {
+    -fx-padding: 0;
+}
+
+.menu-button > .label {
+    -fx-padding: 2 6 2 6;
+}
+
+.btn:hover, .btn:focused, .btn:selected {
+    -fx-background-color: #d5d5d5;
+    -fx-border-color: #888;
+}
+
+.btn-danger {
+    -fx-text-fill: #c0392b;
+}
+
+.btn-danger:hover, .btn-danger:focused, .btn-danger:selected {
+    -fx-background-color: #f5c6cb;
+}
+
+.btn-success {
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+    -fx-border-color: #28a745;
+}
+
+.btn-success:hover,
+.btn-success:focused,
+.btn-success:armed {
+    -fx-background-color: #218838;
+}
+
+.fw-bold {
+    -fx-font-weight: bold;
+}
+
+.panel-body.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.panel-body .viewport {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.panel-body .content {
+    -fx-background-color: transparent;
+}
+
+.breadcrumbs {
+    -fx-padding: 4 8 4 8;
+    -fx-background-color: transparent;
+    -fx-font-size: 12px;
+}
+
+.text-primary {
+    -fx-text-fill: #007bff;
+}
+
+.text-primary:hover {
+    -fx-text-fill: #0056b3;
+    -fx-cursor: hand;
+}
+
+.text-muted {
+    -fx-text-fill: #6c757d;
+}
+
+.breadcrumbs .breadcrumb-active {
+    -fx-text-fill: #495057;
+}

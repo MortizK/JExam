@@ -15,6 +15,9 @@
               style="-fx-padding: 5; -fx-background-color: -fx-base;">
 
             <MenuButton text="Files" fx:id="menuFiles">
+                <styleClass>
+                    <String fx:value="btn"/>
+                </styleClass>
                 <items>
                     <MenuItem text="New" fx:id="menuItemNew"/>
                     <MenuItem text="Open" fx:id="menuItemOpen"/>
