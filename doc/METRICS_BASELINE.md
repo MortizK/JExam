@@ -50,3 +50,27 @@ After each refactoring batch:
 1. Run `mvn test`
 2. Run `mvn pmd:pmd`
 3. Compare violations in `target/pmd.xml` against this baseline.
+
+## Post-Refactoring Checkpoint (Phase Continuation)
+
+Date: 2026-04-01
+
+Executed:
+
+- `mvn test` (10/10 tests passed)
+- `mvn pmd:pmd` (build success)
+
+Delta vs baseline:
+
+1. `PdfBoxGenerationService.generate(Exam, GenerationMode, Path)`
+- Previous: cyclomatic complexity `11`
+- Current: no `CyclomaticComplexity` violation in PMD report
+
+2. `ExamXmlLoader.load(Path)`
+- Previous: cyclomatic complexity `10`
+- Current: no `CyclomaticComplexity` violation in PMD report
+
+Interpretation:
+
+- Targeted extract-method refactoring reduced control-flow complexity at the previous hotspots enough to clear the PMD threshold.
+- Remaining PMD findings are mostly design-style findings (for example Law of Demeter), not McCabe threshold breaches.

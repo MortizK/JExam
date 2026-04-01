@@ -40,3 +40,4 @@ Mapped from existing specification material:
 | 3 | PDF generation services | Done (PDFBox implementation + tests) |
 | 4 | Bare minimum UI | Done (chapter/task/variant CRUD + detail editing + PDF controls) |
 | 5 | End-to-end hardening | In progress (workflow integration tests started) |
+| 6 | MVC + metrics refactoring | In progress (application service introduced, McCabe hotspots reduced) |

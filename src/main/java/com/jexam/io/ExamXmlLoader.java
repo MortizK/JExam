@@ -20,39 +20,49 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Loads {@link Exam} instances from the JExam XML format.
+ */
 public class ExamXmlLoader {
+    /**
+     * Parses an exam XML file into an {@link Exam} object graph.
+     *
+     * @param path path to the XML file
+     * @return parsed exam instance
+     * @throws ExamXmlException if parsing fails or XML values are invalid
+     */
     public Exam load(Path path) throws ExamXmlException {
         try {
-            Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(path.toFile());
-            document.getDocumentElement().normalize();
-
-            Element examElement = document.getDocumentElement();
-            if (!"exam".equals(examElement.getTagName())) {
-                throw new ExamXmlException("Root element must be <exam>.");
-            }
-
-            String examName = examElement.getAttribute("name");
-            List<Chapter> chapters = new ArrayList<>();
-
-            NodeList chapterNodes = examElement.getChildNodes();
-            for (int i = 0; i < chapterNodes.getLength(); i++) {
-                Node chapterNode = chapterNodes.item(i);
-                if (chapterNode.getNodeType() != Node.ELEMENT_NODE) {
-                    continue;
-                }
-                Element chapterElement = (Element) chapterNode;
-                if (!"chapter".equals(chapterElement.getTagName())) {
-                    continue;
-                }
-                chapters.add(parseChapter(chapterElement));
-            }
-
-            return new Exam(examName, chapters);
+            Element examElement = loadExamRootElement(path);
+            return new Exam(examElement.getAttribute("name"), parseChapters(examElement));
         } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new ExamXmlException("Failed to parse exam XML.", e);
         } catch (IllegalArgumentException e) {
             throw new ExamXmlException("Invalid XML enum value.", e);
         }
+    }
+
+    private Element loadExamRootElement(Path path) throws ParserConfigurationException, SAXException, IOException, ExamXmlException {
+        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(path.toFile());
+        document.getDocumentElement().normalize();
+
+        Element examElement = document.getDocumentElement();
+        if (!"exam".equals(examElement.getTagName())) {
+            throw new ExamXmlException("Root element must be <exam>.");
+        }
+        return examElement;
+    }
+
+    private List<Chapter> parseChapters(Element examElement) {
+        List<Chapter> chapters = new ArrayList<>();
+        NodeList chapterNodes = examElement.getChildNodes();
+        for (int i = 0; i < chapterNodes.getLength(); i++) {
+            Element chapterElement = asElementWithTag(chapterNodes.item(i), "chapter");
+            if (chapterElement != null) {
+                chapters.add(parseChapter(chapterElement));
+            }
+        }
+        return chapters;
     }
 
     private Chapter parseChapter(Element chapterElement) {
@@ -61,15 +71,10 @@ public class ExamXmlLoader {
 
         NodeList taskNodes = chapterElement.getChildNodes();
         for (int i = 0; i < taskNodes.getLength(); i++) {
-            Node taskNode = taskNodes.item(i);
-            if (taskNode.getNodeType() != Node.ELEMENT_NODE) {
-                continue;
+            Element taskElement = asElementWithTag(taskNodes.item(i), "task");
+            if (taskElement != null) {
+                tasks.add(parseTask(taskElement));
             }
-            Element taskElement = (Element) taskNode;
-            if (!"task".equals(taskElement.getTagName())) {
-                continue;
-            }
-            tasks.add(parseTask(taskElement));
         }
 
         return new Chapter(name, tasks);
@@ -84,15 +89,10 @@ public class ExamXmlLoader {
         List<Variant> variants = new ArrayList<>();
         NodeList variantNodes = taskElement.getChildNodes();
         for (int i = 0; i < variantNodes.getLength(); i++) {
-            Node variantNode = variantNodes.item(i);
-            if (variantNode.getNodeType() != Node.ELEMENT_NODE) {
-                continue;
+            Element variantElement = asElementWithTag(variantNodes.item(i), "variant");
+            if (variantElement != null) {
+                variants.add(parseVariant(variantElement));
             }
-            Element variantElement = (Element) variantNode;
-            if (!"variant".equals(variantElement.getTagName())) {
-                continue;
-            }
-            variants.add(parseVariant(variantElement));
         }
 
         return new Task(name, points, difficulty, scope, variants);
@@ -104,11 +104,10 @@ public class ExamXmlLoader {
 
         NodeList children = variantElement.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
-            Node child = children.item(i);
-            if (child.getNodeType() != Node.ELEMENT_NODE) {
+            Element childElement = asElement(children.item(i));
+            if (childElement == null) {
                 continue;
             }
-            Element childElement = (Element) child;
             if ("question".equals(childElement.getTagName())) {
                 question = childElement.getTextContent();
             }
@@ -118,5 +117,20 @@ public class ExamXmlLoader {
         }
 
         return new Variant(question, answer);
+    }
+
+    private Element asElementWithTag(Node node, String tagName) {
+        Element element = asElement(node);
+        if (element == null || !tagName.equals(element.getTagName())) {
+            return null;
+        }
+        return element;
+    }
+
+    private Element asElement(Node node) {
+        if (node == null || node.getNodeType() != Node.ELEMENT_NODE) {
+            return null;
+        }
+        return (Element) node;
     }
 }

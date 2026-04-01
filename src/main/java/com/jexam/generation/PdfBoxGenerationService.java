@@ -16,11 +16,21 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * PDF generation service backed by Apache PDFBox.
+ */
 public class PdfBoxGenerationService implements PdfGenerationService {
     private static final float START_X = 50;
     private static final float START_Y = 750;
     private static final float LINE_HEIGHT = 16;
 
+    /**
+     * Generates a PDF for the given exam and output mode.
+     *
+     * @param exam exam model to render
+     * @param mode generation mode controlling included content
+     * @param outputPath destination file path
+     */
     @Override
     public void generate(Exam exam, GenerationMode mode, Path outputPath) {
         if (exam == null) {
@@ -39,43 +49,60 @@ public class PdfBoxGenerationService implements PdfGenerationService {
                 try (PDPageContentStream content = new PDPageContentStream(document, page)) {
                     content.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
 
-                    float y = START_Y;
-                    y = writeLine(content, y, "JExam Export: " + mode);
-                    y = writeLine(content, y, "Exam: " + exam.getName());
-                    y -= LINE_HEIGHT;
-
-                    for (Chapter chapter : exam.getChapters()) {
-                        y = ensureSpace(document, content, y);
-                        y = writeLine(content, y, "Chapter: " + chapter.getName());
-
-                        for (Task task : chapter.getTasks()) {
-                            if (!shouldIncludeTask(task, mode)) {
-                                continue;
-                            }
-
-                            y = ensureSpace(document, content, y);
-                            y = writeLine(content, y, "  Task: " + task.getName() + " (" + task.getPoints() + " pts, "
-                                + task.getDifficulty().toXmlValue() + ")");
-
-                            for (int i = 0; i < task.getVariants().size(); i++) {
-                                Variant variant = task.getVariants().get(i);
-                                y = ensureSpace(document, content, y);
-                                y = writeLine(content, y, "    Variant " + (i + 1) + " Q: " + oneLine(variant.getQuestion()));
-
-                                if (mode == GenerationMode.SOLUTION) {
-                                    y = ensureSpace(document, content, y);
-                                    y = writeLine(content, y, "    Variant " + (i + 1) + " A: " + oneLine(variant.getAnswer()));
-                                }
-                            }
-                        }
-                        y -= LINE_HEIGHT;
-                    }
+                    RenderContext context = new RenderContext(content, mode, START_Y);
+                    writeHeader(context, exam);
+                    writeChapters(context, exam);
                 }
 
                 document.save(outputPath.toFile());
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed to generate PDF.", e);
+        }
+    }
+
+    private void writeHeader(RenderContext context, Exam exam) throws IOException {
+        context.y = writeLine(context.content, context.y, "JExam Export: " + context.mode);
+        context.y = writeLine(context.content, context.y, "Exam: " + exam.getName());
+        context.y -= LINE_HEIGHT;
+    }
+
+    private void writeChapters(RenderContext context, Exam exam) throws IOException {
+        for (Chapter chapter : exam.getChapters()) {
+            context.y = ensureSpace(context.y);
+            context.y = writeLine(context.content, context.y, "Chapter: " + chapter.getName());
+            writeTasks(context, chapter);
+            context.y -= LINE_HEIGHT;
+        }
+    }
+
+    private void writeTasks(RenderContext context, Chapter chapter) throws IOException {
+        for (Task task : chapter.getTasks()) {
+            if (!shouldIncludeTask(task, context.mode)) {
+                continue;
+            }
+
+            context.y = ensureSpace(context.y);
+            context.y = writeLine(
+                context.content,
+                context.y,
+                "  Task: " + task.getName() + " (" + task.getPoints() + " pts, " + task.getDifficulty().toXmlValue() + ")"
+            );
+
+            writeVariants(context, task);
+        }
+    }
+
+    private void writeVariants(RenderContext context, Task task) throws IOException {
+        for (int i = 0; i < task.getVariants().size(); i++) {
+            Variant variant = task.getVariants().get(i);
+            context.y = ensureSpace(context.y);
+            context.y = writeLine(context.content, context.y, "    Variant " + (i + 1) + " Q: " + oneLine(variant.getQuestion()));
+
+            if (context.mode == GenerationMode.SOLUTION) {
+                context.y = ensureSpace(context.y);
+                context.y = writeLine(context.content, context.y, "    Variant " + (i + 1) + " A: " + oneLine(variant.getAnswer()));
+            }
         }
     }
 
@@ -94,7 +121,7 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return y - LINE_HEIGHT;
     }
 
-    private float ensureSpace(PDDocument document, PDPageContentStream content, float y) {
+    private float ensureSpace(float y) {
         // Keep v1 implementation single-page to stay minimal for this phase.
         if (y < 70) {
             return START_Y;
@@ -108,5 +135,17 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         }
         String normalized = text.replace('\n', ' ').replace('\r', ' ').trim();
         return normalized.length() > 150 ? normalized.substring(0, 150) + "..." : normalized;
+    }
+
+    private static class RenderContext {
+        private final PDPageContentStream content;
+        private final GenerationMode mode;
+        private float y;
+
+        private RenderContext(PDPageContentStream content, GenerationMode mode, float y) {
+            this.content = content;
+            this.mode = mode;
+            this.y = y;
+        }
     }
 }
