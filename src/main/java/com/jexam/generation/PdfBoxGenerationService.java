@@ -23,6 +23,8 @@ public class PdfBoxGenerationService implements PdfGenerationService {
     private static final float START_X = 50;
     private static final float START_Y = 750;
     private static final float LINE_HEIGHT = 16;
+    private static final float MIN_Y = 70;
+    private static final int MAX_LINE_LENGTH = 150;
 
     /**
      * Generates a PDF for the given exam and output mode.
@@ -32,7 +34,11 @@ public class PdfBoxGenerationService implements PdfGenerationService {
      * @param outputPath destination file path
      */
     @Override
-    public void generate(Exam exam, GenerationMode mode, Path outputPath) {
+    public void generate(
+        final Exam exam,
+        final GenerationMode mode,
+        final Path outputPath
+    ) {
         if (exam == null) {
             throw new IllegalArgumentException("Exam must not be null.");
         }
@@ -61,13 +67,19 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         }
     }
 
-    private void writeHeader(RenderContext context, Exam exam) throws IOException {
-        context.y = writeLine(context.content, context.y, "JExam Export: " + context.mode);
+    private void writeHeader(final RenderContext context, final Exam exam)
+        throws IOException {
+        context.y = writeLine(
+            context.content,
+            context.y,
+            "JExam Export: " + context.mode
+        );
         context.y = writeLine(context.content, context.y, "Exam: " + exam.getName());
         context.y -= LINE_HEIGHT;
     }
 
-    private void writeChapters(RenderContext context, Exam exam) throws IOException {
+    private void writeChapters(final RenderContext context, final Exam exam)
+        throws IOException {
         for (Chapter chapter : exam.getChapters()) {
             context.y = ensureSpace(context.y);
             context.y = writeLine(context.content, context.y, "Chapter: " + chapter.getName());
@@ -76,7 +88,8 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         }
     }
 
-    private void writeTasks(RenderContext context, Chapter chapter) throws IOException {
+    private void writeTasks(final RenderContext context, final Chapter chapter)
+        throws IOException {
         for (Task task : chapter.getTasks()) {
             if (!shouldIncludeTask(task, context.mode)) {
                 continue;
@@ -86,34 +99,53 @@ public class PdfBoxGenerationService implements PdfGenerationService {
             context.y = writeLine(
                 context.content,
                 context.y,
-                "  Task: " + task.getName() + " (" + task.getPoints() + " pts, " + task.getDifficulty().toXmlValue() + ")"
+                "  Task: "
+                    + task.getName()
+                    + " ("
+                    + task.getPoints()
+                    + " pts, "
+                    + task.getDifficulty().toXmlValue()
+                    + ")"
             );
 
             writeVariants(context, task);
         }
     }
 
-    private void writeVariants(RenderContext context, Task task) throws IOException {
+    private void writeVariants(final RenderContext context, final Task task)
+        throws IOException {
         for (int i = 0; i < task.getVariants().size(); i++) {
             Variant variant = task.getVariants().get(i);
             context.y = ensureSpace(context.y);
-            context.y = writeLine(context.content, context.y, "    Variant " + (i + 1) + " Q: " + oneLine(variant.getQuestion()));
+            context.y = writeLine(
+                context.content,
+                context.y,
+                "    Variant " + (i + 1) + " Q: " + oneLine(variant.getQuestion())
+            );
 
             if (context.mode == GenerationMode.SOLUTION) {
                 context.y = ensureSpace(context.y);
-                context.y = writeLine(context.content, context.y, "    Variant " + (i + 1) + " A: " + oneLine(variant.getAnswer()));
+                context.y = writeLine(
+                    context.content,
+                    context.y,
+                    "    Variant " + (i + 1) + " A: " + oneLine(variant.getAnswer())
+                );
             }
         }
     }
 
-    private boolean shouldIncludeTask(Task task, GenerationMode mode) {
+    private boolean shouldIncludeTask(final Task task, final GenerationMode mode) {
         if (mode == GenerationMode.MOCK_EXAM) {
             return task.getScope() == Scope.MOCK_EXAM;
         }
         return task.getScope() == Scope.EXAM;
     }
 
-    private float writeLine(PDPageContentStream content, float y, String text) throws IOException {
+    private float writeLine(
+        final PDPageContentStream content,
+        final float y,
+        final String text
+    ) throws IOException {
         content.beginText();
         content.newLineAtOffset(START_X, y);
         content.showText(oneLine(text));
@@ -121,31 +153,48 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return y - LINE_HEIGHT;
     }
 
-    private float ensureSpace(float y) {
+    private float ensureSpace(final float y) {
         // Keep v1 implementation single-page to stay minimal for this phase.
-        if (y < 70) {
+        if (y < MIN_Y) {
             return START_Y;
         }
         return y;
     }
 
-    private String oneLine(String text) {
+    private String oneLine(final String text) {
         if (text == null) {
             return "";
         }
         String normalized = text.replace('\n', ' ').replace('\r', ' ').trim();
-        return normalized.length() > 150 ? normalized.substring(0, 150) + "..." : normalized;
+        return normalized.length() > MAX_LINE_LENGTH
+            ? normalized.substring(0, MAX_LINE_LENGTH) + "..."
+            : normalized;
     }
 
-    private static class RenderContext {
+    private static final class RenderContext {
+        /**
+         * Active PDF content stream.
+         */
         private final PDPageContentStream content;
+
+        /**
+         * Current generation mode.
+         */
         private final GenerationMode mode;
+
+        /**
+         * Current y cursor position.
+         */
         private float y;
 
-        private RenderContext(PDPageContentStream content, GenerationMode mode, float y) {
-            this.content = content;
-            this.mode = mode;
-            this.y = y;
+        private RenderContext(
+            final PDPageContentStream stream,
+            final GenerationMode currentMode,
+            final float startY
+        ) {
+            this.content = stream;
+            this.mode = currentMode;
+            this.y = startY;
         }
     }
 }

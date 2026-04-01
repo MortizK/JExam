@@ -28,18 +28,18 @@ public class ExamPersistenceService {
     /**
      * Creates the persistence service.
      *
-     * @param loader XML loader
-     * @param writer XML writer
-     * @param validator exam validator
+     * @param xmlLoader XML loader
+     * @param xmlWriter XML writer
+     * @param examValidator exam validator
      */
     public ExamPersistenceService(
-        final ExamXmlLoader loader,
-        final ExamXmlWriter writer,
-        final ExamValidator validator
+        final ExamXmlLoader xmlLoader,
+        final ExamXmlWriter xmlWriter,
+        final ExamValidator examValidator
     ) {
-        this.loader = loader;
-        this.writer = writer;
-        this.validator = validator;
+        this.loader = xmlLoader;
+        this.writer = xmlWriter;
+        this.validator = examValidator;
     }
 
     /**
@@ -53,7 +53,9 @@ public class ExamPersistenceService {
         final Exam exam = loader.load(path);
         final ValidationResult result = validator.validate(exam);
         if (!result.isValid()) {
-            throw new ExamXmlException("Loaded XML is invalid: " + result.getErrors());
+            throw new ExamXmlException(
+                "Loaded XML is invalid: " + result.getErrors()
+            );
         }
         return exam;
     }

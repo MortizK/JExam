@@ -306,3 +306,41 @@ Interpretation:
 
 - The remaining larger share of Checkstyle findings is now concentrated in the
 	`generation` package and residual line-length rules.
+
+## Final Re-Measurement and Plan Closure
+
+Date: 2026-04-01
+
+Executed final loop:
+
+- `mvn test`
+- `mvn pmd:pmd`
+- `mvn checkstyle:checkstyle`
+- `mvn verify`
+
+Final measured values:
+
+1. PMD total violations: `129` (from initial `166`)
+2. PMD Law of Demeter: `119` (from initial `156`)
+3. Checkstyle findings: `205` (from first cycle baseline `542`)
+4. Test status: `10/10` passing
+
+Quality-gate mode decision:
+
+- Keep PMD/Checkstyle/SpotBugs in warning-mode (`failOnViolation=false`) for
+	now, because residual findings are still concentrated in high-churn UI
+	classes.
+- This aligns with the plan's "threshold or justified exceptions" criterion;
+	the exception is documented and measurable.
+
+Residual technical debt (prioritized):
+
+1. `src/main/java/com/jexam/app/JExamApp.java`
+2. `src/main/java/com/jexam/app/ExamApplicationService.java`
+3. `src/main/java/com/jexam/app/JExamSelectionModel.java`
+4. `src/main/java/com/jexam/generation/PdfBoxGenerationService.java`
+
+Plan closure status:
+
+- Refactoring/metrics hardening plan completed for this cycle with documented
+	residual backlog and repeatable measurement commands.
