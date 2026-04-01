@@ -5,9 +5,18 @@ import com.jexam.model.Exam;
 import com.jexam.model.Task;
 import com.jexam.model.Variant;
 
-public class ExamValidator {
-    public ValidationResult validate(Exam exam) {
-        ValidationResult result = new ValidationResult();
+/**
+ * Validates exam model instances and collects all detected violations.
+ */
+public final class ExamValidator {
+    /**
+     * Validates the provided exam and returns all errors.
+     *
+     * @param exam exam to validate
+     * @return validation result containing zero or more errors
+     */
+    public ValidationResult validate(final Exam exam) {
+        final ValidationResult result = new ValidationResult();
         if (exam == null) {
             result.addError("exam", "Exam must not be null.");
             return result;
@@ -17,16 +26,21 @@ public class ExamValidator {
             result.addError("exam.name", "Exam name must not be blank.");
         }
 
-        for (int chapterIndex = 0; chapterIndex < exam.getChapters().size(); chapterIndex++) {
-            Chapter chapter = exam.getChapters().get(chapterIndex);
-            String chapterPath = "exam.chapters[" + chapterIndex + "]";
+        final int chapterCount = exam.getChapters().size();
+        for (int chapterIndex = 0; chapterIndex < chapterCount; chapterIndex++) {
+            final Chapter chapter = exam.getChapters().get(chapterIndex);
+            final String chapterPath = "exam.chapters[" + chapterIndex + "]";
             validateChapter(chapter, chapterPath, result);
         }
 
         return result;
     }
 
-    private void validateChapter(Chapter chapter, String path, ValidationResult result) {
+    private void validateChapter(
+        final Chapter chapter,
+        final String path,
+        final ValidationResult result
+    ) {
         if (chapter == null) {
             result.addError(path, "Chapter must not be null.");
             return;
@@ -36,14 +50,19 @@ public class ExamValidator {
             result.addError(path + ".name", "Chapter name must not be blank.");
         }
 
-        for (int taskIndex = 0; taskIndex < chapter.getTasks().size(); taskIndex++) {
-            Task task = chapter.getTasks().get(taskIndex);
-            String taskPath = path + ".tasks[" + taskIndex + "]";
+        final int taskCount = chapter.getTasks().size();
+        for (int taskIndex = 0; taskIndex < taskCount; taskIndex++) {
+            final Task task = chapter.getTasks().get(taskIndex);
+            final String taskPath = path + ".tasks[" + taskIndex + "]";
             validateTask(task, taskPath, result);
         }
     }
 
-    private void validateTask(Task task, String path, ValidationResult result) {
+    private void validateTask(
+        final Task task,
+        final String path,
+        final ValidationResult result
+    ) {
         if (task == null) {
             result.addError(path, "Task must not be null.");
             return;
@@ -66,17 +85,25 @@ public class ExamValidator {
         }
 
         if (task.getVariants().isEmpty()) {
-            result.addError(path + ".variants", "Task must contain at least one variant.");
+            result.addError(
+                path + ".variants",
+                "Task must contain at least one variant."
+            );
         }
 
-        for (int variantIndex = 0; variantIndex < task.getVariants().size(); variantIndex++) {
-            Variant variant = task.getVariants().get(variantIndex);
-            String variantPath = path + ".variants[" + variantIndex + "]";
+        final int variantCount = task.getVariants().size();
+        for (int variantIndex = 0; variantIndex < variantCount; variantIndex++) {
+            final Variant variant = task.getVariants().get(variantIndex);
+            final String variantPath = path + ".variants[" + variantIndex + "]";
             validateVariant(variant, variantPath, result);
         }
     }
 
-    private void validateVariant(Variant variant, String path, ValidationResult result) {
+    private void validateVariant(
+        final Variant variant,
+        final String path,
+        final ValidationResult result
+    ) {
         if (variant == null) {
             result.addError(path, "Variant must not be null.");
             return;
@@ -87,7 +114,7 @@ public class ExamValidator {
         }
     }
 
-    private boolean isBlank(String text) {
+    private boolean isBlank(final String text) {
         return text == null || text.trim().isEmpty();
     }
 }

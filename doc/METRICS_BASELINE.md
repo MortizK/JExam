@@ -170,3 +170,30 @@ Interpretation:
 
 - This phase reduced LoD at the source rather than only redistributing findings across helper classes.
 - The largest remaining hotspot is still `JExamApp`, so the next phase should keep extracting UI/controller responsibilities from that class.
+
+## Phase Continuation Checkpoint (Validation JavaDoc + Checkstyle Pass)
+
+Date: 2026-04-01
+
+Executed:
+
+- `mvn test` (10/10 tests passed)
+- `mvn checkstyle:checkstyle` (report generated)
+- `mvn pmd:pmd` (build success)
+
+Observed delta:
+
+1. Checkstyle findings reduced from `542` to `498`.
+2. PMD trajectory preserved (`mvn pmd:pmd` still succeeds).
+
+Key implementation change:
+
+- Refactored validation package classes (`ExamValidator`, `ValidationError`, `ValidationResult`) with JavaDoc coverage, final-parameter cleanup, and safer encapsulation defaults (`final` classes where applicable).
+
+Environment note:
+
+- JaCoCo agent still logs class-file compatibility warnings on this runtime but `mvn verify` completes successfully.
+
+Interpretation:
+
+- This phase made measurable progress on the JavaDoc/checkstyle part of the plan while keeping tests and PMD green.
