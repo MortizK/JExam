@@ -29,7 +29,8 @@ public final class ExamValidator {
         final int chapterCount = exam.getChapters().size();
         for (int chapterIndex = 0; chapterIndex < chapterCount; chapterIndex++) {
             final Chapter chapter = exam.getChapters().get(chapterIndex);
-            final String chapterPath = "exam.chapters[" + chapterIndex + "]";
+            final String chapterPath =
+                "exam.chapters[" + chapterIndex + "]";
             validateChapter(chapter, chapterPath, result);
         }
 
@@ -53,7 +54,8 @@ public final class ExamValidator {
         final int taskCount = chapter.getTasks().size();
         for (int taskIndex = 0; taskIndex < taskCount; taskIndex++) {
             final Task task = chapter.getTasks().get(taskIndex);
-            final String taskPath = path + ".tasks[" + taskIndex + "]";
+            final String taskPath =
+                path + ".tasks[" + taskIndex + "]";
             validateTask(task, taskPath, result);
         }
     }
@@ -73,7 +75,10 @@ public final class ExamValidator {
         }
 
         if (task.getPoints() <= 0.0) {
-            result.addError(path + ".points", "Task points must be greater than 0.");
+            result.addError(
+                path + ".points",
+                "Task points must be greater than 0."
+            );
         }
 
         if (task.getDifficulty() == null) {
@@ -92,9 +97,14 @@ public final class ExamValidator {
         }
 
         final int variantCount = task.getVariants().size();
-        for (int variantIndex = 0; variantIndex < variantCount; variantIndex++) {
+        for (
+            int variantIndex = 0;
+            variantIndex < variantCount;
+            variantIndex++
+        ) {
             final Variant variant = task.getVariants().get(variantIndex);
-            final String variantPath = path + ".variants[" + variantIndex + "]";
+            final String variantPath =
+                path + ".variants[" + variantIndex + "]";
             validateVariant(variant, variantPath, result);
         }
     }
@@ -110,7 +120,10 @@ public final class ExamValidator {
         }
 
         if (isBlank(variant.getQuestion())) {
-            result.addError(path + ".question", "Variant question must not be blank.");
+            result.addError(
+                path + ".question",
+                "Variant question must not be blank."
+            );
         }
     }
 

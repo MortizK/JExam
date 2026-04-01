@@ -223,3 +223,30 @@ Interpretation:
 
 - This is the largest single Checkstyle reduction so far and keeps the
 	implementation aligned with the plan's JavaDoc and clean-code phases.
+
+## Phase Continuation Checkpoint (Enums + Package Docs Pass)
+
+Date: 2026-04-01
+
+Executed:
+
+- `mvn test` (10/10 tests passed)
+- `mvn checkstyle:checkstyle` (report generated)
+- `mvn pmd:pmd` (build success)
+
+Observed delta:
+
+1. Checkstyle findings reduced from `370` to `347`.
+2. PMD run remains successful.
+
+Key implementation change:
+
+- Added package-level JavaDocs for `model`, `model.enums`, and `validation`.
+- Added enum API JavaDocs and formatting fixes in `Difficulty` and `Scope`.
+- Applied additional line-length cleanup in `ExamValidator`, `Chapter`, and
+	`Exam`.
+
+Interpretation:
+
+- This phase continued steady reduction while preserving test and PMD
+	stability.

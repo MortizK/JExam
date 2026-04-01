@@ -53,7 +53,8 @@ public final class ValidationError {
         if (!(o instanceof ValidationError that)) {
             return false;
         }
-        return Objects.equals(path, that.path) && Objects.equals(message, that.message);
+        return Objects.equals(path, that.path)
+            && Objects.equals(message, that.message);
     }
 
     @Override

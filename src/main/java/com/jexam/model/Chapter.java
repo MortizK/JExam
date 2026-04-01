@@ -106,7 +106,8 @@ public final class Chapter {
         if (!(o instanceof Chapter chapter)) {
             return false;
         }
-        return Objects.equals(name, chapter.name) && Objects.equals(tasks, chapter.tasks);
+        return Objects.equals(name, chapter.name)
+            && Objects.equals(tasks, chapter.tasks);
     }
 
     @Override

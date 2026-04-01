@@ -122,7 +122,8 @@ public final class Exam {
         if (!(o instanceof Exam exam)) {
             return false;
         }
-        return Objects.equals(name, exam.name) && Objects.equals(chapters, exam.chapters);
+        return Objects.equals(name, exam.name)
+            && Objects.equals(chapters, exam.chapters);
     }
 
     @Override
