@@ -197,3 +197,29 @@ Environment note:
 Interpretation:
 
 - This phase made measurable progress on the JavaDoc/checkstyle part of the plan while keeping tests and PMD green.
+
+## Phase Continuation Checkpoint (Model JavaDoc + Style Pass)
+
+Date: 2026-04-01
+
+Executed:
+
+- `mvn test` (10/10 tests passed)
+- `mvn checkstyle:checkstyle` (report generated)
+- `mvn pmd:pmd` (build success)
+
+Observed delta:
+
+1. Checkstyle findings reduced from `498` to `370`.
+2. PMD run remains successful.
+
+Key implementation change:
+
+- Applied JavaDoc and style cleanup to model classes (`Exam`, `Chapter`,
+	`Task`, `Variant`) including final class markers, final parameters,
+	and improved formatting of long lines.
+
+Interpretation:
+
+- This is the largest single Checkstyle reduction so far and keeps the
+	implementation aligned with the plan's JavaDoc and clean-code phases.

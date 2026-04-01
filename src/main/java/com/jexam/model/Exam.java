@@ -5,53 +5,117 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class Exam {
+/**
+ * Root exam aggregate containing chapters.
+ */
+public final class Exam {
     private String name;
     private final List<Chapter> chapters;
 
-    public Exam(String name, List<Chapter> chapters) {
+    /**
+     * Creates an exam.
+     *
+     * @param name exam name
+     * @param chapters initial chapter list
+     */
+    public Exam(final String name, final List<Chapter> chapters) {
         this.name = name;
         this.chapters = new ArrayList<>(chapters);
     }
 
+    /**
+     * Gets exam name.
+     *
+     * @return exam name
+     */
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    /**
+     * Sets exam name.
+     *
+     * @param name new exam name
+     */
+    public void setName(final String name) {
         this.name = name;
     }
 
+    /**
+     * Returns chapters as immutable list.
+     *
+     * @return chapter list view
+     */
     public List<Chapter> getChapters() {
         return Collections.unmodifiableList(chapters);
     }
 
-    public void addChapter(Chapter chapter) {
+    /**
+     * Adds chapter.
+     *
+     * @param chapter chapter to add
+     */
+    public void addChapter(final Chapter chapter) {
         chapters.add(chapter);
     }
 
-    public void removeChapter(int index) {
+    /**
+     * Removes chapter by index.
+     *
+     * @param index chapter index
+     */
+    public void removeChapter(final int index) {
         chapters.remove(index);
     }
 
+    /**
+     * Counts chapters.
+     *
+     * @return chapter count
+     */
     public int chapterCount() {
         return chapters.size();
     }
 
-    public Chapter chapterAt(int chapterIndex) {
+    /**
+     * Gets chapter by index.
+     *
+     * @param chapterIndex chapter index
+     * @return selected chapter
+     */
+    public Chapter chapterAt(final int chapterIndex) {
         return chapters.get(chapterIndex);
     }
 
-    public Task taskAt(int chapterIndex, int taskIndex) {
+    /**
+     * Gets task by chapter/task index.
+     *
+     * @param chapterIndex chapter index
+     * @param taskIndex task index
+     * @return selected task
+     */
+    public Task taskAt(final int chapterIndex, final int taskIndex) {
         return chapterAt(chapterIndex).taskAt(taskIndex);
     }
 
-    public Variant variantAt(int chapterIndex, int taskIndex, int variantIndex) {
+    /**
+     * Gets variant by chapter/task/variant indices.
+     *
+     * @param chapterIndex chapter index
+     * @param taskIndex task index
+     * @param variantIndex variant index
+     * @return selected variant
+     */
+    public Variant variantAt(
+        final int chapterIndex,
+        final int taskIndex,
+        final int variantIndex
+    ) {
         return taskAt(chapterIndex, taskIndex).variantAt(variantIndex);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
