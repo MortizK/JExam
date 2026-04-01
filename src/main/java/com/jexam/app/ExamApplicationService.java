@@ -129,7 +129,7 @@ public class ExamApplicationService {
     public void addTask(int chapterIndex, String taskName) {
         Task task = defaultTask();
         task.setName(taskName);
-        currentExam.getChapters().get(chapterIndex).addTask(task);
+        chapterAt(chapterIndex).addTask(task);
     }
 
     /**
@@ -139,7 +139,7 @@ public class ExamApplicationService {
      * @param taskIndex task index in chapter
      */
     public void removeTask(int chapterIndex, int taskIndex) {
-        currentExam.getChapters().get(chapterIndex).removeTask(taskIndex);
+        chapterAt(chapterIndex).removeTask(taskIndex);
     }
 
     /**
@@ -149,8 +149,7 @@ public class ExamApplicationService {
      * @param taskIndex target task index
      */
     public void addVariant(int chapterIndex, int taskIndex) {
-        currentExam.getChapters().get(chapterIndex).getTasks().get(taskIndex)
-            .addVariant(new Variant("New Question", "New Answer"));
+        taskAt(chapterIndex, taskIndex).addVariant(new Variant("New Question", "New Answer"));
     }
 
     /**
@@ -161,7 +160,7 @@ public class ExamApplicationService {
      * @param variantIndex target variant index
      */
     public void removeVariant(int chapterIndex, int taskIndex, int variantIndex) {
-        currentExam.getChapters().get(chapterIndex).getTasks().get(taskIndex).removeVariant(variantIndex);
+        taskAt(chapterIndex, taskIndex).removeVariant(variantIndex);
     }
 
     /**
@@ -175,7 +174,7 @@ public class ExamApplicationService {
      * @param scope task scope
      */
     public void updateTaskDetails(int chapterIndex, int taskIndex, String name, double points, Difficulty difficulty, Scope scope) {
-        Task task = currentExam.getChapters().get(chapterIndex).getTasks().get(taskIndex);
+        Task task = taskAt(chapterIndex, taskIndex);
         task.setName(name);
         task.setPoints(points);
         task.setDifficulty(difficulty);
@@ -192,9 +191,21 @@ public class ExamApplicationService {
      * @param answer answer text
      */
     public void updateVariantDetails(int chapterIndex, int taskIndex, int variantIndex, String question, String answer) {
-        Variant variant = currentExam.getChapters().get(chapterIndex).getTasks().get(taskIndex).getVariants().get(variantIndex);
+        Variant variant = variantAt(chapterIndex, taskIndex, variantIndex);
         variant.setQuestion(question);
         variant.setAnswer(answer);
+    }
+
+    private Chapter chapterAt(int chapterIndex) {
+        return currentExam.getChapters().get(chapterIndex);
+    }
+
+    private Task taskAt(int chapterIndex, int taskIndex) {
+        return chapterAt(chapterIndex).getTasks().get(taskIndex);
+    }
+
+    private Variant variantAt(int chapterIndex, int taskIndex, int variantIndex) {
+        return taskAt(chapterIndex, taskIndex).getVariants().get(variantIndex);
     }
 
     private Exam createDefaultExam() {

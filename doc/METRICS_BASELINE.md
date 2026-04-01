@@ -93,3 +93,24 @@ Interpretation:
 
 - This phase reduced concentration in the main UI class and prepared the code for larger decomposition.
 - A larger drop now requires moving business/navigation operations out of `JExamApp` and reducing chained access in `ExamApplicationService` and XML writer classes.
+
+## Phase Continuation Checkpoint (Service + XML Writer Refactoring)
+
+Date: 2026-04-01
+
+Executed:
+
+- `mvn test` (10/10 tests passed)
+- `mvn pmd:pmd` (build success)
+
+Observed delta:
+
+1. Total PMD violations reduced from `159` to `145`.
+2. Law of Demeter reduced from `148` to `134`.
+3. `ExamApplicationService` Law of Demeter reduced from `24` to `16` by centralizing chapter/task/variant navigation.
+4. `ExamXmlWriter` Law of Demeter reduced from `18` to `12` by extracting chapter/task/variant write helpers.
+
+Interpretation:
+
+- This phase produced the first larger global PMD drop while keeping all tests green.
+- The main remaining concentration is still `JExamApp`, so the next phase should continue MVC decomposition of that class.
