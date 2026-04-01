@@ -74,3 +74,22 @@ Interpretation:
 
 - Targeted extract-method refactoring reduced control-flow complexity at the previous hotspots enough to clear the PMD threshold.
 - Remaining PMD findings are mostly design-style findings (for example Law of Demeter), not McCabe threshold breaches.
+
+## Phase Continuation Checkpoint (UI Responsibility Extraction)
+
+Date: 2026-04-01
+
+Executed:
+
+- `mvn test` (10/10 tests passed)
+- `mvn pmd:pmd` (build success)
+
+Observed delta:
+
+1. `JExamApp` Law of Demeter findings reduced from `71` to `65` by extracting UI dialog/file-chooser responsibilities into `JExamUiSupport` and centralizing selection/count access.
+2. Total PMD violations remained stable at `159` because some LoD findings moved into the new helper class and broader MVC decomposition is still pending.
+
+Interpretation:
+
+- This phase reduced concentration in the main UI class and prepared the code for larger decomposition.
+- A larger drop now requires moving business/navigation operations out of `JExamApp` and reducing chained access in `ExamApplicationService` and XML writer classes.

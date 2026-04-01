@@ -14,16 +14,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -39,6 +35,7 @@ import java.util.Optional;
 
 public class JExamApp extends Application {
     private final ExamApplicationService appService = new ExamApplicationService();
+    private final JExamUiSupport ui = new JExamUiSupport();
 
     private Exam currentExam;
 
@@ -77,7 +74,7 @@ public class JExamApp extends Application {
             appService.newExam();
             currentExam = appService.getCurrentExam();
             refreshAllLists();
-            showInfo("New exam created", "Created a new exam in memory.");
+            ui.showInfo("New exam created", "Created a new exam in memory.");
         });
         openButton.setOnAction(event -> openExam(stage));
         saveButton.setOnAction(event -> saveExam(stage));
@@ -271,27 +268,27 @@ public class JExamApp extends Application {
     }
 
     private void addChapter() {
-        Optional<String> name = askForText("Add Chapter", "Chapter name", "New Chapter");
+        Optional<String> name = ui.askForText("Add Chapter", "Chapter name", "New Chapter");
         name.ifPresent(value -> {
             appService.addChapter(value);
             refreshAllLists();
-            chapterList.getSelectionModel().select(currentExam.getChapters().size() - 1);
+            chapterList.getSelectionModel().select(lastChapterIndex());
         });
     }
 
     private void removeChapter() {
         int index = chapterList.getSelectionModel().getSelectedIndex();
         if (index < 0) {
-            showError("No chapter selected", "Select a chapter to remove.");
+            ui.showError("No chapter selected", "Select a chapter to remove.");
             return;
         }
 
-        if (currentExam.getChapters().size() <= 1) {
-            showError("Cannot remove chapter", "At least one chapter must remain.");
+        if (chapterCount() <= 1) {
+            ui.showError("Cannot remove chapter", "At least one chapter must remain.");
             return;
         }
 
-        if (!confirm("Remove chapter", "Remove selected chapter?")) {
+        if (!ui.confirm("Remove chapter", "Remove selected chapter?")) {
             return;
         }
 
@@ -302,16 +299,16 @@ public class JExamApp extends Application {
     private void addTask() {
         Chapter chapter = selectedChapter();
         if (chapter == null) {
-            showError("No chapter selected", "Select a chapter before adding a task.");
+            ui.showError("No chapter selected", "Select a chapter before adding a task.");
             return;
         }
 
-        Optional<String> name = askForText("Add Task", "Task name", "New Task");
+        Optional<String> name = ui.askForText("Add Task", "Task name", "New Task");
         name.ifPresent(value -> {
-            int chapterIndex = chapterList.getSelectionModel().getSelectedIndex();
+            int chapterIndex = selectedChapterIndex();
             appService.addTask(chapterIndex, value);
             refreshAllLists();
-            taskList.getSelectionModel().select(chapter.getTasks().size() - 1);
+            taskList.getSelectionModel().select(lastTaskIndex(chapterIndex));
         });
     }
 
@@ -319,20 +316,20 @@ public class JExamApp extends Application {
         Chapter chapter = selectedChapter();
         int index = taskList.getSelectionModel().getSelectedIndex();
         if (chapter == null || index < 0) {
-            showError("No task selected", "Select a task to remove.");
+            ui.showError("No task selected", "Select a task to remove.");
             return;
         }
 
-        if (chapter.getTasks().size() <= 1) {
-            showError("Cannot remove task", "At least one task must remain per chapter.");
+        if (chapterTaskCount(selectedChapterIndex()) <= 1) {
+            ui.showError("Cannot remove task", "At least one task must remain per chapter.");
             return;
         }
 
-        if (!confirm("Remove task", "Remove selected task?")) {
+        if (!ui.confirm("Remove task", "Remove selected task?")) {
             return;
         }
 
-        int chapterIndex = chapterList.getSelectionModel().getSelectedIndex();
+        int chapterIndex = selectedChapterIndex();
         appService.removeTask(chapterIndex, index);
         refreshAllLists();
     }
@@ -340,36 +337,36 @@ public class JExamApp extends Application {
     private void addVariant() {
         Task task = selectedTask();
         if (task == null) {
-            showError("No task selected", "Select a task before adding a variant.");
+            ui.showError("No task selected", "Select a task before adding a variant.");
             return;
         }
 
-        int chapterIndex = chapterList.getSelectionModel().getSelectedIndex();
-        int taskIndex = taskList.getSelectionModel().getSelectedIndex();
+        int chapterIndex = selectedChapterIndex();
+        int taskIndex = selectedTaskIndex();
         appService.addVariant(chapterIndex, taskIndex);
         refreshAllLists();
-        variantList.getSelectionModel().select(task.getVariants().size() - 1);
+        variantList.getSelectionModel().select(lastVariantIndex(chapterIndex, taskIndex));
     }
 
     private void removeVariant() {
         Task task = selectedTask();
         int index = variantList.getSelectionModel().getSelectedIndex();
         if (task == null || index < 0) {
-            showError("No variant selected", "Select a variant to remove.");
+            ui.showError("No variant selected", "Select a variant to remove.");
             return;
         }
 
-        if (task.getVariants().size() <= 1) {
-            showError("Cannot remove variant", "Each task must have at least one variant.");
+        if (taskVariantCount(selectedChapterIndex(), selectedTaskIndex()) <= 1) {
+            ui.showError("Cannot remove variant", "Each task must have at least one variant.");
             return;
         }
 
-        if (!confirm("Remove variant", "Remove selected variant?")) {
+        if (!ui.confirm("Remove variant", "Remove selected variant?")) {
             return;
         }
 
-        int chapterIndex = chapterList.getSelectionModel().getSelectedIndex();
-        int taskIndex = taskList.getSelectionModel().getSelectedIndex();
+        int chapterIndex = selectedChapterIndex();
+        int taskIndex = selectedTaskIndex();
         appService.removeVariant(chapterIndex, taskIndex, index);
         refreshAllLists();
     }
@@ -377,7 +374,7 @@ public class JExamApp extends Application {
     private void saveTaskDetails() {
         Task task = selectedTask();
         if (task == null) {
-            showError("No task selected", "Select a task first.");
+            ui.showError("No task selected", "Select a task first.");
             return;
         }
 
@@ -387,11 +384,11 @@ public class JExamApp extends Application {
                 throw new NumberFormatException();
             }
             if (taskDifficultyBox.getValue() == null || taskScopeBox.getValue() == null) {
-                showError("Invalid metadata", "Difficulty and scope must be selected.");
+                ui.showError("Invalid metadata", "Difficulty and scope must be selected.");
                 return;
             }
-            int chapterIndex = chapterList.getSelectionModel().getSelectedIndex();
-            int taskIndex = taskList.getSelectionModel().getSelectedIndex();
+            int chapterIndex = selectedChapterIndex();
+            int taskIndex = selectedTaskIndex();
             appService.updateTaskDetails(
                 chapterIndex,
                 taskIndex,
@@ -402,20 +399,20 @@ public class JExamApp extends Application {
             );
             refreshTasks();
         } catch (NumberFormatException e) {
-            showError("Invalid points", "Points must be a number greater than 0.");
+            ui.showError("Invalid points", "Points must be a number greater than 0.");
         }
     }
 
     private void saveVariantDetails() {
         Variant variant = selectedVariant();
         if (variant == null) {
-            showError("No variant selected", "Select a variant first.");
+            ui.showError("No variant selected", "Select a variant first.");
             return;
         }
 
-        int chapterIndex = chapterList.getSelectionModel().getSelectedIndex();
-        int taskIndex = taskList.getSelectionModel().getSelectedIndex();
-        int variantIndex = variantList.getSelectionModel().getSelectedIndex();
+        int chapterIndex = selectedChapterIndex();
+        int taskIndex = selectedTaskIndex();
+        int variantIndex = selectedVariantIndex();
         appService.updateVariantDetails(
             chapterIndex,
             taskIndex,
@@ -426,7 +423,7 @@ public class JExamApp extends Application {
     }
 
     private void openExam(Stage stage) {
-        FileChooser fileChooser = xmlFileChooser();
+        FileChooser fileChooser = ui.xmlFileChooser();
         File file = fileChooser.showOpenDialog(stage);
         if (file == null) {
             return;
@@ -436,14 +433,14 @@ public class JExamApp extends Application {
             appService.openExam(file.toPath());
             currentExam = appService.getCurrentExam();
             refreshAllLists();
-            showInfo("Open successful", "Loaded exam: " + currentExam.getName());
+            ui.showInfo("Open successful", "Loaded exam: " + currentExamName());
         } catch (ExamXmlException e) {
-            showError("Open failed", e.getMessage());
+            ui.showError("Open failed", e.getMessage());
         }
     }
 
     private void saveExam(Stage stage) {
-        FileChooser fileChooser = xmlFileChooser();
+        FileChooser fileChooser = ui.xmlFileChooser();
         File file = fileChooser.showSaveDialog(stage);
         if (file == null) {
             return;
@@ -452,29 +449,29 @@ public class JExamApp extends Application {
         try {
             Path path = file.toPath();
             appService.saveExam(path);
-            showInfo("Save successful", "Saved exam to: " + path);
+            ui.showInfo("Save successful", "Saved exam to: " + path);
         } catch (ExamXmlException e) {
-            showError("Save failed", e.getMessage());
+            ui.showError("Save failed", e.getMessage());
         }
     }
 
     private void validateCurrentExam() {
         ValidationResult result = appService.validateCurrentExam();
         if (result.isValid()) {
-            showInfo("Validation successful", "No validation errors found.");
+            ui.showInfo("Validation successful", "No validation errors found.");
             return;
         }
-        showError("Validation failed", result.getErrors().toString());
+        ui.showError("Validation failed", result.getErrors().toString());
     }
 
     private void generatePdf(Stage stage, GenerationMode mode) {
         ValidationResult result = appService.validateCurrentExam();
         if (!result.isValid()) {
-            showError("Cannot generate PDF", "Exam is invalid: " + result.getErrors());
+            ui.showError("Cannot generate PDF", "Exam is invalid: " + result.getErrors());
             return;
         }
 
-        FileChooser fileChooser = pdfFileChooser(mode);
+        FileChooser fileChooser = ui.pdfFileChooser(mode);
         File file = fileChooser.showSaveDialog(stage);
         if (file == null) {
             return;
@@ -482,33 +479,15 @@ public class JExamApp extends Application {
 
         try {
             appService.generatePdf(mode, file.toPath());
-            showInfo("PDF generated", "Generated " + mode + " at: " + file.toPath());
+            ui.showInfo("PDF generated", "Generated " + mode + " at: " + file.toPath());
         } catch (RuntimeException e) {
-            showError("PDF generation failed", e.getMessage());
+            ui.showError("PDF generation failed", e.getMessage());
         }
     }
 
-    private Optional<String> askForText(String title, String header, String defaultValue) {
-        TextInputDialog dialog = new TextInputDialog(defaultValue);
-        dialog.setTitle(title);
-        dialog.setHeaderText(header);
-        dialog.setContentText("Value:");
-        Optional<String> value = dialog.showAndWait();
-        return value.map(String::trim).filter(v -> !v.isEmpty());
-    }
-
-    private boolean confirm(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        Optional<ButtonType> result = alert.showAndWait();
-        return result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE;
-    }
-
     private Chapter selectedChapter() {
-        int chapterIndex = chapterList.getSelectionModel().getSelectedIndex();
-        if (chapterIndex < 0 || chapterIndex >= currentExam.getChapters().size()) {
+        int chapterIndex = selectedChapterIndex();
+        if (chapterIndex < 0 || chapterIndex >= chapterCount()) {
             return null;
         }
         return currentExam.getChapters().get(chapterIndex);
@@ -516,7 +495,7 @@ public class JExamApp extends Application {
 
     private Task selectedTask() {
         Chapter chapter = selectedChapter();
-        int taskIndex = taskList.getSelectionModel().getSelectedIndex();
+        int taskIndex = selectedTaskIndex();
         if (chapter == null || taskIndex < 0 || taskIndex >= chapter.getTasks().size()) {
             return null;
         }
@@ -525,41 +504,61 @@ public class JExamApp extends Application {
 
     private Variant selectedVariant() {
         Task task = selectedTask();
-        int variantIndex = variantList.getSelectionModel().getSelectedIndex();
+        int variantIndex = selectedVariantIndex();
         if (task == null || variantIndex < 0 || variantIndex >= task.getVariants().size()) {
             return null;
         }
         return task.getVariants().get(variantIndex);
     }
 
-    private FileChooser xmlFileChooser() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("JExam XML File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML", "*.xml"));
-        return fileChooser;
+    private int selectedChapterIndex() {
+        return chapterList.getSelectionModel().getSelectedIndex();
     }
 
-    private FileChooser pdfFileChooser(GenerationMode mode) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Export PDF");
-        fileChooser.setInitialFileName("jexam-" + mode.name().toLowerCase() + ".pdf");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
-        return fileChooser;
+    private int selectedTaskIndex() {
+        return taskList.getSelectionModel().getSelectedIndex();
     }
 
-    private void showInfo(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    private int selectedVariantIndex() {
+        return variantList.getSelectionModel().getSelectedIndex();
     }
 
-    private void showError(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    private int chapterCount() {
+        return currentExam.getChapters().size();
     }
+
+    private int chapterTaskCount(int chapterIndex) {
+        if (chapterIndex < 0 || chapterIndex >= chapterCount()) {
+            return 0;
+        }
+        return currentExam.getChapters().get(chapterIndex).getTasks().size();
+    }
+
+    private int taskVariantCount(int chapterIndex, int taskIndex) {
+        if (chapterIndex < 0 || chapterIndex >= chapterCount()) {
+            return 0;
+        }
+        List<Task> tasks = currentExam.getChapters().get(chapterIndex).getTasks();
+        if (taskIndex < 0 || taskIndex >= tasks.size()) {
+            return 0;
+        }
+        return tasks.get(taskIndex).getVariants().size();
+    }
+
+    private int lastChapterIndex() {
+        return chapterCount() - 1;
+    }
+
+    private int lastTaskIndex(int chapterIndex) {
+        return chapterTaskCount(chapterIndex) - 1;
+    }
+
+    private int lastVariantIndex(int chapterIndex, int taskIndex) {
+        return taskVariantCount(chapterIndex, taskIndex) - 1;
+    }
+
+    private String currentExamName() {
+        return currentExam.getName();
+    }
+
 }
