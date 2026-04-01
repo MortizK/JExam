@@ -28,3 +28,14 @@ Mapped from existing specification material:
 - Keep terminology aligned with [GLOSSARY.md](GLOSSARY.md).
 - Update markdown docs first when requirements change.
 - If LaTeX exports are needed, sync from markdown into LaTeX as a separate step.
+
+## Implementation Status
+
+| Phase | Scope | Status |
+| --- | --- | --- |
+| 0 | Maven bootstrap, Java 17 setup, package skeleton | Done |
+| 1 | Domain model + validation with tests | Done |
+| 2 | XML load/save + round-trip tests + validation wiring | Done |
+| 3 | PDF generation services | Scaffolded, implementation pending |
+| 4 | Bare minimum UI | Minimal shell created, functional wiring pending |
+| 5 | End-to-end hardening | Pending |

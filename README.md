@@ -27,7 +27,8 @@ Secondary audience:
 
 - [doc/](doc/) documentation and specifications
 - [doc/LaTeX/](doc/LaTeX/) archival/formal specification sources
-- [scr/](scr/) implementation workspace (currently minimal)
+- [src/](src/) canonical implementation source (Maven)
+- [scr/](scr/) legacy/non-canonical workspace
 
 ## Documentation Map
 
@@ -57,7 +58,7 @@ Legacy/archival sources:
 
 ## Next Refactor Milestones
 
-- Define and stabilize project layout under [scr/](scr/)
-- Introduce reproducible build configuration
-- Add tests for XML validation and generation rules
-- Align implementation with documentation in [doc/](doc/)
+- Implement PDF generation services on top of current backend model and XML pipeline
+- Expand minimal UI to support structured editing (chapters/tasks/variants)
+- Add end-to-end workflow tests (open/edit/validate/generate)
+- Keep implementation and docs synchronized in [doc/](doc/)

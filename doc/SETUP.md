@@ -12,29 +12,32 @@ This document describes the expected local setup for JExam contributors.
 
 Current repository status:
 
-- No finalized build file is committed yet (for example `pom.xml` is not present at this stage).
-- Source directory [scr/](../scr/) is currently minimal.
-- Existing docs define behavior and architecture targets.
+- Maven project is initialized in the repository root.
+- Primary implementation now lives in [../src/](../src/).
+- Legacy folder [../scr/](../scr/) is currently non-canonical and can be ignored for new code.
 
-Because of this, the setup flow is documentation-first right now.
+Because of this, the setup flow is now backend-first with incremental UI integration.
 
 ## Suggested Developer Workflow
 
 1. Read [ARCHITECTURE.md](ARCHITECTURE.md) and [GLOSSARY.md](GLOSSARY.md).
-2. Implement incrementally in [scr/](../scr/) according to the documented model.
+2. Implement incrementally in [../src/](../src/) according to the documented model.
 3. Keep naming and comments in English.
 4. Add tests for each rule introduced from specification docs.
 5. Update markdown docs in [doc/](./) when behavior changes.
 
-## Build and Run (When Build Config Is Added)
+## Build and Run
 
-Once a build file exists, this section should be updated with exact commands for:
+From repository root:
 
-- Build
-- Test
-- Run desktop application
+- Build: `mvn clean package`
+- Test: `mvn test`
 
-Do not add guessed commands until the build system is committed.
+Run minimal JavaFX shell:
+
+- `mvn -q exec:java -Dexec.mainClass=com.jexam.app.JExamApp`
+
+If `exec:java` is unavailable in your local setup, use your IDE run configuration with main class `com.jexam.app.JExamApp`.
 
 ## Platform Notes
 
