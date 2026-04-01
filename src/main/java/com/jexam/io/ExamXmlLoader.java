@@ -31,10 +31,13 @@ public class ExamXmlLoader {
      * @return parsed exam instance
      * @throws ExamXmlException if parsing fails or XML values are invalid
      */
-    public Exam load(Path path) throws ExamXmlException {
+    public Exam load(final Path path) throws ExamXmlException {
         try {
             Element examElement = loadExamRootElement(path);
-            return new Exam(examElement.getAttribute("name"), parseChapters(examElement));
+            return new Exam(
+                examElement.getAttribute("name"),
+                parseChapters(examElement)
+            );
         } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new ExamXmlException("Failed to parse exam XML.", e);
         } catch (IllegalArgumentException e) {
@@ -42,8 +45,12 @@ public class ExamXmlLoader {
         }
     }
 
-    private Element loadExamRootElement(Path path) throws ParserConfigurationException, SAXException, IOException, ExamXmlException {
-        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(path.toFile());
+    private Element loadExamRootElement(final Path path)
+        throws ParserConfigurationException, SAXException, IOException,
+        ExamXmlException {
+        Document document = DocumentBuilderFactory.newInstance()
+            .newDocumentBuilder()
+            .parse(path.toFile());
         document.getDocumentElement().normalize();
 
         Element examElement = document.getDocumentElement();
@@ -53,11 +60,14 @@ public class ExamXmlLoader {
         return examElement;
     }
 
-    private List<Chapter> parseChapters(Element examElement) {
+    private List<Chapter> parseChapters(final Element examElement) {
         List<Chapter> chapters = new ArrayList<>();
         NodeList chapterNodes = examElement.getChildNodes();
         for (int i = 0; i < chapterNodes.getLength(); i++) {
-            Element chapterElement = asElementWithTag(chapterNodes.item(i), "chapter");
+            Element chapterElement = asElementWithTag(
+                chapterNodes.item(i),
+                "chapter"
+            );
             if (chapterElement != null) {
                 chapters.add(parseChapter(chapterElement));
             }
@@ -65,7 +75,7 @@ public class ExamXmlLoader {
         return chapters;
     }
 
-    private Chapter parseChapter(Element chapterElement) {
+    private Chapter parseChapter(final Element chapterElement) {
         String name = chapterElement.getAttribute("name");
         List<Task> tasks = new ArrayList<>();
 
@@ -80,16 +90,21 @@ public class ExamXmlLoader {
         return new Chapter(name, tasks);
     }
 
-    private Task parseTask(Element taskElement) {
+    private Task parseTask(final Element taskElement) {
         String name = taskElement.getAttribute("name");
         double points = Double.parseDouble(taskElement.getAttribute("points"));
-        Difficulty difficulty = Difficulty.fromXmlValue(taskElement.getAttribute("difficulty"));
+        Difficulty difficulty = Difficulty.fromXmlValue(
+            taskElement.getAttribute("difficulty")
+        );
         Scope scope = Scope.fromXmlValue(taskElement.getAttribute("scope"));
 
         List<Variant> variants = new ArrayList<>();
         NodeList variantNodes = taskElement.getChildNodes();
         for (int i = 0; i < variantNodes.getLength(); i++) {
-            Element variantElement = asElementWithTag(variantNodes.item(i), "variant");
+            Element variantElement = asElementWithTag(
+                variantNodes.item(i),
+                "variant"
+            );
             if (variantElement != null) {
                 variants.add(parseVariant(variantElement));
             }
@@ -98,7 +113,7 @@ public class ExamXmlLoader {
         return new Task(name, points, difficulty, scope, variants);
     }
 
-    private Variant parseVariant(Element variantElement) {
+    private Variant parseVariant(final Element variantElement) {
         String question = null;
         String answer = null;
 
@@ -119,7 +134,7 @@ public class ExamXmlLoader {
         return new Variant(question, answer);
     }
 
-    private Element asElementWithTag(Node node, String tagName) {
+    private Element asElementWithTag(final Node node, final String tagName) {
         Element element = asElement(node);
         if (element == null || !tagName.equals(element.getTagName())) {
             return null;
@@ -127,7 +142,7 @@ public class ExamXmlLoader {
         return element;
     }
 
-    private Element asElement(Node node) {
+    private Element asElement(final Node node) {
         if (node == null || node.getNodeType() != Node.ELEMENT_NODE) {
             return null;
         }

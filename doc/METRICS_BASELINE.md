@@ -279,3 +279,30 @@ Interpretation:
 - This is another strong reduction pass; the remaining highest concentration is
 	now in the `io` package (`ExamXmlLoader`, `ExamXmlWriter`,
 	`ExamPersistenceService`, `ExamXmlException`).
+
+## Phase Continuation Checkpoint (IO Package Cleanup)
+
+Date: 2026-04-01
+
+Executed:
+
+- `mvn test` (10/10 tests passed)
+- `mvn checkstyle:checkstyle` (report generated)
+- `mvn pmd:pmd` (build success)
+
+Observed delta:
+
+1. Checkstyle findings reduced from `293` to `254`.
+2. PMD run remains successful.
+
+Key implementation change:
+
+- Added JavaDocs and final parameters in `ExamXmlException` and
+	`ExamPersistenceService`.
+- Applied signature/final-parameter and line-length cleanup in
+	`ExamXmlLoader` and `ExamXmlWriter`.
+
+Interpretation:
+
+- The remaining larger share of Checkstyle findings is now concentrated in the
+	`generation` package and residual line-length rules.

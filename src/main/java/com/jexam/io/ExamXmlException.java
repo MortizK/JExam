@@ -1,11 +1,25 @@
 package com.jexam.io;
 
+/**
+ * Exception thrown when exam XML loading, validation, or writing fails.
+ */
 public class ExamXmlException extends Exception {
-    public ExamXmlException(String message) {
+    /**
+     * Creates an exception with message.
+     *
+     * @param message error message
+     */
+    public ExamXmlException(final String message) {
         super(message);
     }
 
-    public ExamXmlException(String message, Throwable cause) {
+    /**
+     * Creates an exception with message and cause.
+     *
+     * @param message error message
+     * @param cause underlying cause
+     */
+    public ExamXmlException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

@@ -6,30 +6,72 @@ import com.jexam.validation.ValidationResult;
 
 import java.nio.file.Path;
 
+/**
+ * High-level persistence service combining XML I/O and validation policy.
+ */
 public class ExamPersistenceService {
+    /**
+     * XML loader dependency.
+     */
     private final ExamXmlLoader loader;
+
+    /**
+     * XML writer dependency.
+     */
     private final ExamXmlWriter writer;
+
+    /**
+     * Validation dependency.
+     */
     private final ExamValidator validator;
 
-    public ExamPersistenceService(ExamXmlLoader loader, ExamXmlWriter writer, ExamValidator validator) {
+    /**
+     * Creates the persistence service.
+     *
+     * @param loader XML loader
+     * @param writer XML writer
+     * @param validator exam validator
+     */
+    public ExamPersistenceService(
+        final ExamXmlLoader loader,
+        final ExamXmlWriter writer,
+        final ExamValidator validator
+    ) {
         this.loader = loader;
         this.writer = writer;
         this.validator = validator;
     }
 
-    public Exam loadValidated(Path path) throws ExamXmlException {
-        Exam exam = loader.load(path);
-        ValidationResult result = validator.validate(exam);
+    /**
+     * Loads an exam from XML and validates it.
+     *
+     * @param path XML path
+     * @return validated exam
+     * @throws ExamXmlException when loading or validation fails
+     */
+    public Exam loadValidated(final Path path) throws ExamXmlException {
+        final Exam exam = loader.load(path);
+        final ValidationResult result = validator.validate(exam);
         if (!result.isValid()) {
             throw new ExamXmlException("Loaded XML is invalid: " + result.getErrors());
         }
         return exam;
     }
 
-    public void saveValidated(Exam exam, Path path) throws ExamXmlException {
-        ValidationResult result = validator.validate(exam);
+    /**
+     * Validates and saves an exam to XML.
+     *
+     * @param exam exam instance
+     * @param path output path
+     * @throws ExamXmlException when validation or writing fails
+     */
+    public void saveValidated(final Exam exam, final Path path)
+        throws ExamXmlException {
+        final ValidationResult result = validator.validate(exam);
         if (!result.isValid()) {
-            throw new ExamXmlException("Refusing to save invalid exam: " + result.getErrors());
+            throw new ExamXmlException(
+                "Refusing to save invalid exam: " + result.getErrors()
+            );
         }
         writer.write(exam, path);
     }

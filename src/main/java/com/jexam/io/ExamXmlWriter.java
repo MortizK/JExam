@@ -77,7 +77,10 @@ public class ExamXmlWriter {
         Element taskElement = document.createElement("task");
         taskElement.setAttribute("name", task.getName());
         taskElement.setAttribute("points", Double.toString(task.getPoints()));
-        taskElement.setAttribute("difficulty", task.getDifficulty().toXmlValue());
+        taskElement.setAttribute(
+            "difficulty",
+            task.getDifficulty().toXmlValue()
+        );
         taskElement.setAttribute("scope", task.getScope().toXmlValue());
         chapterElement.appendChild(taskElement);
 
@@ -98,7 +101,12 @@ public class ExamXmlWriter {
             "question",
             variant.getQuestion()
         );
-        appendTextElement(document, variantElement, "answer", variant.getAnswer());
+        appendTextElement(
+            document,
+            variantElement,
+            "answer",
+            variant.getAnswer()
+        );
         taskElement.appendChild(variantElement);
     }
 
@@ -127,7 +135,10 @@ public class ExamXmlWriter {
         );
 
         try (OutputStream outputStream = Files.newOutputStream(path)) {
-            transformer.transform(new DOMSource(document), new StreamResult(outputStream));
+            transformer.transform(
+                new DOMSource(document),
+                new StreamResult(outputStream)
+            );
         }
     }
 }
