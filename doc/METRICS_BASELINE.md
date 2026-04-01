@@ -9,9 +9,16 @@ Date: 2026-04-01
 Primary complexity tool:
 - Maven PMD plugin (`mvn pmd:pmd`)
 
+Extended metrics toolchain:
+- Checkstyle (`mvn checkstyle:checkstyle`)
+- SpotBugs (`mvn spotbugs:spotbugs`)
+- JaCoCo (`mvn verify`)
+
 Notes:
 - JavaNCSS was tested but is not compatible with several Java language features used in this codebase (for example stream/lambda parsing), so PMD is the baseline source for McCabe at the moment.
 - PMD plugin version is pinned in [../pom.xml](../pom.xml).
+- Checkstyle and SpotBugs are configured in non-blocking mode for baseline gathering; they can be tightened into quality gates later.
+- SpotBugs is profile-gated to supported JDKs (`[17,23)`) due class-file compatibility issues on newer runtimes in this environment.
 
 ## Commands
 

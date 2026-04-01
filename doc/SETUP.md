@@ -54,11 +54,22 @@ From repository root:
 
 - Run tests: `mvn test`
 - Run complexity analysis (McCabe via PMD): `mvn pmd:pmd`
+- Run style analysis (Checkstyle): `mvn checkstyle:checkstyle`
+- Run bug pattern analysis (SpotBugs): `mvn spotbugs:spotbugs`
+- Run coverage report (JaCoCo): `mvn verify`
 
 Reports:
 
 - `target/pmd.xml`
 - `target/site/pmd.html`
+- `target/site/checkstyle.html`
+- `target/spotbugsXml.xml`
+- `target/site/jacoco/index.html`
+
+SpotBugs runtime note:
+
+- SpotBugs is auto-enabled only on supported JDK ranges (`[17,23)`) to avoid class-file compatibility failures on newer JDKs.
+- On newer JDKs, the goal is skipped by default. You can still force execution with `-Dspotbugs.skip=false` when using a supported JDK.
 
 Current baseline and interpretation:
 
