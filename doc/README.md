@@ -36,6 +36,6 @@ Mapped from existing specification material:
 | 0 | Maven bootstrap, Java 17 setup, package skeleton | Done |
 | 1 | Domain model + validation with tests | Done |
 | 2 | XML load/save + round-trip tests + validation wiring | Done |
-| 3 | PDF generation services | Scaffolded, implementation pending |
-| 4 | Bare minimum UI | Minimal shell created, functional wiring pending |
+| 3 | PDF generation services | Done (PDFBox implementation + tests) |
+| 4 | Bare minimum UI | In progress (open/save/validate + PDF export controls) |
 | 5 | End-to-end hardening | Pending |

@@ -33,6 +33,15 @@ From repository root:
 - Build: `mvn clean package`
 - Test: `mvn test`
 
+Run packaged application from console:
+
+- `java -jar target/jexam-0.1.0-SNAPSHOT-all.jar`
+
+Notes:
+
+- `target/jexam-0.1.0-SNAPSHOT.jar` is the thin project jar.
+- `target/jexam-0.1.0-SNAPSHOT-all.jar` is the executable jar with dependencies.
+
 Run minimal JavaFX shell:
 
 - `mvn -q exec:java -Dexec.mainClass=com.jexam.app.JExamApp`
