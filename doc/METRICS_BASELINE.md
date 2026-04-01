@@ -114,3 +114,27 @@ Interpretation:
 
 - This phase produced the first larger global PMD drop while keeping all tests green.
 - The main remaining concentration is still `JExamApp`, so the next phase should continue MVC decomposition of that class.
+
+## Phase Continuation Checkpoint (JExamApp Navigation Extraction)
+
+Date: 2026-04-01
+
+Executed:
+
+- `mvn test` (10/10 tests passed)
+- `mvn pmd:pmd` (build success)
+
+Observed delta:
+
+1. Total PMD violations reduced from `145` to `140`.
+2. Law of Demeter reduced from `134` to `129`.
+3. `JExamApp` Law of Demeter reduced from `65` to `44` by extracting hierarchy navigation into `JExamSelectionModel`.
+
+Trade-off:
+
+- Some LoD findings moved into `JExamSelectionModel` (new helper class), which is expected during decomposition and can be reduced in follow-up by introducing a richer domain/service API.
+
+Interpretation:
+
+- This phase achieved a strong reduction in the main UI hotspot and continued the MVC refactoring direction.
+- Next phase should reduce LoD at source by adding intention-revealing domain/service methods and shrinking direct collection traversal in helper classes.

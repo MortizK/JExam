@@ -36,6 +36,7 @@ import java.util.Optional;
 public class JExamApp extends Application {
     private final ExamApplicationService appService = new ExamApplicationService();
     private final JExamUiSupport ui = new JExamUiSupport();
+    private final JExamSelectionModel selectionModel = new JExamSelectionModel();
 
     private Exam currentExam;
 
@@ -58,6 +59,7 @@ public class JExamApp extends Application {
     @Override
     public void start(Stage stage) {
         currentExam = appService.getCurrentExam();
+        selectionModel.setExam(currentExam);
 
         Label title = new Label("JExam");
         Label subtitle = new Label("Phase 4 MVP: hierarchy editing + validation + PDF export");
@@ -191,6 +193,7 @@ public class JExamApp extends Application {
 
     private void refreshAllLists() {
         currentExam = appService.getCurrentExam();
+        selectionModel.setExam(currentExam);
         refreshChapters();
         refreshTasks();
         refreshVariants();
@@ -206,19 +209,19 @@ public class JExamApp extends Application {
     }
 
     private void refreshTasks() {
-        Chapter chapter = selectedChapter();
+        Chapter chapter = selectionModel.chapterAt(selectedChapterIndex());
         if (chapter == null) {
             taskItems.clear();
             return;
         }
-        taskItems.setAll(chapter.getTasks().stream().map(this::taskLabel).toList());
+        taskItems.setAll(chapter.getTasks().stream().map(selectionModel::taskLabel).toList());
         if (!taskItems.isEmpty() && taskList.getSelectionModel().getSelectedIndex() < 0) {
             taskList.getSelectionModel().select(0);
         }
     }
 
     private void refreshVariants() {
-        Task task = selectedTask();
+        Task task = selectionModel.taskAt(selectedChapterIndex(), selectedTaskIndex());
         if (task == null) {
             variantItems.clear();
             return;
@@ -235,7 +238,7 @@ public class JExamApp extends Application {
     }
 
     private void populateTaskEditor() {
-        Task task = selectedTask();
+        Task task = selectionModel.taskAt(selectedChapterIndex(), selectedTaskIndex());
         if (task == null) {
             taskNameField.setText("");
             taskPointsField.setText("");
@@ -251,7 +254,7 @@ public class JExamApp extends Application {
     }
 
     private void populateVariantEditor() {
-        Variant variant = selectedVariant();
+        Variant variant = selectionModel.variantAt(selectedChapterIndex(), selectedTaskIndex(), selectedVariantIndex());
         if (variant == null) {
             variantQuestionArea.setText("");
             variantAnswerArea.setText("");
@@ -262,17 +265,12 @@ public class JExamApp extends Application {
         variantAnswerArea.setText(variant.getAnswer());
     }
 
-    private String taskLabel(Task task) {
-        return task.getName() + " (" + task.getPoints() + " pts, " + task.getDifficulty().toXmlValue() + ", "
-            + task.getScope().toXmlValue() + ")";
-    }
-
     private void addChapter() {
         Optional<String> name = ui.askForText("Add Chapter", "Chapter name", "New Chapter");
         name.ifPresent(value -> {
             appService.addChapter(value);
             refreshAllLists();
-            chapterList.getSelectionModel().select(lastChapterIndex());
+            chapterList.getSelectionModel().select(selectionModel.lastChapterIndex());
         });
     }
 
@@ -283,7 +281,7 @@ public class JExamApp extends Application {
             return;
         }
 
-        if (chapterCount() <= 1) {
+        if (selectionModel.chapterCount() <= 1) {
             ui.showError("Cannot remove chapter", "At least one chapter must remain.");
             return;
         }
@@ -297,7 +295,7 @@ public class JExamApp extends Application {
     }
 
     private void addTask() {
-        Chapter chapter = selectedChapter();
+        Chapter chapter = selectionModel.chapterAt(selectedChapterIndex());
         if (chapter == null) {
             ui.showError("No chapter selected", "Select a chapter before adding a task.");
             return;
@@ -308,19 +306,19 @@ public class JExamApp extends Application {
             int chapterIndex = selectedChapterIndex();
             appService.addTask(chapterIndex, value);
             refreshAllLists();
-            taskList.getSelectionModel().select(lastTaskIndex(chapterIndex));
+            taskList.getSelectionModel().select(selectionModel.lastTaskIndex(chapterIndex));
         });
     }
 
     private void removeTask() {
-        Chapter chapter = selectedChapter();
+        Chapter chapter = selectionModel.chapterAt(selectedChapterIndex());
         int index = taskList.getSelectionModel().getSelectedIndex();
         if (chapter == null || index < 0) {
             ui.showError("No task selected", "Select a task to remove.");
             return;
         }
 
-        if (chapterTaskCount(selectedChapterIndex()) <= 1) {
+        if (selectionModel.taskCount(selectedChapterIndex()) <= 1) {
             ui.showError("Cannot remove task", "At least one task must remain per chapter.");
             return;
         }
@@ -335,7 +333,7 @@ public class JExamApp extends Application {
     }
 
     private void addVariant() {
-        Task task = selectedTask();
+        Task task = selectionModel.taskAt(selectedChapterIndex(), selectedTaskIndex());
         if (task == null) {
             ui.showError("No task selected", "Select a task before adding a variant.");
             return;
@@ -345,18 +343,18 @@ public class JExamApp extends Application {
         int taskIndex = selectedTaskIndex();
         appService.addVariant(chapterIndex, taskIndex);
         refreshAllLists();
-        variantList.getSelectionModel().select(lastVariantIndex(chapterIndex, taskIndex));
+        variantList.getSelectionModel().select(selectionModel.lastVariantIndex(chapterIndex, taskIndex));
     }
 
     private void removeVariant() {
-        Task task = selectedTask();
+        Task task = selectionModel.taskAt(selectedChapterIndex(), selectedTaskIndex());
         int index = variantList.getSelectionModel().getSelectedIndex();
         if (task == null || index < 0) {
             ui.showError("No variant selected", "Select a variant to remove.");
             return;
         }
 
-        if (taskVariantCount(selectedChapterIndex(), selectedTaskIndex()) <= 1) {
+        if (selectionModel.variantCount(selectedChapterIndex(), selectedTaskIndex()) <= 1) {
             ui.showError("Cannot remove variant", "Each task must have at least one variant.");
             return;
         }
@@ -372,7 +370,7 @@ public class JExamApp extends Application {
     }
 
     private void saveTaskDetails() {
-        Task task = selectedTask();
+        Task task = selectionModel.taskAt(selectedChapterIndex(), selectedTaskIndex());
         if (task == null) {
             ui.showError("No task selected", "Select a task first.");
             return;
@@ -404,7 +402,7 @@ public class JExamApp extends Application {
     }
 
     private void saveVariantDetails() {
-        Variant variant = selectedVariant();
+        Variant variant = selectionModel.variantAt(selectedChapterIndex(), selectedTaskIndex(), selectedVariantIndex());
         if (variant == null) {
             ui.showError("No variant selected", "Select a variant first.");
             return;
@@ -432,8 +430,9 @@ public class JExamApp extends Application {
         try {
             appService.openExam(file.toPath());
             currentExam = appService.getCurrentExam();
+            selectionModel.setExam(currentExam);
             refreshAllLists();
-            ui.showInfo("Open successful", "Loaded exam: " + currentExamName());
+            ui.showInfo("Open successful", "Loaded exam: " + selectionModel.currentExamName());
         } catch (ExamXmlException e) {
             ui.showError("Open failed", e.getMessage());
         }
@@ -485,32 +484,6 @@ public class JExamApp extends Application {
         }
     }
 
-    private Chapter selectedChapter() {
-        int chapterIndex = selectedChapterIndex();
-        if (chapterIndex < 0 || chapterIndex >= chapterCount()) {
-            return null;
-        }
-        return currentExam.getChapters().get(chapterIndex);
-    }
-
-    private Task selectedTask() {
-        Chapter chapter = selectedChapter();
-        int taskIndex = selectedTaskIndex();
-        if (chapter == null || taskIndex < 0 || taskIndex >= chapter.getTasks().size()) {
-            return null;
-        }
-        return chapter.getTasks().get(taskIndex);
-    }
-
-    private Variant selectedVariant() {
-        Task task = selectedTask();
-        int variantIndex = selectedVariantIndex();
-        if (task == null || variantIndex < 0 || variantIndex >= task.getVariants().size()) {
-            return null;
-        }
-        return task.getVariants().get(variantIndex);
-    }
-
     private int selectedChapterIndex() {
         return chapterList.getSelectionModel().getSelectedIndex();
     }
@@ -521,44 +494,6 @@ public class JExamApp extends Application {
 
     private int selectedVariantIndex() {
         return variantList.getSelectionModel().getSelectedIndex();
-    }
-
-    private int chapterCount() {
-        return currentExam.getChapters().size();
-    }
-
-    private int chapterTaskCount(int chapterIndex) {
-        if (chapterIndex < 0 || chapterIndex >= chapterCount()) {
-            return 0;
-        }
-        return currentExam.getChapters().get(chapterIndex).getTasks().size();
-    }
-
-    private int taskVariantCount(int chapterIndex, int taskIndex) {
-        if (chapterIndex < 0 || chapterIndex >= chapterCount()) {
-            return 0;
-        }
-        List<Task> tasks = currentExam.getChapters().get(chapterIndex).getTasks();
-        if (taskIndex < 0 || taskIndex >= tasks.size()) {
-            return 0;
-        }
-        return tasks.get(taskIndex).getVariants().size();
-    }
-
-    private int lastChapterIndex() {
-        return chapterCount() - 1;
-    }
-
-    private int lastTaskIndex(int chapterIndex) {
-        return chapterTaskCount(chapterIndex) - 1;
-    }
-
-    private int lastVariantIndex(int chapterIndex, int taskIndex) {
-        return taskVariantCount(chapterIndex, taskIndex) - 1;
-    }
-
-    private String currentExamName() {
-        return currentExam.getName();
     }
 
 }
