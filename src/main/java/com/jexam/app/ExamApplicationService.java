@@ -16,8 +16,12 @@ import com.jexam.model.enums.Scope;
 import com.jexam.validation.ExamValidator;
 import com.jexam.validation.ValidationResult;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.nio.file.Files;
 
 /**
  * Application service that centralizes exam use-case orchestration.
@@ -29,6 +33,7 @@ public class ExamApplicationService {
     private final ExamValidator validator;
     private final PdfGenerationService pdfGenerationService;
     private final ExamPersistenceService persistenceService;
+    private final List<Integer> generationChapterIndices;
 
     private Exam currentExam;
 
@@ -41,6 +46,8 @@ public class ExamApplicationService {
             validator
         );
         this.currentExam = createDefaultExam();
+        this.generationChapterIndices = new ArrayList<>();
+        resetGenerationChapterSelection();
     }
 
     /**
@@ -57,6 +64,7 @@ public class ExamApplicationService {
      */
     public void newExam() {
         currentExam = createDefaultExam();
+        resetGenerationChapterSelection();
     }
 
     /**
@@ -67,6 +75,7 @@ public class ExamApplicationService {
      */
     public void openExam(Path path) throws ExamXmlException {
         currentExam = persistenceService.loadValidated(path);
+        resetGenerationChapterSelection();
     }
 
     /**
@@ -95,11 +104,82 @@ public class ExamApplicationService {
      * @param outputPath destination PDF path
      */
     public void generatePdf(GenerationMode mode, Path outputPath) {
-        ValidationResult result = validateCurrentExam();
+        Exam generationExam = buildExamForGeneration();
+        ValidationResult result = validator.validate(generationExam);
+        appendGenerationRuleErrors(result, mode, generationExam);
         if (!result.isValid()) {
             throw new IllegalStateException("Exam is invalid: " + result.getErrors());
         }
-        pdfGenerationService.generate(currentExam, mode, outputPath);
+        pdfGenerationService.generate(generationExam, mode, outputPath);
+    }
+
+    /**
+     * Generates a preview PDF into a temporary file and returns its path.
+     *
+     * @param mode preview generation mode
+     * @return absolute path to generated preview PDF
+     */
+    public Path generatePreviewPdf(GenerationMode mode) {
+        try {
+            Path previewPath = Files.createTempFile("jexam-preview-", ".pdf");
+            previewPath.toFile().deleteOnExit();
+            generatePdf(mode, previewPath);
+            return previewPath.toAbsolutePath();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to create preview file.", e);
+        }
+    }
+
+    private void appendGenerationRuleErrors(
+        final ValidationResult result,
+        final GenerationMode mode,
+        final Exam generationExam
+    ) {
+        if (mode != GenerationMode.EXAM && mode != GenerationMode.SOLUTION) {
+            return;
+        }
+
+        final int chapterCount = generationExam.chapterCount();
+        for (int chapterIndex = 0; chapterIndex < chapterCount; chapterIndex++) {
+            final Chapter chapter = generationExam.chapterAt(chapterIndex);
+            if (!hasDifficultyThirdsForExamScope(chapter)) {
+                result.addError(
+                    "exam.chapters[" + chapterIndex + "].tasks.difficultyDistribution",
+                    "Exam tasks must be distributed by difficulty in exact thirds with at least one easy, medium, and hard task."
+                );
+            }
+        }
+    }
+
+    private boolean hasDifficultyThirdsForExamScope(final Chapter chapter) {
+        int easyCount = 0;
+        int mediumCount = 0;
+        int hardCount = 0;
+
+        for (Task task : chapter.getTasks()) {
+            if (task.getScope() != Scope.EXAM) {
+                continue;
+            }
+
+            Difficulty difficulty = task.getDifficulty();
+            if (difficulty == Difficulty.EASY) {
+                easyCount++;
+            } else if (difficulty == Difficulty.MEDIUM) {
+                mediumCount++;
+            } else if (difficulty == Difficulty.HARD) {
+                hardCount++;
+            }
+        }
+
+        final int totalExamTasks = easyCount + mediumCount + hardCount;
+        if (totalExamTasks < 3 || totalExamTasks % 3 != 0) {
+            return false;
+        }
+
+        final int target = totalExamTasks / 3;
+        return easyCount == target
+            && mediumCount == target
+            && hardCount == target;
     }
 
     /**
@@ -109,6 +189,7 @@ public class ExamApplicationService {
      */
     public void addChapter(String name) {
         currentExam.addChapter(new Chapter(name, List.of(defaultTask())));
+        resetGenerationChapterSelection();
     }
 
     /**
@@ -118,6 +199,7 @@ public class ExamApplicationService {
      */
     public void removeChapter(int chapterIndex) {
         currentExam.removeChapter(chapterIndex);
+        resetGenerationChapterSelection();
     }
 
     /**
@@ -130,6 +212,75 @@ public class ExamApplicationService {
         Task task = defaultTask();
         task.setName(taskName);
         chapterAt(chapterIndex).addTask(task);
+    }
+
+    /**
+     * Returns configured chapter indices used for generation.
+     *
+     * @return ordered generation chapter indices
+     */
+    public List<Integer> generationChapterOrder() {
+        return Collections.unmodifiableList(generationChapterIndices);
+    }
+
+    /**
+     * Moves a generation chapter one step up in the order.
+     *
+     * @param orderIndex index in generation order list
+     */
+    public void moveGenerationChapterUp(int orderIndex) {
+        if (orderIndex <= 0 || orderIndex >= generationChapterIndices.size()) {
+            return;
+        }
+        Collections.swap(generationChapterIndices, orderIndex, orderIndex - 1);
+    }
+
+    /**
+     * Moves a generation chapter one step down in the order.
+     *
+     * @param orderIndex index in generation order list
+     */
+    public void moveGenerationChapterDown(int orderIndex) {
+        if (orderIndex < 0 || orderIndex >= generationChapterIndices.size() - 1) {
+            return;
+        }
+        Collections.swap(generationChapterIndices, orderIndex, orderIndex + 1);
+    }
+
+    /**
+     * Excludes a chapter from generation by its position in generation order.
+     *
+     * @param orderIndex index in generation order list
+     */
+    public void excludeGenerationChapter(int orderIndex) {
+        if (orderIndex < 0 || orderIndex >= generationChapterIndices.size()) {
+            return;
+        }
+        generationChapterIndices.remove(orderIndex);
+    }
+
+    /**
+     * Includes a chapter for generation by chapter index.
+     *
+     * @param chapterIndex chapter index in current exam
+     */
+    public void includeGenerationChapter(int chapterIndex) {
+        if (chapterIndex < 0 || chapterIndex >= currentExam.chapterCount()) {
+            return;
+        }
+        if (!generationChapterIndices.contains(chapterIndex)) {
+            generationChapterIndices.add(chapterIndex);
+        }
+    }
+
+    /**
+     * Restores generation selection to all chapters in natural order.
+     */
+    public void resetGenerationChapterSelection() {
+        generationChapterIndices.clear();
+        for (int chapterIndex = 0; chapterIndex < currentExam.chapterCount(); chapterIndex++) {
+            generationChapterIndices.add(chapterIndex);
+        }
     }
 
     /**
@@ -160,7 +311,13 @@ public class ExamApplicationService {
      * @param variantIndex target variant index
      */
     public void removeVariant(int chapterIndex, int taskIndex, int variantIndex) {
-        taskAt(chapterIndex, taskIndex).removeVariant(variantIndex);
+        Task task = taskAt(chapterIndex, taskIndex);
+        if (task.variantCount() <= 1) {
+            throw new IllegalStateException(
+                "A task must contain at least one variant."
+            );
+        }
+        task.removeVariant(variantIndex);
     }
 
     /**
@@ -212,11 +369,29 @@ public class ExamApplicationService {
         return new Exam("New Exam", List.of(new Chapter("New Chapter", List.of(defaultTask()))));
     }
 
+    private Exam buildExamForGeneration() {
+        if (generationChapterIndices.isEmpty()) {
+            throw new IllegalStateException("No chapters selected for PDF generation.");
+        }
+
+        List<Chapter> chapters = new ArrayList<>();
+        for (int chapterIndex : generationChapterIndices) {
+            if (chapterIndex >= 0 && chapterIndex < currentExam.chapterCount()) {
+                chapters.add(currentExam.chapterAt(chapterIndex));
+            }
+        }
+
+        if (chapters.isEmpty()) {
+            throw new IllegalStateException("No chapters selected for PDF generation.");
+        }
+        return new Exam(currentExam.getName(), chapters);
+    }
+
     private Task defaultTask() {
         return new Task(
-            "New Task",
+            "New Subtask",
             1.0,
-            Difficulty.MEDIUM,
+            Difficulty.EASY,
             Scope.EXAM,
             List.of(new Variant("New Question", "New Answer"))
         );

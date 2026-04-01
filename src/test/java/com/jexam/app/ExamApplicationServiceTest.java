@@ -1,0 +1,186 @@
+package com.jexam.app;
+
+import com.jexam.generation.GenerationMode;
+import com.jexam.model.Task;
+import com.jexam.model.enums.Difficulty;
+import com.jexam.model.enums.Scope;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.nio.file.Path;
+import java.nio.file.Files;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+class ExamApplicationServiceTest {
+    @TempDir
+    Path tempDir;
+
+    @Test
+    void newExamShouldUseDocumentedDefaultTaskValues() {
+        ExamApplicationService service = new ExamApplicationService();
+
+        Task task = service.getCurrentExam().taskAt(0, 0);
+        assertEquals("New Subtask", task.getName());
+        assertEquals("easy", task.getDifficulty().toXmlValue());
+    }
+
+    @Test
+    void removeVariantShouldRejectDeletingLastVariant() {
+        ExamApplicationService service = new ExamApplicationService();
+
+        IllegalStateException exception = assertThrows(
+            IllegalStateException.class,
+            () -> service.removeVariant(0, 0, 0)
+        );
+
+        assertEquals(
+            "A task must contain at least one variant.",
+            exception.getMessage()
+        );
+    }
+
+    @Test
+    void generatePdfShouldRejectWhenDifficultyIsNotInThirds() {
+        ExamApplicationService service = new ExamApplicationService();
+
+        IllegalStateException exception = assertThrows(
+            IllegalStateException.class,
+            () -> service.generatePdf(GenerationMode.EXAM, tempDir.resolve("invalid-exam.pdf"))
+        );
+
+        assertTrue(exception.getMessage().contains("difficultyDistribution"));
+    }
+
+    @Test
+    void generatePdfShouldAllowBalancedDifficultyThirds() {
+        ExamApplicationService service = new ExamApplicationService();
+
+        service.addTask(0, "Medium Task");
+        service.updateTaskDetails(0, 1, "Medium Task", 1.0, Difficulty.MEDIUM, Scope.EXAM);
+        service.addTask(0, "Hard Task");
+        service.updateTaskDetails(0, 2, "Hard Task", 1.0, Difficulty.HARD, Scope.EXAM);
+
+        assertDoesNotThrow(
+            () -> service.generatePdf(GenerationMode.EXAM, tempDir.resolve("valid-exam.pdf"))
+        );
+    }
+
+    @Test
+    void generatePdfShouldRespectConfiguredChapterOrderAndExclusion()
+        throws Exception {
+        ExamApplicationService service = new ExamApplicationService();
+        service.getCurrentExam().chapterAt(0).setName("Alpha");
+        service.addChapter("Beta");
+        service.addChapter("Gamma");
+
+        service.updateTaskDetails(0, 0, "Alpha Task", 1.0, Difficulty.EASY, Scope.MOCK_EXAM);
+        service.updateTaskDetails(1, 0, "Beta Task", 1.0, Difficulty.EASY, Scope.MOCK_EXAM);
+        service.updateTaskDetails(2, 0, "Gamma Task", 1.0, Difficulty.EASY, Scope.MOCK_EXAM);
+
+        service.excludeGenerationChapter(1);
+        service.moveGenerationChapterDown(0);
+
+        Path output = tempDir.resolve("ordered-mock.pdf");
+        service.generatePdf(GenerationMode.MOCK_EXAM, output);
+
+        String text = readPdfText(output);
+        int gammaIndex = text.indexOf("Chapter: Gamma");
+        int alphaIndex = text.indexOf("Chapter: Alpha");
+
+        assertTrue(gammaIndex >= 0);
+        assertTrue(alphaIndex >= 0);
+        assertTrue(gammaIndex < alphaIndex);
+        assertFalse(text.contains("Chapter: Beta"));
+    }
+
+    @Test
+    void generatePdfShouldRejectWhenNoGenerationChapterIsSelected() {
+        ExamApplicationService service = new ExamApplicationService();
+        service.excludeGenerationChapter(0);
+
+        IllegalStateException exception = assertThrows(
+            IllegalStateException.class,
+            () -> service.generatePdf(GenerationMode.MOCK_EXAM, tempDir.resolve("empty-selection.pdf"))
+        );
+
+        assertEquals("No chapters selected for PDF generation.", exception.getMessage());
+    }
+
+    @Test
+    void addAndRemoveChapterShouldUpdateExamStructure() {
+        ExamApplicationService service = new ExamApplicationService();
+
+        int initial = service.getCurrentExam().chapterCount();
+        service.addChapter("Networks");
+
+        assertEquals(initial + 1, service.getCurrentExam().chapterCount());
+        assertEquals("Networks", service.getCurrentExam().chapterAt(initial).getName());
+
+        service.removeChapter(initial);
+        assertEquals(initial, service.getCurrentExam().chapterCount());
+    }
+
+    @Test
+    void addTaskAndUpdateTaskDetailsShouldPersistChanges() {
+        ExamApplicationService service = new ExamApplicationService();
+
+        int initialTasks = service.getCurrentExam().chapterAt(0).taskCount();
+        service.addTask(0, "Heap Basics");
+
+        assertEquals(initialTasks + 1, service.getCurrentExam().chapterAt(0).taskCount());
+        assertEquals("Heap Basics", service.getCurrentExam().taskAt(0, initialTasks).getName());
+
+        service.updateTaskDetails(
+            0,
+            initialTasks,
+            "Heap Advanced",
+            2.5,
+            Difficulty.HARD,
+            Scope.MOCK_EXAM
+        );
+
+        Task updated = service.getCurrentExam().taskAt(0, initialTasks);
+        assertEquals("Heap Advanced", updated.getName());
+        assertEquals(2.5, updated.getPoints());
+        assertEquals(Difficulty.HARD, updated.getDifficulty());
+        assertEquals(Scope.MOCK_EXAM, updated.getScope());
+    }
+
+    @Test
+    void removeTaskShouldDeleteRequestedTask() {
+        ExamApplicationService service = new ExamApplicationService();
+        service.addTask(0, "Task A");
+        service.addTask(0, "Task B");
+
+        int countBefore = service.getCurrentExam().chapterAt(0).taskCount();
+        service.removeTask(0, countBefore - 1);
+
+        assertEquals(countBefore - 1, service.getCurrentExam().chapterAt(0).taskCount());
+    }
+
+    @Test
+    void generatePreviewPdfShouldCreateReadableTemporaryPdf() throws Exception {
+        ExamApplicationService service = new ExamApplicationService();
+
+        Path previewPath = service.generatePreviewPdf(GenerationMode.MOCK_EXAM);
+
+        assertNotNull(previewPath);
+        assertTrue(Files.exists(previewPath));
+        assertTrue(Files.size(previewPath) > 0);
+    }
+
+    private String readPdfText(Path path) throws Exception {
+        try (PDDocument document = Loader.loadPDF(path.toFile())) {
+            return new PDFTextStripper().getText(document);
+        }
+    }
+}

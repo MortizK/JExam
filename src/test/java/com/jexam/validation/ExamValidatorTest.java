@@ -41,4 +41,14 @@ class ExamValidatorTest {
         ValidationResult result = validator.validate(exam);
         assertFalse(result.isValid());
     }
+
+    @Test
+    void taskPointsMustUseHalfStepIncrements() {
+        Exam exam = TestFixtures.validExam();
+        Task task = exam.getChapters().get(0).getTasks().get(0);
+        task.setPoints(1.3);
+
+        ValidationResult result = validator.validate(exam);
+        assertFalse(result.isValid());
+    }
 }

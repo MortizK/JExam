@@ -60,17 +60,40 @@ public class JExamApp extends Application {
     public void start(Stage stage) {
         currentExam = appService.getCurrentExam();
         selectionModel.setExam(currentExam);
+        ui.setLanguage(UiLanguage.ENGLISH);
 
         Label title = new Label("JExam");
-        Label subtitle = new Label("Phase 4 MVP: hierarchy editing + validation + PDF export");
+        Label subtitle = new Label(ui.text("app.subtitle"));
 
-        Button newButton = new Button("New");
-        Button openButton = new Button("Open");
-        Button saveButton = new Button("Save");
-        Button validateButton = new Button("Validate");
-        Button examPdfButton = new Button("Generate Exam PDF");
-        Button solutionPdfButton = new Button("Generate Solution PDF");
-        Button mockPdfButton = new Button("Generate Mock PDF");
+        Button newButton = new Button(ui.text("button.new"));
+        Button openButton = new Button(ui.text("button.open"));
+        Button saveButton = new Button(ui.text("button.save"));
+        Button validateButton = new Button(ui.text("button.validate"));
+        Button previewButton = new Button(ui.text("button.preview"));
+        Button examPdfButton = new Button(ui.text("button.generate.exam"));
+        Button solutionPdfButton = new Button(ui.text("button.generate.solution"));
+        Button mockPdfButton = new Button(ui.text("button.generate.mock"));
+        Label languageLabel = new Label(ui.text("label.language"));
+        ComboBox<UiLanguage> languageBox = new ComboBox<>(
+            FXCollections.observableArrayList(UiLanguage.values())
+        );
+        languageBox.setValue(UiLanguage.ENGLISH);
+        languageBox.setOnAction(event -> {
+            ui.setLanguage(languageBox.getValue());
+            applyLanguage(
+                subtitle,
+                newButton,
+                openButton,
+                saveButton,
+                validateButton,
+                previewButton,
+                examPdfButton,
+                solutionPdfButton,
+                mockPdfButton,
+                languageLabel,
+                stage
+            );
+        });
 
         newButton.setOnAction(event -> {
             appService.newExam();
@@ -81,6 +104,7 @@ public class JExamApp extends Application {
         openButton.setOnAction(event -> openExam(stage));
         saveButton.setOnAction(event -> saveExam(stage));
         validateButton.setOnAction(event -> validateCurrentExam());
+        previewButton.setOnAction(event -> previewPdf());
         examPdfButton.setOnAction(event -> generatePdf(stage, GenerationMode.EXAM));
         solutionPdfButton.setOnAction(event -> generatePdf(stage, GenerationMode.SOLUTION));
         mockPdfButton.setOnAction(event -> generatePdf(stage, GenerationMode.MOCK_EXAM));
@@ -91,9 +115,12 @@ public class JExamApp extends Application {
             openButton,
             saveButton,
             validateButton,
+            previewButton,
             examPdfButton,
             solutionPdfButton,
-            mockPdfButton
+            mockPdfButton,
+            languageLabel,
+            languageBox
         );
 
         chapterList = new ListView<>(chapterItems);
@@ -484,6 +511,20 @@ public class JExamApp extends Application {
         }
     }
 
+    private void previewPdf() {
+        try {
+            Path previewPath = appService.generatePreviewPdf(GenerationMode.EXAM);
+            boolean opened = ui.openFile(previewPath);
+            if (opened) {
+                ui.showInfo("Preview ready", "Opened preview: " + previewPath);
+            } else {
+                ui.showInfo("Preview ready", "Preview generated at: " + previewPath);
+            }
+        } catch (RuntimeException e) {
+            ui.showError("Preview failed", e.getMessage());
+        }
+    }
+
     private int selectedChapterIndex() {
         return chapterList.getSelectionModel().getSelectedIndex();
     }
@@ -494,6 +535,32 @@ public class JExamApp extends Application {
 
     private int selectedVariantIndex() {
         return variantList.getSelectionModel().getSelectedIndex();
+    }
+
+    private void applyLanguage(
+        Label subtitle,
+        Button newButton,
+        Button openButton,
+        Button saveButton,
+        Button validateButton,
+        Button previewButton,
+        Button examPdfButton,
+        Button solutionPdfButton,
+        Button mockPdfButton,
+        Label languageLabel,
+        Stage stage
+    ) {
+        subtitle.setText(ui.text("app.subtitle"));
+        newButton.setText(ui.text("button.new"));
+        openButton.setText(ui.text("button.open"));
+        saveButton.setText(ui.text("button.save"));
+        validateButton.setText(ui.text("button.validate"));
+        previewButton.setText(ui.text("button.preview"));
+        examPdfButton.setText(ui.text("button.generate.exam"));
+        solutionPdfButton.setText(ui.text("button.generate.solution"));
+        mockPdfButton.setText(ui.text("button.generate.mock"));
+        languageLabel.setText(ui.text("label.language"));
+        stage.setTitle("JExam");
     }
 
 }

@@ -79,6 +79,11 @@ public final class ExamValidator {
                 path + ".points",
                 "Task points must be greater than 0."
             );
+        } else if (!isHalfStep(task.getPoints())) {
+            result.addError(
+                path + ".points",
+                "Task points must be in 0.5 increments."
+            );
         }
 
         if (task.getDifficulty() == null) {
@@ -129,5 +134,10 @@ public final class ExamValidator {
 
     private boolean isBlank(final String text) {
         return text == null || text.trim().isEmpty();
+    }
+
+    private boolean isHalfStep(final double points) {
+        final double scaled = points * 2.0;
+        return Math.abs(scaled - Math.rint(scaled)) < 1e-9;
     }
 }
