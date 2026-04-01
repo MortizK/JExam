@@ -67,6 +67,14 @@ public class Task {
         variants.remove(index);
     }
 
+    public int variantCount() {
+        return variants.size();
+    }
+
+    public Variant variantAt(int variantIndex) {
+        return variants.get(variantIndex);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

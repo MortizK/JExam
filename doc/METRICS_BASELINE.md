@@ -138,3 +138,28 @@ Interpretation:
 
 - This phase achieved a strong reduction in the main UI hotspot and continued the MVC refactoring direction.
 - Next phase should reduce LoD at source by adding intention-revealing domain/service methods and shrinking direct collection traversal in helper classes.
+
+## Phase Continuation Checkpoint (Domain Navigation API)
+
+Date: 2026-04-01
+
+Executed:
+
+- `mvn test` (10/10 tests passed)
+- `mvn pmd:pmd` (build success)
+
+Observed delta:
+
+1. Total PMD violations reduced from `140` to `129`.
+2. Law of Demeter reduced from `129` to `119`.
+3. `ExamApplicationService` Law of Demeter reduced from `16` to `11`.
+4. `JExamSelectionModel` Law of Demeter reduced from `16` to `8`.
+
+Key implementation change:
+
+- Added richer domain traversal methods in `Exam`, `Chapter`, and `Task` (for example `chapterAt`, `taskAt`, `variantAt`, and count helpers) and updated app/service consumers to use them.
+
+Interpretation:
+
+- This phase reduced LoD at the source rather than only redistributing findings across helper classes.
+- The largest remaining hotspot is still `JExamApp`, so the next phase should keep extracting UI/controller responsibilities from that class.

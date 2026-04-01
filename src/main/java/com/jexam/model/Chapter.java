@@ -34,6 +34,18 @@ public class Chapter {
         tasks.remove(index);
     }
 
+    public int taskCount() {
+        return tasks.size();
+    }
+
+    public Task taskAt(int taskIndex) {
+        return tasks.get(taskIndex);
+    }
+
+    public Variant variantAt(int taskIndex, int variantIndex) {
+        return taskAt(taskIndex).variantAt(variantIndex);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

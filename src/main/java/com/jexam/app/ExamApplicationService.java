@@ -197,15 +197,15 @@ public class ExamApplicationService {
     }
 
     private Chapter chapterAt(int chapterIndex) {
-        return currentExam.getChapters().get(chapterIndex);
+        return currentExam.chapterAt(chapterIndex);
     }
 
     private Task taskAt(int chapterIndex, int taskIndex) {
-        return chapterAt(chapterIndex).getTasks().get(taskIndex);
+        return currentExam.taskAt(chapterIndex, taskIndex);
     }
 
     private Variant variantAt(int chapterIndex, int taskIndex, int variantIndex) {
-        return taskAt(chapterIndex, taskIndex).getVariants().get(variantIndex);
+        return currentExam.variantAt(chapterIndex, taskIndex, variantIndex);
     }
 
     private Exam createDefaultExam() {

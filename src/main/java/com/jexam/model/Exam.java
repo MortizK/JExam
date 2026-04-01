@@ -34,6 +34,22 @@ public class Exam {
         chapters.remove(index);
     }
 
+    public int chapterCount() {
+        return chapters.size();
+    }
+
+    public Chapter chapterAt(int chapterIndex) {
+        return chapters.get(chapterIndex);
+    }
+
+    public Task taskAt(int chapterIndex, int taskIndex) {
+        return chapterAt(chapterIndex).taskAt(taskIndex);
+    }
+
+    public Variant variantAt(int chapterIndex, int taskIndex, int variantIndex) {
+        return taskAt(chapterIndex, taskIndex).variantAt(variantIndex);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

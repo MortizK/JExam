@@ -19,30 +19,30 @@ class JExamSelectionModel {
         if (exam == null || chapterIndex < 0 || chapterIndex >= chapterCount()) {
             return null;
         }
-        return exam.getChapters().get(chapterIndex);
+        return exam.chapterAt(chapterIndex);
     }
 
     Task taskAt(int chapterIndex, int taskIndex) {
         Chapter chapter = chapterAt(chapterIndex);
-        if (chapter == null || taskIndex < 0 || taskIndex >= chapter.getTasks().size()) {
+        if (chapter == null || taskIndex < 0 || taskIndex >= chapter.taskCount()) {
             return null;
         }
-        return chapter.getTasks().get(taskIndex);
+        return chapter.taskAt(taskIndex);
     }
 
     Variant variantAt(int chapterIndex, int taskIndex, int variantIndex) {
         Task task = taskAt(chapterIndex, taskIndex);
-        if (task == null || variantIndex < 0 || variantIndex >= task.getVariants().size()) {
+        if (task == null || variantIndex < 0 || variantIndex >= task.variantCount()) {
             return null;
         }
-        return task.getVariants().get(variantIndex);
+        return task.variantAt(variantIndex);
     }
 
     int chapterCount() {
         if (exam == null) {
             return 0;
         }
-        return exam.getChapters().size();
+        return exam.chapterCount();
     }
 
     int taskCount(int chapterIndex) {
@@ -50,7 +50,7 @@ class JExamSelectionModel {
         if (chapter == null) {
             return 0;
         }
-        return chapter.getTasks().size();
+        return chapter.taskCount();
     }
 
     int variantCount(int chapterIndex, int taskIndex) {
@@ -58,7 +58,7 @@ class JExamSelectionModel {
         if (task == null) {
             return 0;
         }
-        return task.getVariants().size();
+        return task.variantCount();
     }
 
     int lastChapterIndex() {
