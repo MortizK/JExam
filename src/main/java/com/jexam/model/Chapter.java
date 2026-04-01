@@ -9,18 +9,25 @@ import java.util.Objects;
  * Chapter containing a set of tasks.
  */
 public final class Chapter {
+    /**
+     * Chapter title.
+     */
     private String name;
+
+    /**
+     * Tasks in this chapter.
+     */
     private final List<Task> tasks;
 
     /**
      * Creates a chapter.
      *
-     * @param name chapter name
-     * @param tasks initial task list
+     * @param chapterName chapter name
+     * @param taskList initial task list
      */
-    public Chapter(final String name, final List<Task> tasks) {
-        this.name = name;
-        this.tasks = new ArrayList<>(tasks);
+    public Chapter(final String chapterName, final List<Task> taskList) {
+        this.name = chapterName;
+        this.tasks = new ArrayList<>(taskList);
     }
 
     /**
@@ -35,10 +42,10 @@ public final class Chapter {
     /**
      * Sets chapter name.
      *
-     * @param name new chapter name
+     * @param newName new chapter name
      */
-    public void setName(final String name) {
-        this.name = name;
+    public void setName(final String newName) {
+        this.name = newName;
     }
 
     /**

@@ -250,3 +250,32 @@ Interpretation:
 
 - This phase continued steady reduction while preserving test and PMD
 	stability.
+
+## Phase Continuation Checkpoint (Model Field + Shadowing Cleanup)
+
+Date: 2026-04-01
+
+Executed:
+
+- `mvn test` (10/10 tests passed)
+- `mvn checkstyle:checkstyle` (report generated)
+- `mvn pmd:pmd` (build success)
+
+Observed delta:
+
+1. Checkstyle findings reduced from `347` to `293`.
+2. PMD run remains successful.
+
+Key implementation change:
+
+- Added field-level JavaDocs and non-shadowing parameter names in `Exam`,
+	`Chapter`, and `Task`.
+- Added enum constant JavaDocs in `Difficulty` and `Scope`.
+- Applied additional formatting and signature cleanups in `ExamXmlWriter` and
+	`ExamValidator`.
+
+Interpretation:
+
+- This is another strong reduction pass; the remaining highest concentration is
+	now in the `io` package (`ExamXmlLoader`, `ExamXmlWriter`,
+	`ExamPersistenceService`, `ExamXmlException`).

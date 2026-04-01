@@ -32,9 +32,11 @@ public class ExamXmlWriter {
      * @param path output XML path
      * @throws ExamXmlException if XML creation or file writing fails
      */
-    public void write(Exam exam, Path path) throws ExamXmlException {
+    public void write(final Exam exam, final Path path) throws ExamXmlException {
         try {
-            Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            Document document = DocumentBuilderFactory.newInstance()
+                .newDocumentBuilder()
+                .newDocument();
             Element examElement = createExamElement(document, exam);
             for (Chapter chapter : exam.getChapters()) {
                 writeChapter(document, examElement, chapter);
@@ -46,14 +48,18 @@ public class ExamXmlWriter {
         }
     }
 
-    private Element createExamElement(Document document, Exam exam) {
+    private Element createExamElement(final Document document, final Exam exam) {
         Element examElement = document.createElement("exam");
         examElement.setAttribute("name", exam.getName());
         document.appendChild(examElement);
         return examElement;
     }
 
-    private void writeChapter(Document document, Element examElement, Chapter chapter) {
+    private void writeChapter(
+        final Document document,
+        final Element examElement,
+        final Chapter chapter
+    ) {
         Element chapterElement = document.createElement("chapter");
         chapterElement.setAttribute("name", chapter.getName());
         examElement.appendChild(chapterElement);
@@ -63,7 +69,11 @@ public class ExamXmlWriter {
         }
     }
 
-    private void writeTask(Document document, Element chapterElement, Task task) {
+    private void writeTask(
+        final Document document,
+        final Element chapterElement,
+        final Task task
+    ) {
         Element taskElement = document.createElement("task");
         taskElement.setAttribute("name", task.getName());
         taskElement.setAttribute("points", Double.toString(task.getPoints()));
@@ -76,27 +86,45 @@ public class ExamXmlWriter {
         }
     }
 
-    private void writeVariant(Document document, Element taskElement, Variant variant) {
+    private void writeVariant(
+        final Document document,
+        final Element taskElement,
+        final Variant variant
+    ) {
         Element variantElement = document.createElement("variant");
-        appendTextElement(document, variantElement, "question", variant.getQuestion());
+        appendTextElement(
+            document,
+            variantElement,
+            "question",
+            variant.getQuestion()
+        );
         appendTextElement(document, variantElement, "answer", variant.getAnswer());
         taskElement.appendChild(variantElement);
     }
 
-    private void appendTextElement(Document document, Element parent, String tag, String text) {
+    private void appendTextElement(
+        final Document document,
+        final Element parent,
+        final String tag,
+        final String text
+    ) {
         Element child = document.createElement(tag);
         child.setTextContent(text);
         parent.appendChild(child);
     }
 
-    private void writeDocument(Document document, Path path) throws IOException, TransformerException {
+    private void writeDocument(final Document document, final Path path)
+        throws IOException, TransformerException {
         if (path.getParent() != null) {
             Files.createDirectories(path.getParent());
         }
 
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        transformer.setOutputProperty(
+            "{http://xml.apache.org/xslt}indent-amount",
+            "2"
+        );
 
         try (OutputStream outputStream = Files.newOutputStream(path)) {
             transformer.transform(new DOMSource(document), new StreamResult(outputStream));

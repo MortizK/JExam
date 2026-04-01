@@ -12,33 +12,52 @@ import java.util.Objects;
  * Task entity with metadata and variants.
  */
 public final class Task {
+    /**
+     * Task title.
+     */
     private String name;
+
+    /**
+     * Maximum points for this task.
+     */
     private double points;
+
+    /**
+     * Difficulty classification.
+     */
     private Difficulty difficulty;
+
+    /**
+     * Scope in which this task appears.
+     */
     private Scope scope;
+
+    /**
+     * Available variants for this task.
+     */
     private final List<Variant> variants;
 
     /**
      * Creates a task.
      *
-     * @param name task name
-     * @param points task points
-     * @param difficulty task difficulty
-     * @param scope task scope
-     * @param variants initial variants
+     * @param taskName task name
+     * @param taskPoints task points
+     * @param taskDifficulty task difficulty
+     * @param taskScope task scope
+     * @param variantList initial variants
      */
     public Task(
-        final String name,
-        final double points,
-        final Difficulty difficulty,
-        final Scope scope,
-        final List<Variant> variants
+        final String taskName,
+        final double taskPoints,
+        final Difficulty taskDifficulty,
+        final Scope taskScope,
+        final List<Variant> variantList
     ) {
-        this.name = name;
-        this.points = points;
-        this.difficulty = difficulty;
-        this.scope = scope;
-        this.variants = new ArrayList<>(variants);
+        this.name = taskName;
+        this.points = taskPoints;
+        this.difficulty = taskDifficulty;
+        this.scope = taskScope;
+        this.variants = new ArrayList<>(variantList);
     }
 
     /**
@@ -53,10 +72,10 @@ public final class Task {
     /**
      * Sets task name.
      *
-     * @param name new name
+     * @param newName new name
      */
-    public void setName(final String name) {
-        this.name = name;
+    public void setName(final String newName) {
+        this.name = newName;
     }
 
     /**
@@ -71,10 +90,10 @@ public final class Task {
     /**
      * Sets task points.
      *
-     * @param points new points value
+     * @param newPoints new points value
      */
-    public void setPoints(final double points) {
-        this.points = points;
+    public void setPoints(final double newPoints) {
+        this.points = newPoints;
     }
 
     /**
@@ -89,10 +108,10 @@ public final class Task {
     /**
      * Sets difficulty.
      *
-     * @param difficulty new difficulty
+     * @param newDifficulty new difficulty
      */
-    public void setDifficulty(final Difficulty difficulty) {
-        this.difficulty = difficulty;
+    public void setDifficulty(final Difficulty newDifficulty) {
+        this.difficulty = newDifficulty;
     }
 
     /**
@@ -107,10 +126,10 @@ public final class Task {
     /**
      * Sets scope.
      *
-     * @param scope new scope
+     * @param newScope new scope
      */
-    public void setScope(final Scope scope) {
-        this.scope = scope;
+    public void setScope(final Scope newScope) {
+        this.scope = newScope;
     }
 
     /**

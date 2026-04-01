@@ -9,18 +9,25 @@ import java.util.Objects;
  * Root exam aggregate containing chapters.
  */
 public final class Exam {
+    /**
+     * Exam display name.
+     */
     private String name;
+
+    /**
+     * Ordered chapter list.
+     */
     private final List<Chapter> chapters;
 
     /**
      * Creates an exam.
      *
-     * @param name exam name
-     * @param chapters initial chapter list
+     * @param examName exam name
+     * @param chapterList initial chapter list
      */
-    public Exam(final String name, final List<Chapter> chapters) {
-        this.name = name;
-        this.chapters = new ArrayList<>(chapters);
+    public Exam(final String examName, final List<Chapter> chapterList) {
+        this.name = examName;
+        this.chapters = new ArrayList<>(chapterList);
     }
 
     /**
@@ -35,10 +42,10 @@ public final class Exam {
     /**
      * Sets exam name.
      *
-     * @param name new exam name
+     * @param newName new exam name
      */
-    public void setName(final String name) {
-        this.name = name;
+    public void setName(final String newName) {
+        this.name = newName;
     }
 
     /**

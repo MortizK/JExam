@@ -6,8 +6,19 @@ import java.util.Arrays;
  * Difficulty levels for a task.
  */
 public enum Difficulty {
+    /**
+     * Easy difficulty.
+     */
     EASY("easy"),
+
+    /**
+     * Medium difficulty.
+     */
     MEDIUM("medium"),
+
+    /**
+     * Hard difficulty.
+     */
     HARD("hard");
 
     /**

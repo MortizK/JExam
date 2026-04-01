@@ -6,7 +6,14 @@ import java.util.Arrays;
  * Scope of a task in generated outputs.
  */
 public enum Scope {
+    /**
+     * Regular exam scope.
+     */
     EXAM("exam"),
+
+    /**
+     * Mock exam only scope.
+     */
     MOCK_EXAM("mock-exam");
 
     /**
