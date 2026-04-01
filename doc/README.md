@@ -37,5 +37,5 @@ Mapped from existing specification material:
 | 1 | Domain model + validation with tests | Done |
 | 2 | XML load/save + round-trip tests + validation wiring | Done |
 | 3 | PDF generation services | Done (PDFBox implementation + tests) |
-| 4 | Bare minimum UI | In progress (open/save/validate + PDF export controls) |
+| 4 | Bare minimum UI | Done (chapter/task/variant CRUD + detail editing + PDF controls) |
 | 5 | End-to-end hardening | Pending |
