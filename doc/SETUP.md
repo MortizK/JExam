@@ -48,6 +48,22 @@ Run minimal JavaFX shell:
 
 If `exec:java` is unavailable in your local setup, use your IDE run configuration with main class `com.jexam.app.JExamApp`.
 
+## Metrics and Refactoring Baseline
+
+From repository root:
+
+- Run tests: `mvn test`
+- Run complexity analysis (McCabe via PMD): `mvn pmd:pmd`
+
+Reports:
+
+- `target/pmd.xml`
+- `target/site/pmd.html`
+
+Current baseline and interpretation:
+
+- [METRICS_BASELINE.md](METRICS_BASELINE.md)
+
 ## Platform Notes
 
 Target platforms (from specification):

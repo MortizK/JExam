@@ -1,19 +1,13 @@
 package com.jexam.app;
 
 import com.jexam.generation.GenerationMode;
-import com.jexam.generation.PdfBoxGenerationService;
-import com.jexam.generation.PdfGenerationService;
-import com.jexam.io.ExamPersistenceService;
 import com.jexam.io.ExamXmlException;
-import com.jexam.io.ExamXmlLoader;
-import com.jexam.io.ExamXmlWriter;
 import com.jexam.model.Chapter;
 import com.jexam.model.Exam;
 import com.jexam.model.Task;
 import com.jexam.model.Variant;
 import com.jexam.model.enums.Difficulty;
 import com.jexam.model.enums.Scope;
-import com.jexam.validation.ExamValidator;
 import com.jexam.validation.ValidationResult;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -44,13 +38,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class JExamApp extends Application {
-    private final ExamValidator validator = new ExamValidator();
-    private final PdfGenerationService pdfGenerationService = new PdfBoxGenerationService();
-    private final ExamPersistenceService persistenceService = new ExamPersistenceService(
-        new ExamXmlLoader(),
-        new ExamXmlWriter(),
-        validator
-    );
+    private final ExamApplicationService appService = new ExamApplicationService();
 
     private Exam currentExam;
 
@@ -72,7 +60,7 @@ public class JExamApp extends Application {
 
     @Override
     public void start(Stage stage) {
-        currentExam = createDefaultExam();
+        currentExam = appService.getCurrentExam();
 
         Label title = new Label("JExam");
         Label subtitle = new Label("Phase 4 MVP: hierarchy editing + validation + PDF export");
@@ -86,7 +74,8 @@ public class JExamApp extends Application {
         Button mockPdfButton = new Button("Generate Mock PDF");
 
         newButton.setOnAction(event -> {
-            currentExam = createDefaultExam();
+            appService.newExam();
+            currentExam = appService.getCurrentExam();
             refreshAllLists();
             showInfo("New exam created", "Created a new exam in memory.");
         });
@@ -203,21 +192,8 @@ public class JExamApp extends Application {
         launch(args);
     }
 
-    private Exam createDefaultExam() {
-        return new Exam("New Exam", List.of(new Chapter("New Chapter", List.of(defaultTask()))));
-    }
-
-    private Task defaultTask() {
-        return new Task(
-            "New Task",
-            1.0,
-            Difficulty.MEDIUM,
-            Scope.EXAM,
-            List.of(new Variant("New Question", "New Answer"))
-        );
-    }
-
     private void refreshAllLists() {
+        currentExam = appService.getCurrentExam();
         refreshChapters();
         refreshTasks();
         refreshVariants();
@@ -297,7 +273,7 @@ public class JExamApp extends Application {
     private void addChapter() {
         Optional<String> name = askForText("Add Chapter", "Chapter name", "New Chapter");
         name.ifPresent(value -> {
-            currentExam.addChapter(new Chapter(value, List.of(defaultTask())));
+            appService.addChapter(value);
             refreshAllLists();
             chapterList.getSelectionModel().select(currentExam.getChapters().size() - 1);
         });
@@ -319,7 +295,7 @@ public class JExamApp extends Application {
             return;
         }
 
-        currentExam.removeChapter(index);
+        appService.removeChapter(index);
         refreshAllLists();
     }
 
@@ -332,9 +308,8 @@ public class JExamApp extends Application {
 
         Optional<String> name = askForText("Add Task", "Task name", "New Task");
         name.ifPresent(value -> {
-            Task task = defaultTask();
-            task.setName(value);
-            chapter.addTask(task);
+            int chapterIndex = chapterList.getSelectionModel().getSelectedIndex();
+            appService.addTask(chapterIndex, value);
             refreshAllLists();
             taskList.getSelectionModel().select(chapter.getTasks().size() - 1);
         });
@@ -357,7 +332,8 @@ public class JExamApp extends Application {
             return;
         }
 
-        chapter.removeTask(index);
+        int chapterIndex = chapterList.getSelectionModel().getSelectedIndex();
+        appService.removeTask(chapterIndex, index);
         refreshAllLists();
     }
 
@@ -368,7 +344,9 @@ public class JExamApp extends Application {
             return;
         }
 
-        task.addVariant(new Variant("New Question", "New Answer"));
+        int chapterIndex = chapterList.getSelectionModel().getSelectedIndex();
+        int taskIndex = taskList.getSelectionModel().getSelectedIndex();
+        appService.addVariant(chapterIndex, taskIndex);
         refreshAllLists();
         variantList.getSelectionModel().select(task.getVariants().size() - 1);
     }
@@ -390,7 +368,9 @@ public class JExamApp extends Application {
             return;
         }
 
-        task.removeVariant(index);
+        int chapterIndex = chapterList.getSelectionModel().getSelectedIndex();
+        int taskIndex = taskList.getSelectionModel().getSelectedIndex();
+        appService.removeVariant(chapterIndex, taskIndex, index);
         refreshAllLists();
     }
 
@@ -410,10 +390,16 @@ public class JExamApp extends Application {
                 showError("Invalid metadata", "Difficulty and scope must be selected.");
                 return;
             }
-            task.setName(taskNameField.getText().trim());
-            task.setPoints(points);
-            task.setDifficulty(taskDifficultyBox.getValue());
-            task.setScope(taskScopeBox.getValue());
+            int chapterIndex = chapterList.getSelectionModel().getSelectedIndex();
+            int taskIndex = taskList.getSelectionModel().getSelectedIndex();
+            appService.updateTaskDetails(
+                chapterIndex,
+                taskIndex,
+                taskNameField.getText().trim(),
+                points,
+                taskDifficultyBox.getValue(),
+                taskScopeBox.getValue()
+            );
             refreshTasks();
         } catch (NumberFormatException e) {
             showError("Invalid points", "Points must be a number greater than 0.");
@@ -427,8 +413,16 @@ public class JExamApp extends Application {
             return;
         }
 
-        variant.setQuestion(variantQuestionArea.getText());
-        variant.setAnswer(variantAnswerArea.getText());
+        int chapterIndex = chapterList.getSelectionModel().getSelectedIndex();
+        int taskIndex = taskList.getSelectionModel().getSelectedIndex();
+        int variantIndex = variantList.getSelectionModel().getSelectedIndex();
+        appService.updateVariantDetails(
+            chapterIndex,
+            taskIndex,
+            variantIndex,
+            variantQuestionArea.getText(),
+            variantAnswerArea.getText()
+        );
     }
 
     private void openExam(Stage stage) {
@@ -439,7 +433,8 @@ public class JExamApp extends Application {
         }
 
         try {
-            currentExam = persistenceService.loadValidated(file.toPath());
+            appService.openExam(file.toPath());
+            currentExam = appService.getCurrentExam();
             refreshAllLists();
             showInfo("Open successful", "Loaded exam: " + currentExam.getName());
         } catch (ExamXmlException e) {
@@ -456,7 +451,7 @@ public class JExamApp extends Application {
 
         try {
             Path path = file.toPath();
-            persistenceService.saveValidated(currentExam, path);
+            appService.saveExam(path);
             showInfo("Save successful", "Saved exam to: " + path);
         } catch (ExamXmlException e) {
             showError("Save failed", e.getMessage());
@@ -464,7 +459,7 @@ public class JExamApp extends Application {
     }
 
     private void validateCurrentExam() {
-        ValidationResult result = validator.validate(currentExam);
+        ValidationResult result = appService.validateCurrentExam();
         if (result.isValid()) {
             showInfo("Validation successful", "No validation errors found.");
             return;
@@ -473,7 +468,7 @@ public class JExamApp extends Application {
     }
 
     private void generatePdf(Stage stage, GenerationMode mode) {
-        ValidationResult result = validator.validate(currentExam);
+        ValidationResult result = appService.validateCurrentExam();
         if (!result.isValid()) {
             showError("Cannot generate PDF", "Exam is invalid: " + result.getErrors());
             return;
@@ -486,7 +481,7 @@ public class JExamApp extends Application {
         }
 
         try {
-            pdfGenerationService.generate(currentExam, mode, file.toPath());
+            appService.generatePdf(mode, file.toPath());
             showInfo("PDF generated", "Generated " + mode + " at: " + file.toPath());
         } catch (RuntimeException e) {
             showError("PDF generation failed", e.getMessage());

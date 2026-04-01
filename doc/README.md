@@ -13,6 +13,7 @@ Policy:
 2. [ARCHITECTURE.md](ARCHITECTURE.md)
 3. [USER_GUIDE.md](USER_GUIDE.md)
 4. [GLOSSARY.md](GLOSSARY.md)
+5. [METRICS_BASELINE.md](METRICS_BASELINE.md)
 
 ## Source Mapping
 
@@ -38,4 +39,4 @@ Mapped from existing specification material:
 | 2 | XML load/save + round-trip tests + validation wiring | Done |
 | 3 | PDF generation services | Done (PDFBox implementation + tests) |
 | 4 | Bare minimum UI | Done (chapter/task/variant CRUD + detail editing + PDF controls) |
-| 5 | End-to-end hardening | Pending |
+| 5 | End-to-end hardening | In progress (workflow integration tests started) |
