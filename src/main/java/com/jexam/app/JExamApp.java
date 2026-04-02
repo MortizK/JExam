@@ -64,6 +64,8 @@ public class JExamApp extends Application {
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == pdfTab) {
                 pdfTabContainer.refreshFromService();
+            } else if (newValue == xmlTab) {
+                xmlTabContainer.focusNavigationTree();
             }
         });
 

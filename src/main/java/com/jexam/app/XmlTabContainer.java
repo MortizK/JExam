@@ -152,6 +152,10 @@ public final class XmlTabContainer extends BorderPane {
         loadingState.setOnLoadXml(() -> onLoadXml.run());
     }
 
+    public void focusNavigationTree() {
+        navigationTree.requestTreeFocus();
+    }
+
     public void refreshFromService() {
         Exam currentExam = appService.getCurrentExam();
         selectionModel.setExam(currentExam);

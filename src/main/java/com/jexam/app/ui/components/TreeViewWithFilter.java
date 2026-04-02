@@ -37,6 +37,8 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         this.labelProvider = Objects.requireNonNull(itemLabelProvider, "itemLabelProvider");
 
         filterField.setPromptText("Filter...");
+        filterField.setAccessibleText("Filter exam chapters and tasks");
+        filterField.setFocusTraversable(true);
         filterField.textProperty().addListener((observable, oldValue, newValue) -> refreshTree());
 
         treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -45,6 +47,8 @@ public final class TreeViewWithFilter<T> extends BorderPane {
                 itemSelectionHandler.accept(newValue.getValue());
             }
         });
+        treeView.setAccessibleText("Exam hierarchy tree");
+        treeView.setFocusTraversable(true);
 
         VBox header = new VBox(6, filterField);
         header.setPadding(new Insets(8));
@@ -100,6 +104,10 @@ public final class TreeViewWithFilter<T> extends BorderPane {
 
     public TreeView<T> getTreeView() {
         return treeView;
+    }
+
+    public void requestTreeFocus() {
+        treeView.requestFocus();
     }
 
     private Callback<TreeView<T>, TreeCell<T>> createCellFactory() {
