@@ -1,0 +1,814 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<exam name="Random Generation Dataset">
+  <chapter name="Chapter 1">
+    <task name="Task 1" points="1.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 1 variant 1</question>
+        <answer>Answer for task 1 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 1 variant 2</question>
+        <answer>Answer for task 1 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 2" points="1.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 2 variant 1</question>
+        <answer>Answer for task 2 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 2 variant 2</question>
+        <answer>Answer for task 2 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 3" points="2.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 3 variant 1</question>
+        <answer>Answer for task 3 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 3 variant 2</question>
+        <answer>Answer for task 3 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 4" points="2.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 4 variant 1</question>
+        <answer>Answer for task 4 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 4 variant 2</question>
+        <answer>Answer for task 4 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 5" points="3.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 5 variant 1</question>
+        <answer>Answer for task 5 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 5 variant 2</question>
+        <answer>Answer for task 5 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 6" points="1.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 6 variant 1</question>
+        <answer>Answer for task 6 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 6 variant 2</question>
+        <answer>Answer for task 6 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 7" points="1.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 7 variant 1</question>
+        <answer>Answer for task 7 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 7 variant 2</question>
+        <answer>Answer for task 7 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 8" points="2.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 8 variant 1</question>
+        <answer>Answer for task 8 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 8 variant 2</question>
+        <answer>Answer for task 8 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 9" points="2.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 9 variant 1</question>
+        <answer>Answer for task 9 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 9 variant 2</question>
+        <answer>Answer for task 9 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 10" points="3.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 10 variant 1</question>
+        <answer>Answer for task 10 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 10 variant 2</question>
+        <answer>Answer for task 10 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 11" points="1.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 11 variant 1</question>
+        <answer>Answer for task 11 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 11 variant 2</question>
+        <answer>Answer for task 11 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 12" points="1.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 12 variant 1</question>
+        <answer>Answer for task 12 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 12 variant 2</question>
+        <answer>Answer for task 12 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 13" points="2.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 13 variant 1</question>
+        <answer>Answer for task 13 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 13 variant 2</question>
+        <answer>Answer for task 13 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 14" points="2.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 14 variant 1</question>
+        <answer>Answer for task 14 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 14 variant 2</question>
+        <answer>Answer for task 14 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 15" points="3.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 15 variant 1</question>
+        <answer>Answer for task 15 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 15 variant 2</question>
+        <answer>Answer for task 15 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 16" points="1.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 16 variant 1</question>
+        <answer>Answer for task 16 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 16 variant 2</question>
+        <answer>Answer for task 16 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 17" points="1.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 17 variant 1</question>
+        <answer>Answer for task 17 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 17 variant 2</question>
+        <answer>Answer for task 17 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 18" points="2.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 18 variant 1</question>
+        <answer>Answer for task 18 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 18 variant 2</question>
+        <answer>Answer for task 18 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 19" points="2.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 19 variant 1</question>
+        <answer>Answer for task 19 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 19 variant 2</question>
+        <answer>Answer for task 19 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 20" points="3.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 20 variant 1</question>
+        <answer>Answer for task 20 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 20 variant 2</question>
+        <answer>Answer for task 20 variant 2</answer>
+      </variant>
+    </task>
+  </chapter>
+  <chapter name="Chapter 2">
+    <task name="Task 21" points="1.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 21 variant 1</question>
+        <answer>Answer for task 21 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 21 variant 2</question>
+        <answer>Answer for task 21 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 22" points="1.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 22 variant 1</question>
+        <answer>Answer for task 22 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 22 variant 2</question>
+        <answer>Answer for task 22 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 23" points="2.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 23 variant 1</question>
+        <answer>Answer for task 23 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 23 variant 2</question>
+        <answer>Answer for task 23 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 24" points="2.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 24 variant 1</question>
+        <answer>Answer for task 24 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 24 variant 2</question>
+        <answer>Answer for task 24 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 25" points="3.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 25 variant 1</question>
+        <answer>Answer for task 25 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 25 variant 2</question>
+        <answer>Answer for task 25 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 26" points="1.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 26 variant 1</question>
+        <answer>Answer for task 26 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 26 variant 2</question>
+        <answer>Answer for task 26 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 27" points="1.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 27 variant 1</question>
+        <answer>Answer for task 27 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 27 variant 2</question>
+        <answer>Answer for task 27 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 28" points="2.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 28 variant 1</question>
+        <answer>Answer for task 28 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 28 variant 2</question>
+        <answer>Answer for task 28 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 29" points="2.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 29 variant 1</question>
+        <answer>Answer for task 29 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 29 variant 2</question>
+        <answer>Answer for task 29 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 30" points="3.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 30 variant 1</question>
+        <answer>Answer for task 30 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 30 variant 2</question>
+        <answer>Answer for task 30 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 31" points="1.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 31 variant 1</question>
+        <answer>Answer for task 31 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 31 variant 2</question>
+        <answer>Answer for task 31 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 32" points="1.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 32 variant 1</question>
+        <answer>Answer for task 32 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 32 variant 2</question>
+        <answer>Answer for task 32 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 33" points="2.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 33 variant 1</question>
+        <answer>Answer for task 33 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 33 variant 2</question>
+        <answer>Answer for task 33 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 34" points="2.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 34 variant 1</question>
+        <answer>Answer for task 34 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 34 variant 2</question>
+        <answer>Answer for task 34 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 35" points="3.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 35 variant 1</question>
+        <answer>Answer for task 35 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 35 variant 2</question>
+        <answer>Answer for task 35 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 36" points="1.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 36 variant 1</question>
+        <answer>Answer for task 36 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 36 variant 2</question>
+        <answer>Answer for task 36 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 37" points="1.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 37 variant 1</question>
+        <answer>Answer for task 37 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 37 variant 2</question>
+        <answer>Answer for task 37 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 38" points="2.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 38 variant 1</question>
+        <answer>Answer for task 38 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 38 variant 2</question>
+        <answer>Answer for task 38 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 39" points="2.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 39 variant 1</question>
+        <answer>Answer for task 39 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 39 variant 2</question>
+        <answer>Answer for task 39 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 40" points="3.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 40 variant 1</question>
+        <answer>Answer for task 40 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 40 variant 2</question>
+        <answer>Answer for task 40 variant 2</answer>
+      </variant>
+    </task>
+  </chapter>
+  <chapter name="Chapter 3">
+    <task name="Task 41" points="1.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 41 variant 1</question>
+        <answer>Answer for task 41 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 41 variant 2</question>
+        <answer>Answer for task 41 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 42" points="1.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 42 variant 1</question>
+        <answer>Answer for task 42 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 42 variant 2</question>
+        <answer>Answer for task 42 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 43" points="2.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 43 variant 1</question>
+        <answer>Answer for task 43 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 43 variant 2</question>
+        <answer>Answer for task 43 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 44" points="2.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 44 variant 1</question>
+        <answer>Answer for task 44 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 44 variant 2</question>
+        <answer>Answer for task 44 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 45" points="3.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 45 variant 1</question>
+        <answer>Answer for task 45 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 45 variant 2</question>
+        <answer>Answer for task 45 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 46" points="1.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 46 variant 1</question>
+        <answer>Answer for task 46 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 46 variant 2</question>
+        <answer>Answer for task 46 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 47" points="1.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 47 variant 1</question>
+        <answer>Answer for task 47 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 47 variant 2</question>
+        <answer>Answer for task 47 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 48" points="2.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 48 variant 1</question>
+        <answer>Answer for task 48 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 48 variant 2</question>
+        <answer>Answer for task 48 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 49" points="2.5" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 49 variant 1</question>
+        <answer>Answer for task 49 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 49 variant 2</question>
+        <answer>Answer for task 49 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 50" points="3.0" difficulty="easy" scope="exam">
+      <variant>
+        <question>Question for task 50 variant 1</question>
+        <answer>Answer for task 50 variant 1</answer>
+      </variant>
+      <variant>
+        <question>Question for task 50 variant 2</question>
+        <answer>Answer for task 50 variant 2</answer>
+      </variant>
+    </task>
+    <task name="Task 51" points="1.0" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 51 variant 1</question>
+        <answer>Answer for task 51 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 52" points="1.5" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 52 variant 1</question>
+        <answer>Answer for task 52 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 53" points="2.0" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 53 variant 1</question>
+        <answer>Answer for task 53 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 54" points="2.5" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 54 variant 1</question>
+        <answer>Answer for task 54 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 55" points="3.0" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 55 variant 1</question>
+        <answer>Answer for task 55 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 56" points="1.0" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 56 variant 1</question>
+        <answer>Answer for task 56 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 57" points="1.5" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 57 variant 1</question>
+        <answer>Answer for task 57 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 58" points="2.0" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 58 variant 1</question>
+        <answer>Answer for task 58 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 59" points="2.5" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 59 variant 1</question>
+        <answer>Answer for task 59 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 60" points="3.0" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 60 variant 1</question>
+        <answer>Answer for task 60 variant 1</answer>
+      </variant>
+    </task>
+  </chapter>
+  <chapter name="Chapter 4">
+    <task name="Task 61" points="1.0" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 61 variant 1</question>
+        <answer>Answer for task 61 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 62" points="1.5" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 62 variant 1</question>
+        <answer>Answer for task 62 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 63" points="2.0" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 63 variant 1</question>
+        <answer>Answer for task 63 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 64" points="2.5" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 64 variant 1</question>
+        <answer>Answer for task 64 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 65" points="3.0" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 65 variant 1</question>
+        <answer>Answer for task 65 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 66" points="1.0" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 66 variant 1</question>
+        <answer>Answer for task 66 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 67" points="1.5" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 67 variant 1</question>
+        <answer>Answer for task 67 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 68" points="2.0" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 68 variant 1</question>
+        <answer>Answer for task 68 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 69" points="2.5" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 69 variant 1</question>
+        <answer>Answer for task 69 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 70" points="3.0" difficulty="medium" scope="exam">
+      <variant>
+        <question>Question for task 70 variant 1</question>
+        <answer>Answer for task 70 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 71" points="1.0" difficulty="medium" scope="mock-exam">
+      <variant>
+        <question>Question for task 71 variant 1</question>
+        <answer>Answer for task 71 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 72" points="1.5" difficulty="medium" scope="mock-exam">
+      <variant>
+        <question>Question for task 72 variant 1</question>
+        <answer>Answer for task 72 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 73" points="2.0" difficulty="medium" scope="mock-exam">
+      <variant>
+        <question>Question for task 73 variant 1</question>
+        <answer>Answer for task 73 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 74" points="2.5" difficulty="medium" scope="mock-exam">
+      <variant>
+        <question>Question for task 74 variant 1</question>
+        <answer>Answer for task 74 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 75" points="3.0" difficulty="medium" scope="mock-exam">
+      <variant>
+        <question>Question for task 75 variant 1</question>
+        <answer>Answer for task 75 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 76" points="1.0" difficulty="medium" scope="mock-exam">
+      <variant>
+        <question>Question for task 76 variant 1</question>
+        <answer>Answer for task 76 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 77" points="1.5" difficulty="medium" scope="mock-exam">
+      <variant>
+        <question>Question for task 77 variant 1</question>
+        <answer>Answer for task 77 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 78" points="2.0" difficulty="medium" scope="mock-exam">
+      <variant>
+        <question>Question for task 78 variant 1</question>
+        <answer>Answer for task 78 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 79" points="2.5" difficulty="medium" scope="mock-exam">
+      <variant>
+        <question>Question for task 79 variant 1</question>
+        <answer>Answer for task 79 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 80" points="3.0" difficulty="medium" scope="mock-exam">
+      <variant>
+        <question>Question for task 80 variant 1</question>
+        <answer>Answer for task 80 variant 1</answer>
+      </variant>
+    </task>
+  </chapter>
+  <chapter name="Chapter 5">
+    <task name="Task 81" points="1.0" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 81 variant 1</question>
+        <answer>Answer for task 81 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 82" points="1.5" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 82 variant 1</question>
+        <answer>Answer for task 82 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 83" points="2.0" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 83 variant 1</question>
+        <answer>Answer for task 83 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 84" points="2.5" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 84 variant 1</question>
+        <answer>Answer for task 84 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 85" points="3.0" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 85 variant 1</question>
+        <answer>Answer for task 85 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 86" points="1.0" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 86 variant 1</question>
+        <answer>Answer for task 86 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 87" points="1.5" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 87 variant 1</question>
+        <answer>Answer for task 87 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 88" points="2.0" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 88 variant 1</question>
+        <answer>Answer for task 88 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 89" points="2.5" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 89 variant 1</question>
+        <answer>Answer for task 89 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 90" points="3.0" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 90 variant 1</question>
+        <answer>Answer for task 90 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 91" points="1.0" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 91 variant 1</question>
+        <answer>Answer for task 91 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 92" points="1.5" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 92 variant 1</question>
+        <answer>Answer for task 92 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 93" points="2.0" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 93 variant 1</question>
+        <answer>Answer for task 93 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 94" points="2.5" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 94 variant 1</question>
+        <answer>Answer for task 94 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 95" points="3.0" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 95 variant 1</question>
+        <answer>Answer for task 95 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 96" points="1.0" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 96 variant 1</question>
+        <answer>Answer for task 96 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 97" points="1.5" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 97 variant 1</question>
+        <answer>Answer for task 97 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 98" points="2.0" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 98 variant 1</question>
+        <answer>Answer for task 98 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 99" points="2.5" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 99 variant 1</question>
+        <answer>Answer for task 99 variant 1</answer>
+      </variant>
+    </task>
+    <task name="Task 100" points="3.0" difficulty="hard" scope="mock-exam">
+      <variant>
+        <question>Question for task 100 variant 1</question>
+        <answer>Answer for task 100 variant 1</answer>
+      </variant>
+    </task>
+  </chapter>
+</exam>
+

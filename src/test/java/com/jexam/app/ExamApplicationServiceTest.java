@@ -68,10 +68,72 @@ class ExamApplicationServiceTest {
         service.updateTaskDetails(0, 1, "Medium Task", 1.0, Difficulty.MEDIUM, Scope.EXAM);
         service.addTask(0, "Hard Task");
         service.updateTaskDetails(0, 2, "Hard Task", 1.0, Difficulty.HARD, Scope.EXAM);
+        service.setGenerationChapterGoalPoints(0, 3.0);
 
         assertDoesNotThrow(
             () -> service.generatePdf(GenerationMode.EXAM, tempDir.resolve("valid-exam.pdf"))
         );
+    }
+
+    @Test
+    void generatePdfShouldResolveInfeasibleGoalToNearestLowerWhenConfigured() {
+        ExamApplicationService service = new ExamApplicationService();
+        service.updateTaskDetails(0, 0, "A", 1.0, Difficulty.EASY, Scope.MOCK_EXAM);
+        service.addTask(0, "B");
+        service.updateTaskDetails(0, 1, "B", 2.0, Difficulty.MEDIUM, Scope.MOCK_EXAM);
+
+        service.setGoalPointFallbackPreference(ExamApplicationService.GoalPointFallbackPreference.LOWER);
+        service.setGenerationChapterGoalPoints(0, 2.5);
+
+        Path output = tempDir.resolve("nearest-lower.pdf");
+        service.generatePdf(GenerationMode.MOCK_EXAM, output);
+
+        String text = assertDoesNotThrow(() -> readPdfText(output));
+        assertTrue(text.contains("Tasks: 1 | Points: 2.0"));
+        assertTrue(text.contains("Task 1: B"));
+    }
+
+    @Test
+    void generatePdfShouldResolveInfeasibleGoalToNearestHigherWhenConfigured() throws Exception {
+        ExamApplicationService service = new ExamApplicationService();
+        service.updateTaskDetails(0, 0, "A", 1.0, Difficulty.EASY, Scope.MOCK_EXAM);
+        service.addTask(0, "B");
+        service.updateTaskDetails(0, 1, "B", 2.0, Difficulty.MEDIUM, Scope.MOCK_EXAM);
+
+        service.setGoalPointFallbackPreference(ExamApplicationService.GoalPointFallbackPreference.HIGHER);
+        service.setGenerationChapterGoalPoints(0, 2.5);
+
+        Path output = tempDir.resolve("nearest-higher.pdf");
+        service.generatePdf(GenerationMode.MOCK_EXAM, output);
+
+        String text = readPdfText(output);
+        assertTrue(text.contains("Tasks: 2 | Points: 3.0"));
+        assertTrue(text.contains("Task 1: A") || text.contains("Task 2: A"));
+        assertTrue(text.contains("Task 1: B") || text.contains("Task 2: B"));
+    }
+
+    @Test
+    void generatePdfShouldUseDeterministicSeedForVariantSelection() throws Exception {
+        ExamApplicationService serviceA = new ExamApplicationService();
+        serviceA.updateTaskDetails(0, 0, "Seeded Task", 1.0, Difficulty.EASY, Scope.MOCK_EXAM);
+        serviceA.updateVariantDetails(0, 0, 0, "Q1", "A1");
+        serviceA.addVariant(0, 0);
+        serviceA.updateVariantDetails(0, 0, 1, "Q2", "A2");
+        serviceA.setGenerationRandomSeed(7L);
+
+        ExamApplicationService serviceB = new ExamApplicationService();
+        serviceB.updateTaskDetails(0, 0, "Seeded Task", 1.0, Difficulty.EASY, Scope.MOCK_EXAM);
+        serviceB.updateVariantDetails(0, 0, 0, "Q1", "A1");
+        serviceB.addVariant(0, 0);
+        serviceB.updateVariantDetails(0, 0, 1, "Q2", "A2");
+        serviceB.setGenerationRandomSeed(7L);
+
+        Path outA = tempDir.resolve("seed-a.pdf");
+        Path outB = tempDir.resolve("seed-b.pdf");
+        serviceA.generatePdf(GenerationMode.MOCK_EXAM, outA);
+        serviceB.generatePdf(GenerationMode.MOCK_EXAM, outB);
+
+        assertEquals(readPdfText(outA), readPdfText(outB));
     }
 
     @Test
@@ -170,6 +232,7 @@ class ExamApplicationServiceTest {
     @Test
     void generatePreviewPdfShouldCreateReadableTemporaryPdf() throws Exception {
         ExamApplicationService service = new ExamApplicationService();
+        service.updateTaskDetails(0, 0, "Preview Task", 1.0, Difficulty.EASY, Scope.MOCK_EXAM);
 
         Path previewPath = service.generatePreviewPdf(GenerationMode.MOCK_EXAM);
 

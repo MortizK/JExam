@@ -82,10 +82,16 @@ public final class PdfTabContainer extends BorderPane {
 
     public void refreshFromService() {
         List<String> chapterNames = appService.getCurrentExam().getChapters().stream().map(Chapter::getName).toList();
-        chapterConfiguration.setChapterData(chapterNames, appService.generationChapterOrder());
+        chapterConfiguration.setChapterData(
+            chapterNames,
+            appService.generationChapterOrder(),
+            appService.generationChapterGoalPoints()
+        );
         ValidationResult validationResult = appService.validateCurrentExam();
         validationSummary.setValidationResult(validationResult);
         generationControls.setStaleIndicatorVisible(uiStateManager.isPreviewStale());
+        generationControls.setFallbackPreference(appService.getGoalPointFallbackPreference());
+        generationControls.setRandomSeed(appService.getGenerationRandomSeed());
         if (previewRegion.getPreviewPath() == null) {
             previewRegion.setIdle();
         }
@@ -134,6 +140,11 @@ public final class PdfTabContainer extends BorderPane {
             }
         });
         generationControls.setOnModeChanged(mode -> uiStateManager.markPreviewStale());
+        generationControls.setOnFallbackPreferenceChanged(preference -> {
+            appService.setGoalPointFallbackPreference(preference);
+            uiStateManager.markPreviewStale();
+        });
+        generationControls.setOnSeedChanged(this::handleSeedChanged);
         validationSummary.setOnIssueSelected(path -> issueSelectedHandler.accept(path));
 
         chapterConfiguration.setOnMoveUp(index -> {
@@ -155,6 +166,15 @@ public final class PdfTabContainer extends BorderPane {
             appService.includeGenerationChapter(chapterIndex);
             uiStateManager.markPreviewStale();
             refreshFromService();
+        });
+        chapterConfiguration.setOnGoalChanged((chapterIndex, points) -> {
+            try {
+                appService.setGenerationChapterGoalPoints(chapterIndex, points);
+                uiStateManager.markPreviewStale();
+                refreshFromService();
+            } catch (IllegalArgumentException e) {
+                ui.showError("Invalid chapter goal", e.getMessage());
+            }
         });
         chapterConfiguration.setOnReset(() -> {
             appService.resetGenerationChapterSelection();
@@ -185,5 +205,20 @@ public final class PdfTabContainer extends BorderPane {
                 ui.showError("Open failed", "Could not open preview file externally.");
             }
         });
+    }
+
+    private void handleSeedChanged(final String rawValue) {
+        if (rawValue == null || rawValue.isBlank()) {
+            appService.setGenerationRandomSeed(null);
+            uiStateManager.markPreviewStale();
+            return;
+        }
+
+        try {
+            appService.setGenerationRandomSeed(Long.parseLong(rawValue.trim()));
+            uiStateManager.markPreviewStale();
+        } catch (NumberFormatException ignored) {
+            // Keep prior valid value until the user enters a valid numeric seed.
+        }
     }
 }

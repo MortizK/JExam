@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<exam name="New Exam">
+  <chapter name="01_Chapter">
+    <task difficulty="easy" name="01_Task" points="1.0" scope="exam">
+      <variant>
+        <question>New Question 1</question>
+        <answer>New Answer 1</answer>
+      </variant>
+    </task>
+    <task difficulty="medium" name="02_Task" points="2.0" scope="exam">
+      <variant>
+        <question>New Question</question>
+        <answer>New Answer</answer>
+      </variant>
+      <variant>
+        <question>New Question</question>
+        <answer>New Answer</answer>
+      </variant>
+    </task>
+    <task difficulty="hard" name="03_Task" points="3.0" scope="exam">
+      <variant>
+        <question>New Question</question>
+        <answer>New Answer</answer>
+      </variant>
+    </task>
+  </chapter>
+  <chapter name="02_Chapter">
+    <task difficulty="easy" name="New Task" points="1.0" scope="exam">
+      <variant>
+        <question>New Question</question>
+        <answer>New Answer</answer>
+      </variant>
+    </task>
+    <task difficulty="medium" name="01_Task" points="1.0" scope="exam">
+      <variant>
+        <question>New Question</question>
+        <answer>New Answer</answer>
+      </variant>
+    </task>
+    <task difficulty="hard" name="02_Task" points="1.0" scope="exam">
+      <variant>
+        <question>New Question</question>
+        <answer>New Answer</answer>
+      </variant>
+    </task>
+  </chapter>
+  <chapter name="03_Chapter">
+    <task difficulty="easy" name="New Task" points="1.0" scope="exam">
+      <variant>
+        <question>New Question</question>
+        <answer>New Answer</answer>
+      </variant>
+    </task>
+    <task difficulty="medium" name="01_Task" points="1.0" scope="exam">
+      <variant>
+        <question>New Question</question>
+        <answer>New Answer</answer>
+      </variant>
+    </task>
+    <task difficulty="hard" name="02_Task" points="1.0" scope="exam">
+      <variant>
+        <question>New Question</question>
+        <answer>New Answer</answer>
+      </variant>
+    </task>
+  </chapter>
+</exam>

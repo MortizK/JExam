@@ -20,7 +20,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.nio.file.Files;
 
 /**
@@ -30,12 +33,27 @@ import java.nio.file.Files;
  * and domain/services. It keeps JExamApp focused on presentation concerns.</p>
  */
 public class ExamApplicationService {
+    private static final double DIFFICULTY_TARGET_RATIO = 1d / 3d;
+    private static final double DIFFICULTY_TOLERANCE = 0.10d;
+    private static final int POINT_SCALE = 2;
+
     private final ExamValidator validator;
     private final PdfGenerationService pdfGenerationService;
     private final ExamPersistenceService persistenceService;
     private final List<Integer> generationChapterIndices;
+    private final Map<Integer, Double> generationChapterGoalPoints;
 
     private Exam currentExam;
+    private GoalPointFallbackPreference goalPointFallbackPreference;
+    private Long generationRandomSeed;
+
+    /**
+     * Preference for resolving infeasible chapter goal points.
+     */
+    public enum GoalPointFallbackPreference {
+        LOWER,
+        HIGHER
+    }
 
     public ExamApplicationService() {
         this.validator = new ExamValidator();
@@ -47,6 +65,9 @@ public class ExamApplicationService {
         );
         this.currentExam = createDefaultExam();
         this.generationChapterIndices = new ArrayList<>();
+        this.generationChapterGoalPoints = new HashMap<>();
+        this.goalPointFallbackPreference = GoalPointFallbackPreference.LOWER;
+        this.generationRandomSeed = null;
         resetGenerationChapterSelection();
     }
 
@@ -104,7 +125,7 @@ public class ExamApplicationService {
      * @param outputPath destination PDF path
      */
     public void generatePdf(GenerationMode mode, Path outputPath) {
-        Exam generationExam = buildExamForGeneration();
+        Exam generationExam = buildExamForGeneration(mode);
         ValidationResult result = validator.validate(generationExam);
         appendGenerationRuleErrors(result, mode, generationExam);
         if (!result.isValid()) {
@@ -145,7 +166,7 @@ public class ExamApplicationService {
             if (!hasDifficultyThirdsForExamScope(chapter)) {
                 result.addError(
                     "exam.chapters[" + chapterIndex + "].tasks.difficultyDistribution",
-                    "Exam tasks must be distributed by difficulty in exact thirds with at least one easy, medium, and hard task."
+                    "Exam tasks must be roughly balanced by difficulty (33% +/- 10%) with at least one easy, medium, and hard task."
                 );
             }
         }
@@ -172,14 +193,22 @@ public class ExamApplicationService {
         }
 
         final int totalExamTasks = easyCount + mediumCount + hardCount;
-        if (totalExamTasks < 3 || totalExamTasks % 3 != 0) {
+        if (totalExamTasks < 3) {
             return false;
         }
 
-        final int target = totalExamTasks / 3;
-        return easyCount == target
-            && mediumCount == target
-            && hardCount == target;
+        if (easyCount == 0 || mediumCount == 0 || hardCount == 0) {
+            return false;
+        }
+
+        return withinTolerance(easyCount, totalExamTasks)
+            && withinTolerance(mediumCount, totalExamTasks)
+            && withinTolerance(hardCount, totalExamTasks);
+    }
+
+    private boolean withinTolerance(final int count, final int total) {
+        final double ratio = (double) count / (double) total;
+        return Math.abs(ratio - DIFFICULTY_TARGET_RATIO) <= DIFFICULTY_TOLERANCE;
     }
 
     /**
@@ -221,6 +250,70 @@ public class ExamApplicationService {
      */
     public List<Integer> generationChapterOrder() {
         return Collections.unmodifiableList(generationChapterIndices);
+    }
+
+    /**
+     * Returns configured chapter point goals used during random generation.
+     *
+     * @return immutable chapter index to goal points map
+     */
+    public Map<Integer, Double> generationChapterGoalPoints() {
+        return Collections.unmodifiableMap(generationChapterGoalPoints);
+    }
+
+    /**
+     * Configures chapter goal points used during random generation.
+     *
+     * @param chapterIndex chapter index in current exam
+     * @param points desired chapter points, normalized to 0.5 increments
+     */
+    public void setGenerationChapterGoalPoints(final int chapterIndex, final double points) {
+        if (chapterIndex < 0 || chapterIndex >= currentExam.chapterCount()) {
+            return;
+        }
+        final double normalizedPoints = normalizeHalfPoint(points);
+        if (normalizedPoints <= 0d) {
+            throw new IllegalArgumentException("Chapter goal points must be greater than 0.");
+        }
+        generationChapterGoalPoints.put(chapterIndex, normalizedPoints);
+    }
+
+    /**
+     * Returns the current infeasible-goal fallback preference.
+     *
+     * @return fallback preference
+     */
+    public GoalPointFallbackPreference getGoalPointFallbackPreference() {
+        return goalPointFallbackPreference;
+    }
+
+    /**
+     * Updates how infeasible chapter goal points are resolved.
+     *
+     * @param preference fallback preference
+     */
+    public void setGoalPointFallbackPreference(final GoalPointFallbackPreference preference) {
+        if (preference != null) {
+            goalPointFallbackPreference = preference;
+        }
+    }
+
+    /**
+     * Returns the deterministic random seed used during generation.
+     *
+     * @return seed value, or null if non-deterministic generation is enabled
+     */
+    public Long getGenerationRandomSeed() {
+        return generationRandomSeed;
+    }
+
+    /**
+     * Updates deterministic random seed used during generation.
+     *
+     * @param seed seed value, or null to use non-deterministic random generation
+     */
+    public void setGenerationRandomSeed(final Long seed) {
+        generationRandomSeed = seed;
     }
 
     /**
@@ -281,6 +374,7 @@ public class ExamApplicationService {
         for (int chapterIndex = 0; chapterIndex < currentExam.chapterCount(); chapterIndex++) {
             generationChapterIndices.add(chapterIndex);
         }
+        resetGenerationGoalPoints();
     }
 
     /**
@@ -369,15 +463,19 @@ public class ExamApplicationService {
         return new Exam("New Exam", List.of(new Chapter("New Chapter", List.of(defaultTask()))));
     }
 
-    private Exam buildExamForGeneration() {
+    private Exam buildExamForGeneration(final GenerationMode mode) {
         if (generationChapterIndices.isEmpty()) {
             throw new IllegalStateException("No chapters selected for PDF generation.");
         }
 
+        final Random random = generationRandomSeed == null
+            ? new Random()
+            : new Random(generationRandomSeed);
         List<Chapter> chapters = new ArrayList<>();
         for (int chapterIndex : generationChapterIndices) {
             if (chapterIndex >= 0 && chapterIndex < currentExam.chapterCount()) {
-                chapters.add(currentExam.chapterAt(chapterIndex));
+                Chapter sourceChapter = currentExam.chapterAt(chapterIndex);
+                chapters.add(buildChapterForGeneration(sourceChapter, chapterIndex, mode, random));
             }
         }
 
@@ -385,6 +483,186 @@ public class ExamApplicationService {
             throw new IllegalStateException("No chapters selected for PDF generation.");
         }
         return new Exam(currentExam.getName(), chapters);
+    }
+
+    private Chapter buildChapterForGeneration(
+        final Chapter sourceChapter,
+        final int chapterIndex,
+        final GenerationMode mode,
+        final Random random
+    ) {
+        List<Task> candidates = modeFilteredTasks(sourceChapter, mode);
+        if (candidates.isEmpty()) {
+            throw new IllegalStateException(
+                "Chapter '" + sourceChapter.getName() + "' has no tasks available for mode " + mode + "."
+            );
+        }
+
+        double chapterGoalPoints = resolveChapterGoalPoints(chapterIndex, candidates);
+        List<Task> selectedTasks = selectTasksForGoal(candidates, chapterGoalPoints, random, sourceChapter.getName());
+        if (selectedTasks.isEmpty()) {
+            throw new IllegalStateException(
+                "Chapter '" + sourceChapter.getName() + "' has no selectable tasks for the configured goal points."
+            );
+        }
+
+        return new Chapter(sourceChapter.getName(), selectedTasks);
+    }
+
+    private List<Task> modeFilteredTasks(final Chapter chapter, final GenerationMode mode) {
+        List<Task> result = new ArrayList<>();
+        for (Task task : chapter.getTasks()) {
+            if (isTaskIncludedForMode(task, mode)) {
+                result.add(task);
+            }
+        }
+        return result;
+    }
+
+    private boolean isTaskIncludedForMode(final Task task, final GenerationMode mode) {
+        if (mode == GenerationMode.MOCK_EXAM) {
+            return task.getScope() == Scope.MOCK_EXAM;
+        }
+        return task.getScope() == Scope.EXAM;
+    }
+
+    private double resolveChapterGoalPoints(final int chapterIndex, final List<Task> candidates) {
+        Double configured = generationChapterGoalPoints.get(chapterIndex);
+        if (configured != null && configured > 0d) {
+            return configured;
+        }
+        return Math.max(0.5d, normalizeHalfPoint(totalPoints(candidates)));
+    }
+
+    private List<Task> selectTasksForGoal(
+        final List<Task> candidates,
+        final double goalPoints,
+        final Random random,
+        final String chapterName
+    ) {
+        List<Task> shuffledCandidates = new ArrayList<>(candidates);
+        Collections.shuffle(shuffledCandidates, random);
+
+        Map<Integer, List<Task>> subsetByUnits = new HashMap<>();
+        subsetByUnits.put(0, List.of());
+
+        for (Task task : shuffledCandidates) {
+            final int taskUnits = toPointUnits(task.getPoints());
+            if (taskUnits <= 0) {
+                continue;
+            }
+
+            Map<Integer, List<Task>> next = new HashMap<>(subsetByUnits);
+            for (Map.Entry<Integer, List<Task>> entry : subsetByUnits.entrySet()) {
+                int sumUnits = entry.getKey() + taskUnits;
+                if (next.containsKey(sumUnits)) {
+                    continue;
+                }
+                List<Task> subset = new ArrayList<>(entry.getValue());
+                subset.add(task);
+                next.put(sumUnits, subset);
+            }
+            subsetByUnits = next;
+        }
+
+        final int targetUnits = toPointUnits(goalPoints);
+        final Integer resolvedUnits = resolveTargetUnits(subsetByUnits.keySet(), targetUnits);
+        if (resolvedUnits == null || resolvedUnits == 0) {
+            throw new IllegalStateException(
+                "Chapter '" + chapterName + "' has no achievable positive point total for goal " + formatPoints(goalPoints) + "."
+            );
+        }
+
+        List<Task> subset = subsetByUnits.get(resolvedUnits);
+        if (subset == null || subset.isEmpty()) {
+            throw new IllegalStateException(
+                "Chapter '" + chapterName + "' could not resolve tasks for goal " + formatPoints(goalPoints) + "."
+            );
+        }
+
+        List<Task> selected = new ArrayList<>();
+        for (Task task : subset) {
+            selected.add(cloneTaskWithSingleVariant(task, random));
+        }
+        return selected;
+    }
+
+    private Integer resolveTargetUnits(final java.util.Set<Integer> sums, final int targetUnits) {
+        if (sums.contains(targetUnits)) {
+            return targetUnits;
+        }
+
+        Integer nearestLower = null;
+        Integer nearestHigher = null;
+
+        for (Integer sum : sums) {
+            if (sum <= 0) {
+                continue;
+            }
+            if (sum < targetUnits && (nearestLower == null || sum > nearestLower)) {
+                nearestLower = sum;
+            }
+            if (sum > targetUnits && (nearestHigher == null || sum < nearestHigher)) {
+                nearestHigher = sum;
+            }
+        }
+
+        if (goalPointFallbackPreference == GoalPointFallbackPreference.LOWER) {
+            return nearestLower != null ? nearestLower : nearestHigher;
+        }
+        return nearestHigher != null ? nearestHigher : nearestLower;
+    }
+
+    private Task cloneTaskWithSingleVariant(final Task sourceTask, final Random random) {
+        if (sourceTask.getVariants().isEmpty()) {
+            throw new IllegalStateException("Task '" + sourceTask.getName() + "' has no variants.");
+        }
+
+        int variantIndex = random.nextInt(sourceTask.variantCount());
+        Variant selectedVariant = sourceTask.variantAt(variantIndex);
+        Variant variantCopy = new Variant(selectedVariant.getQuestion(), selectedVariant.getAnswer());
+        return new Task(
+            sourceTask.getName(),
+            sourceTask.getPoints(),
+            sourceTask.getDifficulty(),
+            sourceTask.getScope(),
+            List.of(variantCopy)
+        );
+    }
+
+    private void resetGenerationGoalPoints() {
+        generationChapterGoalPoints.clear();
+        for (int chapterIndex = 0; chapterIndex < currentExam.chapterCount(); chapterIndex++) {
+            Chapter chapter = currentExam.chapterAt(chapterIndex);
+            double examScopeTotal = 0d;
+            for (Task task : chapter.getTasks()) {
+                if (task.getScope() == Scope.EXAM) {
+                    examScopeTotal += task.getPoints();
+                }
+            }
+            double chapterTotal = examScopeTotal > 0d ? examScopeTotal : totalPoints(chapter.getTasks());
+            generationChapterGoalPoints.put(chapterIndex, Math.max(0.5d, normalizeHalfPoint(chapterTotal)));
+        }
+    }
+
+    private double totalPoints(final List<Task> tasks) {
+        double total = 0d;
+        for (Task task : tasks) {
+            total += task.getPoints();
+        }
+        return total;
+    }
+
+    private int toPointUnits(final double points) {
+        return (int) Math.round(points * POINT_SCALE);
+    }
+
+    private double normalizeHalfPoint(final double points) {
+        return Math.round(points * POINT_SCALE) / (double) POINT_SCALE;
+    }
+
+    private String formatPoints(final double points) {
+        return String.format(java.util.Locale.ROOT, "%.1f", points);
     }
 
     private Task defaultTask() {

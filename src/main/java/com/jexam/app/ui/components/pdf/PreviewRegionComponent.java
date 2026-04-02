@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -16,6 +17,8 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Right-hand preview region with lifecycle states.
@@ -27,25 +30,23 @@ public final class PreviewRegionComponent extends VBox {
     private final Label pathLabel = new Label();
     private final Button refreshButton = new Button("Refresh Preview");
     private final Button openExternalButton = new Button("Open External");
-    private final ImageView previewImage = new ImageView();
-    private final ScrollPane previewScroll = new ScrollPane(previewImage);
+    private final VBox pageContainer = new VBox(12);
+    private final ScrollPane previewScroll = new ScrollPane(pageContainer);
 
     private Runnable refreshHandler = () -> { };
     private Runnable openExternalHandler = () -> { };
     private Path previewPath;
-    private Path previewImagePath;
+    private final List<Path> previewImagePaths = new ArrayList<>();
 
     public PreviewRegionComponent() {
         setSpacing(8);
         setPadding(new Insets(8));
 
-        previewImage.setPreserveRatio(true);
-        previewImage.setSmooth(true);
-        previewImage.setFitWidth(650);
-        previewImage.setAccessibleText("Embedded PDF preview image");
+        pageContainer.setFillWidth(true);
         previewScroll.setFitToWidth(true);
         previewScroll.setPrefViewportHeight(620);
         previewScroll.setPannable(true);
+        VBox.setVgrow(previewScroll, Priority.ALWAYS);
 
         refreshButton.setOnAction(event -> refreshHandler.run());
         openExternalButton.setOnAction(event -> openExternalHandler.run());
@@ -61,8 +62,8 @@ public final class PreviewRegionComponent extends VBox {
         stateLabel.setText("No preview generated yet.");
         pathLabel.setText("");
         previewPath = null;
-        previewImage.setImage(null);
-        deletePreviewImage();
+        pageContainer.getChildren().clear();
+        deletePreviewImages();
         openExternalButton.setDisable(true);
     }
 
@@ -76,18 +77,18 @@ public final class PreviewRegionComponent extends VBox {
         if (path == null || !Files.exists(path)) {
             stateLabel.setText("Preview failed");
             pathLabel.setText("Preview file is not available.");
-            previewImage.setImage(null);
+            pageContainer.getChildren().clear();
             openExternalButton.setDisable(true);
             return;
         }
 
         try {
-            renderFirstPage(path);
+            renderAllPages(path);
             stateLabel.setText("Preview ready");
-            pathLabel.setText("Showing first page in-app.");
+            pathLabel.setText("Showing all pages in-app.");
             openExternalButton.setDisable(false);
         } catch (IOException e) {
-            previewImage.setImage(null);
+            pageContainer.getChildren().clear();
             stateLabel.setText("Embedded preview unavailable");
             pathLabel.setText("Use Open External. " + e.getMessage());
             openExternalButton.setDisable(false);
@@ -103,7 +104,7 @@ public final class PreviewRegionComponent extends VBox {
     public void setError(final String message) {
         stateLabel.setText("Preview failed");
         pathLabel.setText(message == null ? "" : message);
-        previewImage.setImage(null);
+        pageContainer.getChildren().clear();
     }
 
     public Path getPreviewPath() {
@@ -118,30 +119,40 @@ public final class PreviewRegionComponent extends VBox {
         openExternalHandler = handler == null ? () -> { } : handler;
     }
 
-    private void renderFirstPage(final Path pdfPath) throws IOException {
-        deletePreviewImage();
+    private void renderAllPages(final Path pdfPath) throws IOException {
+        deletePreviewImages();
+        pageContainer.getChildren().clear();
+
         try (PDDocument document = Loader.loadPDF(pdfPath.toFile())) {
             if (document.getNumberOfPages() == 0) {
                 throw new IOException("PDF has no pages.");
             }
 
             PDFRenderer renderer = new PDFRenderer(document);
-            var image = renderer.renderImageWithDPI(0, PREVIEW_DPI, ImageType.RGB);
-            previewImagePath = Files.createTempFile("jexam-preview-", ".png");
-            ImageIO.write(image, "png", previewImagePath.toFile());
-            previewImage.setImage(new Image(previewImagePath.toUri().toString()));
+            for (int pageIndex = 0; pageIndex < document.getNumberOfPages(); pageIndex++) {
+                var image = renderer.renderImageWithDPI(pageIndex, PREVIEW_DPI, ImageType.RGB);
+                Path imagePath = Files.createTempFile("jexam-preview-page-", ".png");
+                ImageIO.write(image, "png", imagePath.toFile());
+                previewImagePaths.add(imagePath);
+
+                ImageView pageImage = new ImageView(new Image(imagePath.toUri().toString()));
+                pageImage.setPreserveRatio(true);
+                pageImage.setSmooth(true);
+                pageImage.setFitWidth(650);
+                pageImage.setAccessibleText("Embedded PDF preview page " + (pageIndex + 1));
+                pageContainer.getChildren().add(pageImage);
+            }
         }
     }
 
-    private void deletePreviewImage() {
-        if (previewImagePath == null) {
-            return;
+    private void deletePreviewImages() {
+        for (Path imagePath : previewImagePaths) {
+            try {
+                Files.deleteIfExists(imagePath);
+            } catch (IOException ignored) {
+                // Best-effort cleanup for temporary preview images.
+            }
         }
-        try {
-            Files.deleteIfExists(previewImagePath);
-        } catch (IOException ignored) {
-            // Best-effort cleanup for temporary preview images.
-        }
-        previewImagePath = null;
+        previewImagePaths.clear();
     }
 }
