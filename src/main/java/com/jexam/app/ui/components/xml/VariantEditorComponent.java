@@ -21,6 +21,8 @@ public final class VariantEditorComponent extends VBox {
         setPadding(new Insets(8, 0, 8, 0));
         questionArea.setPrefRowCount(3);
         answerArea.setPrefRowCount(3);
+        questionArea.setAccessibleText("Variant question field");
+        answerArea.setAccessibleText("Variant answer field");
         questionArea.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!updating) {
                 changeHandler.accept(null);

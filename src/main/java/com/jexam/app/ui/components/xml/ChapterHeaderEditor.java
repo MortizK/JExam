@@ -21,6 +21,7 @@ public final class ChapterHeaderEditor extends HBox {
         setPadding(new Insets(8, 0, 8, 0));
         getChildren().addAll(new Label("Chapter"), nameField);
         HBox.setHgrow(nameField, Priority.ALWAYS);
+        nameField.setAccessibleText("Chapter name field");
         nameField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!updating) {
                 changeHandler.accept(null);

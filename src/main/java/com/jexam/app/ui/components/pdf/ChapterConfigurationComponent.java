@@ -42,6 +42,14 @@ public final class ChapterConfigurationComponent extends VBox {
         Button includeButton = new Button("Include");
         Button resetButton = new Button("Reset");
 
+        includedList.setAccessibleText("Included chapters list");
+        excludedList.setAccessibleText("Excluded chapters list");
+        upButton.setAccessibleText("Move selected chapter up");
+        downButton.setAccessibleText("Move selected chapter down");
+        excludeButton.setAccessibleText("Exclude selected chapter from generation");
+        includeButton.setAccessibleText("Include selected chapter in generation");
+        resetButton.setAccessibleText("Reset chapter selection to all chapters");
+
         upButton.setOnAction(event -> moveUpHandler.accept(includedList.getSelectionModel().getSelectedIndex()));
         downButton.setOnAction(event -> moveDownHandler.accept(includedList.getSelectionModel().getSelectedIndex()));
         excludeButton.setOnAction(event -> excludeHandler.accept(includedList.getSelectionModel().getSelectedIndex()));

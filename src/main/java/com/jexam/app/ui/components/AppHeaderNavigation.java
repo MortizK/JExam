@@ -49,6 +49,15 @@ public final class AppHeaderNavigation extends HBox {
         validateButton.setOnAction(event -> validateHandler.run());
         previewButton.setOnAction(event -> previewHandler.run());
 
+        titleLabel.setAccessibleText("Application title");
+        dirtyIndicator.setAccessibleText("Unsaved changes indicator");
+        newButton.setAccessibleText("Create a new exam in memory");
+        openButton.setAccessibleText("Open an existing exam XML file");
+        saveButton.setAccessibleText("Save the current exam to XML");
+        validateButton.setAccessibleText("Validate the current exam");
+        previewButton.setAccessibleText("Generate or open the PDF preview");
+        languageBox.setAccessibleText("Language selector");
+
         languageBox.setItems(FXCollections.observableArrayList(UiLanguage.values()));
         languageBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && !Objects.equals(oldValue, newValue)) {

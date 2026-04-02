@@ -21,6 +21,7 @@ public final class ExamHeaderEditor extends HBox {
         setPadding(new Insets(8, 0, 8, 0));
         getChildren().addAll(new Label("Exam"), nameField);
         HBox.setHgrow(nameField, Priority.ALWAYS);
+        nameField.setAccessibleText("Exam name field");
         nameField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!updating) {
                 changeHandler.accept(null);

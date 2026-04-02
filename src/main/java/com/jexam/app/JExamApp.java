@@ -72,6 +72,13 @@ public class JExamApp extends Application {
         Scene scene = new Scene(root, 1100, 760);
         stage.setTitle(ui.text("app.title"));
         stage.setScene(scene);
+        scene.widthProperty().addListener((observable, oldValue, newValue) -> {
+            double width = newValue == null ? scene.getWidth() : newValue.doubleValue();
+            xmlTabContainer.updateLayout(width);
+            pdfTabContainer.updateLayout(width);
+        });
+        xmlTabContainer.updateLayout(scene.getWidth());
+        pdfTabContainer.updateLayout(scene.getWidth());
         configureCloseHandling(stage);
         stage.show();
     }

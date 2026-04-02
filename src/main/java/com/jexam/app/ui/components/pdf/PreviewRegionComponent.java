@@ -42,12 +42,18 @@ public final class PreviewRegionComponent extends VBox {
         previewImage.setPreserveRatio(true);
         previewImage.setSmooth(true);
         previewImage.setFitWidth(650);
+        previewImage.setAccessibleText("Embedded PDF preview image");
         previewScroll.setFitToWidth(true);
         previewScroll.setPrefViewportHeight(620);
+        previewScroll.setPannable(true);
 
         refreshButton.setOnAction(event -> refreshHandler.run());
         openExternalButton.setOnAction(event -> openExternalHandler.run());
         openExternalButton.setDisable(true);
+        stateLabel.setAccessibleText("Preview state message");
+        pathLabel.setAccessibleText("Preview file information");
+        refreshButton.setAccessibleText("Refresh the preview image");
+        openExternalButton.setAccessibleText("Open the preview PDF in an external application");
         getChildren().addAll(new Label("Preview"), stateLabel, pathLabel, previewScroll, refreshButton, openExternalButton);
     }
 

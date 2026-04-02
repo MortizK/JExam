@@ -28,6 +28,11 @@ public final class XmlLoadingState extends VBox {
         createButton.setOnAction(event -> createHandler.accept(null));
         loadButton.setOnAction(event -> loadHandler.accept(null));
 
+        titleLabel.setAccessibleText("Empty XML title");
+        subtitleLabel.setAccessibleText("Empty XML instructions");
+        createButton.setAccessibleText("Create a new exam");
+        loadButton.setAccessibleText("Load an exam from XML");
+
         getChildren().addAll(titleLabel, subtitleLabel, createButton, loadButton);
     }
 

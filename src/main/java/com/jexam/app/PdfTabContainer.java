@@ -9,10 +9,12 @@ import com.jexam.generation.GenerationMode;
 import com.jexam.model.Chapter;
 import com.jexam.validation.ValidationResult;
 import javafx.geometry.Insets;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.geometry.Orientation;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -35,6 +37,8 @@ public final class PdfTabContainer extends BorderPane {
     private final ValidationSummaryComponent validationSummary = new ValidationSummaryComponent();
     private final ChapterConfigurationComponent chapterConfiguration = new ChapterConfigurationComponent();
     private final PreviewRegionComponent previewRegion = new PreviewRegionComponent();
+    private final VBox leftColumn = new VBox(10, generationControls, validationSummary, chapterConfiguration);
+    private final SplitPane contentSplit = new SplitPane(leftColumn, previewRegion);
 
     private Consumer<String> issueSelectedHandler = path -> { };
 
@@ -51,11 +55,9 @@ public final class PdfTabContainer extends BorderPane {
 
         setPadding(new Insets(8));
 
-        VBox leftColumn = new VBox(10, generationControls, validationSummary, chapterConfiguration);
         leftColumn.setPrefWidth(380);
-        HBox root = new HBox(12, leftColumn, previewRegion);
-        HBox.setHgrow(previewRegion, Priority.ALWAYS);
-        setCenter(root);
+        contentSplit.setDividerPositions(0.34);
+        setCenter(contentSplit);
 
         configureHandlers();
         refreshFromService();
@@ -64,6 +66,18 @@ public final class PdfTabContainer extends BorderPane {
             generationControls.setStaleIndicatorVisible(newValue);
             previewRegion.setStale(newValue);
         });
+    }
+
+    public void updateLayout(final double width) {
+        if (width < 1024) {
+            contentSplit.setOrientation(Orientation.VERTICAL);
+            contentSplit.setDividerPositions(0.52);
+            leftColumn.setPrefWidth(Double.MAX_VALUE);
+        } else {
+            contentSplit.setOrientation(Orientation.HORIZONTAL);
+            contentSplit.setDividerPositions(width >= 1400 ? 0.30 : 0.34);
+            leftColumn.setPrefWidth(380);
+        }
     }
 
     public void refreshFromService() {

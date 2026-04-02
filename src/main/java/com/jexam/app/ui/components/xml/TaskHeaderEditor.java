@@ -41,6 +41,11 @@ public final class TaskHeaderEditor extends GridPane {
         HBox.setHgrow(nameField, Priority.ALWAYS);
         HBox.setHgrow(pointsField, Priority.ALWAYS);
 
+        nameField.setAccessibleText("Task name field");
+        pointsField.setAccessibleText("Task points field");
+        difficultyBox.setAccessibleText("Task difficulty selector");
+        scopeBox.setAccessibleText("Task scope selector");
+
         nameField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!updating) {
                 changeHandler.accept(null);

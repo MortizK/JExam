@@ -38,6 +38,11 @@ public final class GenerationControlsComponent extends VBox {
         staleLabel.setVisible(false);
         staleLabel.setManaged(false);
 
+        modeBox.setAccessibleText("Generation mode selector");
+        previewButton.setAccessibleText("Generate PDF preview");
+        exportButton.setAccessibleText("Export the selected PDF variant");
+        staleLabel.setAccessibleText("Preview stale indicator");
+
         getChildren().addAll(new Label("Generation Mode"), modeBox, staleLabel, previewButton, exportButton);
     }
 

@@ -18,12 +18,14 @@ import com.jexam.model.Task;
 import com.jexam.model.Variant;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.geometry.Orientation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +55,9 @@ public final class XmlTabContainer extends BorderPane {
     private final VBox chapterEditorPane = new VBox(8);
     private final VBox taskEditorPane = new VBox(8);
     private final VBox variantEditorPane = new VBox(8);
+    private final VBox leftColumn = new VBox(10, navigationTree, chapterTable, taskTable, variantList);
+    private final VBox centerColumn = new VBox(12, chapterEditorPane, taskEditorPane, variantEditorPane);
+    private final SplitPane contentSplit = new SplitPane(leftColumn, centerColumn);
     private final StackPane centerStack = new StackPane();
 
     private Consumer<Boolean> dirtyStateChangedHandler = value -> { };
@@ -83,19 +88,29 @@ public final class XmlTabContainer extends BorderPane {
         configureNavigation();
         configureEditorPanes();
 
-        VBox leftColumn = new VBox(10, navigationTree, chapterTable, taskTable, variantList);
-        leftColumn.setPrefWidth(320);
         VBox.setVgrow(navigationTree, Priority.ALWAYS);
-        VBox centerColumn = new VBox(12, chapterEditorPane, taskEditorPane, variantEditorPane);
         VBox.setVgrow(centerColumn, Priority.ALWAYS);
-        HBox content = new HBox(12, leftColumn, centerColumn);
-        HBox.setHgrow(centerColumn, Priority.ALWAYS);
-        centerStack.getChildren().addAll(content, loadingState);
+        leftColumn.setPrefWidth(320);
+        contentSplit.setDividerPositions(0.28);
+        contentSplit.setStyle("-fx-background-color: transparent;");
+        centerStack.getChildren().addAll(contentSplit, loadingState);
 
         setTop(new VBox(6, examHeaderEditor, breadcrumbNavigation));
         setCenter(centerStack);
 
         refreshFromService();
+    }
+
+    public void updateLayout(final double width) {
+        if (width < 1024) {
+            contentSplit.setOrientation(Orientation.VERTICAL);
+            contentSplit.setDividerPositions(0.48);
+            leftColumn.setPrefWidth(Double.MAX_VALUE);
+        } else {
+            contentSplit.setOrientation(Orientation.HORIZONTAL);
+            contentSplit.setDividerPositions(width >= 1400 ? 0.24 : 0.28);
+            leftColumn.setPrefWidth(320);
+        }
     }
 
     public void setOnDirtyStateChanged(final Consumer<Boolean> handler) {
