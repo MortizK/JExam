@@ -107,6 +107,15 @@ class JExamUiSupport {
 
     private void initText() {
         englishText.put("app.subtitle", "Phase 4 MVP: hierarchy editing + validation + PDF export");
+        englishText.put("app.title", "JExam");
+        englishText.put("button.load.xml", "Load XML");
+        englishText.put("button.create.exam", "Create New Exam");
+        englishText.put("button.refresh.preview", "Refresh Preview");
+        englishText.put("button.open.external", "Open External");
+        englishText.put("label.xml.empty.title", "No XML loaded");
+        englishText.put("label.xml.empty.subtitle", "Create a new exam or load an existing XML file to begin.");
+        englishText.put("label.unsaved.close.title", "Unsaved changes");
+        englishText.put("label.unsaved.close.message", "XML auto-saves to a temporary folder, but closing now may still lose progress. Continue?");
         englishText.put("button.new", "New");
         englishText.put("button.open", "Open");
         englishText.put("button.save", "Save");
@@ -121,6 +130,15 @@ class JExamUiSupport {
         englishText.put("file.pdf.title", "Export PDF");
 
         germanText.put("app.subtitle", "Phase 4 MVP: Hierarchie bearbeiten + Validierung + PDF-Export");
+    germanText.put("app.title", "JExam");
+    germanText.put("button.load.xml", "XML laden");
+    germanText.put("button.create.exam", "Neues Examen erstellen");
+    germanText.put("button.refresh.preview", "Vorschau aktualisieren");
+    germanText.put("button.open.external", "Extern öffnen");
+    germanText.put("label.xml.empty.title", "Kein XML geladen");
+    germanText.put("label.xml.empty.subtitle", "Erstellen Sie ein neues Examen oder laden Sie eine XML-Datei, um zu beginnen.");
+    germanText.put("label.unsaved.close.title", "Ungespeicherte Änderungen");
+    germanText.put("label.unsaved.close.message", "XML wird zwar temporär gespeichert, aber beim Schließen kann dennoch Fortschritt verloren gehen. Fortfahren?");
         germanText.put("button.new", "Neu");
         germanText.put("button.open", "Offnen");
         germanText.put("button.save", "Speichern");
