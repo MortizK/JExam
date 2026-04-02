@@ -12,6 +12,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 import java.nio.file.Files;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -77,15 +78,15 @@ class ExamApplicationServiceTest {
     @Test
     void generatePdfShouldResolveInfeasibleGoalToNearestLowerWhenConfigured() {
         ExamApplicationService service = new ExamApplicationService();
-        service.updateTaskDetails(0, 0, "A", 1.0, Difficulty.EASY, Scope.MOCK_EXAM);
+        service.updateTaskDetails(0, 0, "A", 1.0, Difficulty.EASY, Scope.EXAM);
         service.addTask(0, "B");
-        service.updateTaskDetails(0, 1, "B", 2.0, Difficulty.MEDIUM, Scope.MOCK_EXAM);
+        service.updateTaskDetails(0, 1, "B", 2.0, Difficulty.MEDIUM, Scope.EXAM);
 
         service.setGoalPointFallbackPreference(ExamApplicationService.GoalPointFallbackPreference.LOWER);
         service.setGenerationChapterGoalPoints(0, 2.5);
 
         Path output = tempDir.resolve("nearest-lower.pdf");
-        service.generatePdf(GenerationMode.MOCK_EXAM, output);
+        service.generatePdf(GenerationMode.EXAM, output);
 
         String text = assertDoesNotThrow(() -> readPdfText(output));
         assertTrue(text.contains("Tasks: 1 | Points: 2.0"));
@@ -109,6 +110,47 @@ class ExamApplicationServiceTest {
         assertTrue(text.contains("Tasks: 2 | Points: 3.0"));
         assertTrue(text.contains("Task 1: A") || text.contains("Task 2: A"));
         assertTrue(text.contains("Task 1: B") || text.contains("Task 2: B"));
+    }
+
+    @Test
+    void generatePdfPairShouldCreatePrimaryAndSolutionFiles() {
+        ExamApplicationService service = new ExamApplicationService();
+        service.addTask(0, "Medium Task");
+        service.updateTaskDetails(0, 1, "Medium Task", 1.0, Difficulty.MEDIUM, Scope.EXAM);
+        service.addTask(0, "Hard Task");
+        service.updateTaskDetails(0, 2, "Hard Task", 1.0, Difficulty.HARD, Scope.EXAM);
+        service.setGenerationChapterGoalPoints(0, 3.0);
+
+        Path output = tempDir.resolve("paired.pdf");
+        List<Path> generated = service.generatePdfPair(GenerationMode.EXAM, output);
+
+        assertEquals(2, generated.size());
+        assertTrue(Files.exists(generated.get(0)));
+        assertTrue(Files.exists(generated.get(1)));
+        assertTrue(generated.get(1).getFileName().toString().endsWith("_solutions.pdf"));
+    }
+
+    @Test
+    void generatePdfInMockModeShouldIncludeAllTasksWithRandomVariants() throws Exception {
+        ExamApplicationService service = new ExamApplicationService();
+        service.updateTaskDetails(0, 0, "Exam Scoped", 1.0, Difficulty.EASY, Scope.EXAM);
+        service.updateVariantDetails(0, 0, 0, "Exam Q1", "Exam A1");
+        service.addVariant(0, 0);
+        service.updateVariantDetails(0, 0, 1, "Exam Q2", "Exam A2");
+
+        service.addTask(0, "Mock Scoped");
+        service.updateTaskDetails(0, 1, "Mock Scoped", 1.0, Difficulty.MEDIUM, Scope.MOCK_EXAM);
+        service.updateVariantDetails(0, 1, 0, "Mock Q1", "Mock A1");
+        service.addVariant(0, 1);
+        service.updateVariantDetails(0, 1, 1, "Mock Q2", "Mock A2");
+
+        Path output = tempDir.resolve("mock-all-tasks.pdf");
+        service.generatePdf(GenerationMode.MOCK_EXAM, output);
+
+        String text = readPdfText(output);
+        assertTrue(text.contains("Exam Scoped"));
+        assertTrue(text.contains("Mock Scoped"));
+        assertFalse(text.contains("Variant 2"));
     }
 
     @Test

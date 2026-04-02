@@ -16,7 +16,10 @@ import java.util.function.Consumer;
  * Top-left generation mode and actions section.
  */
 public final class GenerationControlsComponent extends VBox {
-    private final ComboBox<GenerationMode> modeBox = new ComboBox<>(FXCollections.observableArrayList(GenerationMode.values()));
+    private final ComboBox<GenerationMode> modeBox = new ComboBox<>(FXCollections.observableArrayList(
+        GenerationMode.EXAM,
+        GenerationMode.MOCK_EXAM
+    ));
     private final ComboBox<ExamApplicationService.GoalPointFallbackPreference> fallbackBox =
         new ComboBox<>(FXCollections.observableArrayList(ExamApplicationService.GoalPointFallbackPreference.values()));
     private final TextField seedField = new TextField();

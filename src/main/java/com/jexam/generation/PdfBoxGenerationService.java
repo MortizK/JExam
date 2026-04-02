@@ -193,10 +193,10 @@ public class PdfBoxGenerationService implements PdfGenerationService {
     }
 
     private boolean shouldIncludeTask(final Task task, final GenerationMode mode) {
-        if (mode == GenerationMode.MOCK_EXAM) {
-            return task.getScope() == Scope.MOCK_EXAM;
+        if (mode == GenerationMode.EXAM) {
+            return task.getScope() == Scope.EXAM;
         }
-        return task.getScope() == Scope.EXAM;
+        return true;
     }
 
     private float writeLine(

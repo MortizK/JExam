@@ -46,7 +46,7 @@ class PdfBoxGenerationServiceTest {
         assertTrue(Files.exists(out));
         assertTrue(Files.size(out) > 0);
         assertTrue(readPdfText(out).contains("Scope MOCK task"));
-        assertTrue(!readPdfText(out).contains("Scope EXAM task"));
+        assertTrue(readPdfText(out).contains("Scope EXAM task"));
     }
 
     @Test

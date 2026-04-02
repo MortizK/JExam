@@ -128,13 +128,43 @@ public class ExamApplicationService {
      */
     public void generatePdf(GenerationMode mode, Path outputPath) {
         lastGenerationWarnings.clear();
-        Exam generationExam = buildExamForGeneration(mode);
+        Exam generationExam = buildExamForGeneration(mode, generationRandom(mode));
         ValidationResult result = validator.validate(generationExam);
         if (!result.isValid()) {
             throw new IllegalStateException("Exam is invalid: " + result.getErrors());
         }
         lastGenerationWarnings.addAll(collectGenerationWarnings(mode, generationExam));
         pdfGenerationService.generate(generationExam, mode, outputPath);
+    }
+
+    /**
+     * Generates both primary and solutions PDFs for the selected mode.
+     *
+     * @param mode generation mode (EXAM or MOCK_EXAM)
+     * @param outputPath destination path for primary PDF
+     * @return generated file paths [primary, solutions]
+     */
+    public List<Path> generatePdfPair(final GenerationMode mode, final Path outputPath) {
+        lastGenerationWarnings.clear();
+
+        if (mode != GenerationMode.EXAM && mode != GenerationMode.MOCK_EXAM) {
+            throw new IllegalArgumentException("Only EXAM and MOCK_EXAM modes are supported.");
+        }
+
+        final Random random = generationRandom(mode);
+        final Exam generationExam = buildExamForGeneration(mode, random);
+        final ValidationResult result = validator.validate(generationExam);
+        if (!result.isValid()) {
+            throw new IllegalStateException("Exam is invalid: " + result.getErrors());
+        }
+
+        lastGenerationWarnings.addAll(collectGenerationWarnings(mode, generationExam));
+
+        final Path primaryPath = outputPath;
+        final Path solutionPath = solutionOutputPath(outputPath);
+        pdfGenerationService.generate(generationExam, mode, primaryPath);
+        pdfGenerationService.generate(generationExam, GenerationMode.SOLUTION, solutionPath);
+        return List.of(primaryPath, solutionPath);
     }
 
     /**
@@ -476,14 +506,11 @@ public class ExamApplicationService {
         return new Exam("New Exam", List.of(new Chapter("New Chapter", List.of(defaultTask()))));
     }
 
-    private Exam buildExamForGeneration(final GenerationMode mode) {
+    private Exam buildExamForGeneration(final GenerationMode mode, final Random random) {
         if (generationChapterIndices.isEmpty()) {
             throw new IllegalStateException("No chapters selected for PDF generation.");
         }
 
-        final Random random = generationRandomSeed == null
-            ? new Random()
-            : new Random(generationRandomSeed);
         List<Chapter> chapters = new ArrayList<>();
         for (int chapterIndex : generationChapterIndices) {
             if (chapterIndex >= 0 && chapterIndex < currentExam.chapterCount()) {
@@ -511,6 +538,10 @@ public class ExamApplicationService {
             );
         }
 
+        if (mode == GenerationMode.MOCK_EXAM) {
+            return new Chapter(sourceChapter.getName(), cloneAllTasksWithSingleVariant(candidates, random));
+        }
+
         double chapterGoalPoints = resolveChapterGoalPoints(chapterIndex, candidates);
         List<Task> selectedTasks = selectTasksForGoal(candidates, chapterGoalPoints, random, sourceChapter.getName());
         if (selectedTasks.isEmpty()) {
@@ -534,9 +565,17 @@ public class ExamApplicationService {
 
     private boolean isTaskIncludedForMode(final Task task, final GenerationMode mode) {
         if (mode == GenerationMode.MOCK_EXAM) {
-            return task.getScope() == Scope.MOCK_EXAM;
+            return true;
         }
         return task.getScope() == Scope.EXAM;
+    }
+
+    private List<Task> cloneAllTasksWithSingleVariant(final List<Task> sourceTasks, final Random random) {
+        List<Task> cloned = new ArrayList<>();
+        for (Task task : sourceTasks) {
+            cloned.add(cloneTaskWithSingleVariant(task, random));
+        }
+        return cloned;
     }
 
     private double resolveChapterGoalPoints(final int chapterIndex, final List<Task> candidates) {
@@ -676,6 +715,25 @@ public class ExamApplicationService {
 
     private String formatPoints(final double points) {
         return String.format(java.util.Locale.ROOT, "%.1f", points);
+    }
+
+    private Random generationRandom(final GenerationMode mode) {
+        long baseSeed = generationRandomSeed == null ? System.nanoTime() : generationRandomSeed;
+        long modeOffset = mode == GenerationMode.MOCK_EXAM ? 31L : 17L;
+        return new Random(baseSeed + modeOffset);
+    }
+
+    private Path solutionOutputPath(final Path primaryPath) {
+        String fileName = primaryPath.getFileName() == null ? "output.pdf" : primaryPath.getFileName().toString();
+        String solutionName;
+        if (fileName.toLowerCase(java.util.Locale.ROOT).endsWith(".pdf")) {
+            solutionName = fileName.substring(0, fileName.length() - 4) + "_solutions.pdf";
+        } else {
+            solutionName = fileName + "_solutions.pdf";
+        }
+
+        Path parent = primaryPath.getParent();
+        return parent == null ? Path.of(solutionName) : parent.resolve(solutionName);
     }
 
     private Task defaultTask() {

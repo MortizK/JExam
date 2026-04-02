@@ -128,20 +128,27 @@ public final class PdfTabContainer extends BorderPane {
         generationControls.setOnPreviewRequested(this::generatePreview);
         generationControls.setOnExportRequested(() -> {
             GenerationMode mode = generationControls.getSelectedMode();
+            if (mode != GenerationMode.EXAM && mode != GenerationMode.MOCK_EXAM) {
+                ui.showError("Unsupported mode", "Please select EXAM or MOCK_EXAM.");
+                return;
+            }
             FileChooser chooser = ui.pdfFileChooser(mode);
             File output = chooser.showSaveDialog(stage);
             if (output == null) {
                 return;
             }
             try {
-                appService.generatePdf(mode, output.toPath());
+                List<Path> generatedFiles = appService.generatePdfPair(mode, output.toPath());
                 List<String> warnings = appService.getLastGenerationWarnings();
+                String fileList = generatedFiles.stream()
+                    .map(Path::toString)
+                    .collect(java.util.stream.Collectors.joining("\n- ", "- ", ""));
                 if (warnings.isEmpty()) {
-                    ui.showInfo("PDF generated", "Generated " + mode + " at: " + output.toPath());
+                    ui.showInfo("PDF files generated", "Generated " + mode + " files:\n" + fileList);
                 } else {
                     ui.showInfo(
-                        "PDF generated with warnings",
-                        "Generated " + mode + " at: " + output.toPath() + "\n\nWarnings:\n- " + String.join("\n- ", warnings)
+                        "PDF files generated with warnings",
+                        "Generated " + mode + " files:\n" + fileList + "\n\nWarnings:\n- " + String.join("\n- ", warnings)
                     );
                 }
             } catch (RuntimeException e) {
