@@ -666,3 +666,44 @@ Source figures referenced from [doc/LaTeX/chapters/ui.md](doc/LaTeX/chapters/ui.
 3. **Font System**: Use system fonts or bundle Google Fonts? (Current spec uses system defaults)
 4. **Animation Timing**: Standard 0.2s easing (ease-in-out) for all transitions, or per-component customization?
 5. **Accessibility**: WCAG 2.1 AA compliance required; add focus rings, ARIA labels, keyboard navigation in implementation phase.
+
+## 9. Implementation Update (2026-04-02)
+
+This section adds implemented styling and interaction details without replacing the design draft above.
+
+### 9.1 XML Child Row Presentation
+
+Implemented row pattern for chapter/task/variant lists:
+- Left: primary row label
+- Secondary line (chapter/task rows): compact stats summary text
+- Right: row-local Delete action
+
+Applied behavior:
+- footer Delete controls removed
+- footer Add controls retained
+
+### 9.2 Inline Statistics Readability
+
+Implemented treatment for chapter/task stats line:
+- smaller and lower-contrast than primary row label
+- compact metric grouping with stable ordering
+- intended as scan text, not paragraph text
+
+### 9.3 Keyboard Focus Styling Implications
+
+Implemented list keyboard contract:
+- Up/Down selection
+- Enter activate context
+- Delete delete selected row (guarded)
+- Tab/Shift+Tab focus traversal
+
+Styling implication:
+- focus visibility on list controls and editors must remain clear when traversing by keyboard
+
+### 9.4 PDF Focus Entry Behavior
+
+Implemented behavior affects perceived visual emphasis on tab switch:
+- validation issues present: issue tree becomes initial focus target
+- otherwise: generation controls become initial focus target
+
+This supports faster keyboard-first workflows in the PDF tab.

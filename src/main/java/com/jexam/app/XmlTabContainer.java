@@ -16,6 +16,8 @@ import com.jexam.model.Chapter;
 import com.jexam.model.Exam;
 import com.jexam.model.Task;
 import com.jexam.model.Variant;
+import com.jexam.model.enums.Difficulty;
+import com.jexam.model.enums.Scope;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -28,7 +30,10 @@ import javafx.scene.layout.VBox;
 import javafx.geometry.Orientation;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -190,7 +195,7 @@ public final class XmlTabContainer extends BorderPane {
         examHeaderEditor.setExamName(currentExam.getName());
         examNameChangedHandler.accept(currentExam.getName());
 
-        chapterTable.setItems(currentExam.getChapters().stream().map(Chapter::getName).toList());
+        chapterTable.setItems(currentExam.getChapters().stream().map(this::chapterRowLabel).toList());
         chapterTable.setSelectedIndex(selectedChapterIndex);
         refreshNavigationTree();
         refreshChapterSelection();
@@ -293,7 +298,7 @@ public final class XmlTabContainer extends BorderPane {
         chapterHeaderEditor.setOnChange(() -> {
             if (selectedChapterIndex >= 0) {
                 appService.getCurrentExam().chapterAt(selectedChapterIndex).setName(chapterHeaderEditor.getChapterName());
-                chapterTable.setItems(appService.getCurrentExam().getChapters().stream().map(Chapter::getName).toList());
+                chapterTable.setItems(appService.getCurrentExam().getChapters().stream().map(this::chapterRowLabel).toList());
                 markDirty();
             }
         });
@@ -345,7 +350,6 @@ public final class XmlTabContainer extends BorderPane {
             refreshNavigationSelection();
             refreshBreadcrumb();
             refreshContentVisibility();
-            focusActiveContent();
         });
         chapterTable.setOnCreate(() -> {
             appService.addChapter("New Chapter");
@@ -373,7 +377,6 @@ public final class XmlTabContainer extends BorderPane {
             refreshNavigationSelection();
             refreshBreadcrumb();
             refreshContentVisibility();
-            focusActiveContent();
         });
         taskTable.setOnCreate(() -> {
             if (selectedChapterIndex < 0) {
@@ -425,8 +428,14 @@ public final class XmlTabContainer extends BorderPane {
             }
             if (appService.getCurrentExam().taskAt(selectedChapterIndex, selectedTaskIndex).variantCount() <= 1) {
                 ui.showError("Cannot remove variant", "Each task must have at least one variant.");
-                return;
             }
+
+        chapterTable.setOnEnter(this::focusActiveContent);
+        chapterTable.setOnTabNavigation(this::focusActiveContent, this::focusNavigationTree);
+        taskTable.setOnEnter(this::focusActiveContent);
+        taskTable.setOnTabNavigation(this::focusActiveContent, chapterTable::requestTableFocus);
+        variantList.setOnEnter(this::focusActiveContent);
+        variantList.setOnTabNavigation(this::focusActiveContent, taskTable::requestTableFocus);
             if (DeleteConfirmationDialog.confirm(null, "Remove variant", "Remove selected variant?", "This will remove the variant text immediately.")) {
                 appService.removeVariant(selectedChapterIndex, selectedTaskIndex, index);
                 selectedVariantIndex = Math.min(index, appService.getCurrentExam().taskAt(selectedChapterIndex, selectedTaskIndex).variantCount() - 1);
@@ -452,7 +461,7 @@ public final class XmlTabContainer extends BorderPane {
         }
 
         chapterHeaderEditor.setChapterName(chapter.getName());
-        taskTable.setItems(chapter.getTasks().stream().map(selectionModel::taskLabel).toList());
+        taskTable.setItems(chapter.getTasks().stream().map(this::taskRowLabel).toList());
         taskTable.setSelectedIndex(selectedTaskIndex);
         refreshTaskSelection();
         refreshNavigationSelection();
@@ -618,6 +627,51 @@ public final class XmlTabContainer extends BorderPane {
     private void setSectionVisible(final javafx.scene.Node node, final boolean visible) {
         node.setVisible(visible);
         node.setManaged(visible);
+    }
+
+    private String chapterRowLabel(final Chapter chapter) {
+        List<Task> tasks = chapter.getTasks();
+        int taskCount = tasks.size();
+        int variantCount = tasks.stream().mapToInt(Task::variantCount).sum();
+        double totalPoints = tasks.stream().mapToDouble(Task::getPoints).sum();
+
+        Map<Difficulty, Integer> difficulties = new EnumMap<>(Difficulty.class);
+        Map<Scope, Integer> scopes = new EnumMap<>(Scope.class);
+        for (Task task : tasks) {
+            difficulties.merge(task.getDifficulty(), 1, Integer::sum);
+            scopes.merge(task.getScope(), 1, Integer::sum);
+        }
+
+        String stats = "Children " + taskCount
+            + " tasks, " + variantCount + " variants"
+            + " | Total points " + formatPoints(totalPoints)
+            + " | Difficulty " + formatDifficultyDistribution(difficulties)
+            + " | Scope " + formatScopeDistribution(scopes);
+        return chapter.getName() + "\n" + stats;
+    }
+
+    private String taskRowLabel(final Task task) {
+        String stats = "Children " + task.variantCount()
+            + " variants"
+            + " | Total points " + formatPoints(task.getPoints())
+            + " | Difficulty " + task.getDifficulty().toXmlValue()
+            + " | Scope " + task.getScope().toXmlValue();
+        return task.getName() + "\n" + stats;
+    }
+
+    private String formatPoints(final double points) {
+        return String.format(Locale.ROOT, "%.1f", points);
+    }
+
+    private String formatDifficultyDistribution(final Map<Difficulty, Integer> difficulties) {
+        return Difficulty.EASY.toXmlValue() + " " + difficulties.getOrDefault(Difficulty.EASY, 0)
+            + "/" + Difficulty.MEDIUM.toXmlValue() + " " + difficulties.getOrDefault(Difficulty.MEDIUM, 0)
+            + "/" + Difficulty.HARD.toXmlValue() + " " + difficulties.getOrDefault(Difficulty.HARD, 0);
+    }
+
+    private String formatScopeDistribution(final Map<Scope, Integer> scopes) {
+        return Scope.EXAM.toXmlValue() + " " + scopes.getOrDefault(Scope.EXAM, 0)
+            + "/" + Scope.MOCK_EXAM.toXmlValue() + " " + scopes.getOrDefault(Scope.MOCK_EXAM, 0);
     }
 
     private enum NavigationType {

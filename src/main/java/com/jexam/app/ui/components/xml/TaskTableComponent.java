@@ -2,10 +2,15 @@ package com.jexam.app.ui.components.xml;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
@@ -19,6 +24,9 @@ public final class TaskTableComponent extends VBox {
     private Consumer<Integer> selectHandler = index -> { };
     private Runnable createHandler = () -> { };
     private Consumer<Integer> deleteHandler = index -> { };
+    private Runnable enterHandler = () -> { };
+    private Runnable tabForwardHandler = () -> { };
+    private Runnable tabBackwardHandler = () -> { };
     private boolean updating;
 
     public TaskTableComponent() {
@@ -26,15 +34,37 @@ public final class TaskTableComponent extends VBox {
         setPadding(new Insets(0, 0, 0, 0));
 
         Button addButton = new Button("Add Task");
-        Button deleteButton = new Button("Delete Task");
         addButton.setOnAction(event -> createHandler.run());
-        deleteButton.setOnAction(event -> deleteHandler.accept(listView.getSelectionModel().getSelectedIndex()));
+        listView.setCellFactory(list -> new TaskRowCell());
+        listView.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.DELETE) {
+                int index = listView.getSelectionModel().getSelectedIndex();
+                if (index >= 0) {
+                    deleteHandler.accept(index);
+                }
+                event.consume();
+                return;
+            }
+            if (event.getCode() == KeyCode.ENTER) {
+                enterHandler.run();
+                event.consume();
+                return;
+            }
+            if (event.getCode() == KeyCode.TAB) {
+                if (event.isShiftDown()) {
+                    tabBackwardHandler.run();
+                } else {
+                    tabForwardHandler.run();
+                }
+                event.consume();
+            }
+        });
         listView.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
             if (!updating && newValue != null) {
                 selectHandler.accept(newValue.intValue());
             }
         });
-        getChildren().addAll(new Label("Tasks"), listView, new HBox(6, addButton, deleteButton));
+        getChildren().addAll(new Label("Tasks"), listView, new HBox(6, addButton));
     }
 
     public void setItems(final List<String> values) {
@@ -71,7 +101,63 @@ public final class TaskTableComponent extends VBox {
         deleteHandler = handler == null ? index -> { } : handler;
     }
 
+    public void setOnEnter(final Runnable handler) {
+        enterHandler = handler == null ? () -> { } : handler;
+    }
+
+    public void setOnTabNavigation(final Runnable onForward, final Runnable onBackward) {
+        tabForwardHandler = onForward == null ? () -> { } : onForward;
+        tabBackwardHandler = onBackward == null ? () -> { } : onBackward;
+    }
+
     public void requestTableFocus() {
         listView.requestFocus();
+    }
+
+    private final class TaskRowCell extends ListCell<String> {
+        private final Label primaryLabel = new Label();
+        private final Label statsLabel = new Label();
+        private final Button deleteButton = new Button("Delete");
+        private final Region spacer = new Region();
+        private final VBox textStack = new VBox(2, primaryLabel, statsLabel);
+        private final HBox content = new HBox(8, textStack, spacer, deleteButton);
+
+        private TaskRowCell() {
+            setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+            primaryLabel.setWrapText(true);
+            statsLabel.setWrapText(true);
+            statsLabel.setStyle("-fx-font-size: 11px; -fx-opacity: 0.82;");
+            HBox.setHgrow(spacer, Priority.ALWAYS);
+            deleteButton.setFocusTraversable(false);
+            deleteButton.setOnAction(event -> {
+                if (!isEmpty() && getIndex() >= 0) {
+                    deleteHandler.accept(getIndex());
+                }
+                event.consume();
+            });
+        }
+
+        @Override
+        protected void updateItem(final String item, final boolean empty) {
+            super.updateItem(item, empty);
+            if (empty || item == null) {
+                setGraphic(null);
+                return;
+            }
+
+            int split = item.indexOf('\n');
+            if (split < 0) {
+                primaryLabel.setText(item);
+                statsLabel.setText("");
+                statsLabel.setManaged(false);
+                statsLabel.setVisible(false);
+            } else {
+                primaryLabel.setText(item.substring(0, split));
+                statsLabel.setText(item.substring(split + 1));
+                statsLabel.setManaged(true);
+                statsLabel.setVisible(true);
+            }
+            setGraphic(content);
+        }
     }
 }

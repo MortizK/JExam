@@ -169,3 +169,48 @@ Please validate or change:
 3. Should validation action stay global, or move into both tab contexts separately?
 4. Is the PDF preview/result region split acceptable (left controls/config stacked, right preview panel)?
 5. Do you want additional top-level regions before we lock structure and move to component specification?
+
+## 11. Implementation Update (2026-04-02)
+
+This section adds implementation-specific detail without replacing the structure above.
+
+### 11.1 XML Child Rows
+
+- Child actions are row-local for chapter/task/variant lists.
+- Global footer delete buttons are removed.
+- Add buttons remain in the list footer.
+
+### 11.2 XML Child Statistics
+
+- Chapter rows include inline aggregated stats:
+	- task count and variant count
+	- total points
+	- difficulty distribution
+	- scope distribution
+- Task rows include inline stats:
+	- variant count
+	- total points
+	- difficulty
+	- scope
+
+### 11.3 XML Keyboard Navigation
+
+- Child lists support:
+	- Up/Down selection
+	- Enter to open selected child context
+	- Delete for selected child deletion
+	- Tab/Shift+Tab traversal between tree, list, and editor focus
+
+### 11.4 Deletion Safeguards
+
+- Confirmation dialog remains in place.
+- Minimum-child constraints remain enforced:
+	- chapter level
+	- task level
+	- variant level
+
+### 11.5 PDF Focus Entry
+
+- On PDF tab activation, focus is state-aware:
+	- focus validation issue tree when issues exist
+	- otherwise focus generation controls

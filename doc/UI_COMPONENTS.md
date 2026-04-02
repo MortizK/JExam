@@ -538,3 +538,57 @@ Empty/error states:
 3. **Validation display**: Per-issue visibility grouped by chapter/task hierarchy (not flat).
 4. **Chapter ordering**: Drag-and-drop + up/down buttons both available.
 5. **Save model**: Save-on-change for all inline editors (no explicit save button per component).
+
+## 7. Implementation Update (2026-04-02)
+
+This section documents concrete component behavior implemented after the initial component draft.
+
+### 7.1 XML Child List Components
+
+Affected components:
+- [src/main/java/com/jexam/app/ui/components/xml/ChapterTableComponent.java](src/main/java/com/jexam/app/ui/components/xml/ChapterTableComponent.java)
+- [src/main/java/com/jexam/app/ui/components/xml/TaskTableComponent.java](src/main/java/com/jexam/app/ui/components/xml/TaskTableComponent.java)
+- [src/main/java/com/jexam/app/ui/components/xml/VariantListComponent.java](src/main/java/com/jexam/app/ui/components/xml/VariantListComponent.java)
+
+Implemented interaction changes:
+- Per-row Delete button on each list row
+- Footer Delete button removed
+- Footer Add button retained
+
+### 7.2 Inline Row Statistics
+
+Composition handled in:
+- [src/main/java/com/jexam/app/XmlTabContainer.java](src/main/java/com/jexam/app/XmlTabContainer.java)
+
+Implemented row content:
+- Chapter rows: name + stats line (children, points, difficulty distribution, scope distribution)
+- Task rows: name + stats line (children, points, difficulty, scope)
+- Variant rows: compact label row with row-local delete action
+
+### 7.3 Keyboard Contracts in Child Lists
+
+Implemented list-level key behavior:
+- Up/Down: change selected row
+- Enter: activate selected child context
+- Delete: trigger selected child delete flow
+- Tab/Shift+Tab: move focus between tree, list, and editor
+
+### 7.4 Delete Flow Contract
+
+Delete orchestration remains centralized in:
+- [src/main/java/com/jexam/app/XmlTabContainer.java](src/main/java/com/jexam/app/XmlTabContainer.java)
+
+Runtime safeguards remain unchanged:
+- confirmation dialog before delete
+- minimum-child protection per hierarchy level
+
+### 7.5 PDF Focus Contract Update
+
+Relevant components:
+- [src/main/java/com/jexam/app/PdfTabContainer.java](src/main/java/com/jexam/app/PdfTabContainer.java)
+- [src/main/java/com/jexam/app/ui/components/pdf/ValidationSummaryComponent.java](src/main/java/com/jexam/app/ui/components/pdf/ValidationSummaryComponent.java)
+- [src/main/java/com/jexam/app/ui/components/pdf/GenerationControlsComponent.java](src/main/java/com/jexam/app/ui/components/pdf/GenerationControlsComponent.java)
+
+Implemented behavior:
+- PDF tab focuses validation tree when issues are present
+- otherwise focuses generation controls
