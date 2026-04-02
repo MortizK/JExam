@@ -4,27 +4,48 @@ import com.jexam.model.Chapter;
 import com.jexam.model.Exam;
 import com.jexam.model.Task;
 import com.jexam.model.Variant;
+import com.jexam.model.enums.Difficulty;
 import com.jexam.model.enums.Scope;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * PDF generation service backed by Apache PDFBox.
  */
 public class PdfBoxGenerationService implements PdfGenerationService {
-    private static final float START_X = 50;
-    private static final float START_Y = 750;
+    private static final PDType1Font BODY_FONT = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+    private static final PDType1Font BOLD_FONT = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
+    private static final float PAGE_WIDTH = PDRectangle.A4.getWidth();
+    private static final float PAGE_HEIGHT = PDRectangle.A4.getHeight();
+    private static final float LEFT_MARGIN = 50;
+    private static final float RIGHT_MARGIN = 50;
+    private static final float TOP_MARGIN = 56;
+    private static final float BOTTOM_MARGIN = 56;
+    private static final float CONTENT_WIDTH = PAGE_WIDTH - LEFT_MARGIN - RIGHT_MARGIN;
+    private static final float BODY_FONT_SIZE = 12;
+    private static final float TITLE_FONT_SIZE = 24;
+    private static final float SUBTITLE_FONT_SIZE = 14;
+    private static final float SMALL_FONT_SIZE = 10;
     private static final float LINE_HEIGHT = 16;
-    private static final float MIN_Y = 70;
-    private static final int MAX_LINE_LENGTH = 150;
+    private static final float SMALL_LINE_HEIGHT = 12;
+    private static final float SECTION_GAP = 10;
+    private static final float CHAPTER_GAP = 18;
+    private static final float QUESTION_GAP = 6;
+    private static final float ANSWER_LABEL_GAP = 4;
+    private static final float ANSWER_PADDING = 10;
+    private static final float MIN_ANSWER_BOX_HEIGHT = 60;
+    private static final float ANSWER_LINE_HEIGHT = 14;
 
     /**
      * Generates a PDF for the given exam and output mode.
@@ -49,14 +70,11 @@ public class PdfBoxGenerationService implements PdfGenerationService {
             }
 
             try (PDDocument document = new PDDocument()) {
-                PDPage page = new PDPage(PDRectangle.A4);
-                document.addPage(page);
-
-                try (PDPageContentStream content = new PDPageContentStream(document, page)) {
-                    content.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
-
-                    RenderContext context = new RenderContext(content, mode, START_Y);
-                    writeHeader(context, exam);
+                try (RenderContext context = new RenderContext(document, mode)) {
+                    writeCoverPage(context, exam);
+                    if (exam.chapterCount() > 0) {
+                        context.startNewPage();
+                    }
                     writeChapters(context, exam);
                 }
 
@@ -67,48 +85,88 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         }
     }
 
-    private void writeHeader(final RenderContext context, final Exam exam)
+    private void writeCoverPage(final RenderContext context, final Exam exam)
         throws IOException {
-        context.y = writeLine(
-            context.content,
-            context.y,
-            "JExam Export: " + context.mode
-        );
-        context.y = writeLine(context.content, context.y, "Exam: " + exam.getName());
-        context.y -= LINE_HEIGHT;
+        context.content.setFont(BOLD_FONT, TITLE_FONT_SIZE);
+        context.y = writeCenteredLine(context, context.y, "Deckblatt", BOLD_FONT, TITLE_FONT_SIZE);
+        context.y -= SECTION_GAP;
+
+        context.content.setFont(BODY_FONT, SUBTITLE_FONT_SIZE);
+        context.y = writeCenteredLine(context, context.y, "Exam: " + oneLine(exam.getName()), BODY_FONT, SUBTITLE_FONT_SIZE);
+        context.y = writeCenteredLine(context, context.y, "Mode: " + context.mode, BODY_FONT, SUBTITLE_FONT_SIZE);
+        context.y -= CHAPTER_GAP;
+
+        context.y = writeSectionTitle(context, "Overview");
+        context.y = writeLine(context, context.y, "Chapters: " + exam.chapterCount());
+        context.y = writeLine(context, context.y, "Total points: " + formatPoints(totalPoints(exam, context.mode)));
+        context.y -= SECTION_GAP;
+
+        for (int index = 0; index < exam.chapterCount(); index++) {
+            Chapter chapter = exam.chapterAt(index);
+            context.y = ensureSpace(context, LINE_HEIGHT * 2.5f);
+            context.y = writeLine(
+                context,
+                context.y,
+                "Chapter " + (index + 1) + ": " + oneLine(chapter.getName())
+                    + " | tasks: " + includedTasks(chapter, context.mode).size()
+                    + " | points: " + formatPoints(totalPoints(chapter, context.mode))
+            );
+        }
     }
 
     private void writeChapters(final RenderContext context, final Exam exam)
         throws IOException {
-        for (Chapter chapter : exam.getChapters()) {
-            context.y = ensureSpace(context.y);
-            context.y = writeLine(context.content, context.y, "Chapter: " + chapter.getName());
-            writeTasks(context, chapter);
-            context.y -= LINE_HEIGHT;
+        for (int chapterIndex = 0; chapterIndex < exam.chapterCount(); chapterIndex++) {
+            if (chapterIndex > 0) {
+                context.startNewPage();
+            }
+            Chapter chapter = exam.chapterAt(chapterIndex);
+            writeChapter(context, chapterIndex, chapter);
         }
+    }
+
+    private void writeChapter(final RenderContext context, final int chapterIndex, final Chapter chapter)
+        throws IOException {
+        context.y = writeSectionTitle(
+            context,
+            "Chapter: " + oneLine(chapter.getName())
+        );
+        context.y = writeLine(
+            context,
+            context.y,
+            "Tasks: " + includedTasks(chapter, context.mode).size() + " | Points: " + formatPoints(totalPoints(chapter, context.mode))
+        );
+        context.y -= SECTION_GAP;
+        writeTasks(context, chapter);
     }
 
     private void writeTasks(final RenderContext context, final Chapter chapter)
         throws IOException {
-        for (Task task : chapter.getTasks()) {
+        int displayTaskIndex = 0;
+        for (int taskIndex = 0; taskIndex < chapter.taskCount(); taskIndex++) {
+            Task task = chapter.taskAt(taskIndex);
             if (!shouldIncludeTask(task, context.mode)) {
                 continue;
             }
 
-            context.y = ensureSpace(context.y);
+            displayTaskIndex++;
+
+            context.y = ensureSpace(context, LINE_HEIGHT * 2.5f);
             context.y = writeLine(
-                context.content,
+                context,
                 context.y,
-                "  Task: "
-                    + task.getName()
+                "Task "
+                    + displayTaskIndex
+                    + ": "
+                    + oneLine(task.getName())
                     + " ("
-                    + task.getPoints()
+                    + formatPoints(task.getPoints())
                     + " pts, "
                     + task.getDifficulty().toXmlValue()
                     + ")"
             );
-
             writeVariants(context, task);
+            context.y -= SECTION_GAP;
         }
     }
 
@@ -116,21 +174,21 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         throws IOException {
         for (int i = 0; i < task.getVariants().size(); i++) {
             Variant variant = task.getVariants().get(i);
-            context.y = ensureSpace(context.y);
-            context.y = writeLine(
-                context.content,
-                context.y,
-                "    Variant " + (i + 1) + " Q: " + oneLine(variant.getQuestion())
+            context.y = ensureSpace(context, estimateVariantBlockHeight(task, variant, context.mode));
+            context.y = writeLine(context, context.y, "Variant " + (i + 1));
+            List<String> questionLines = wrapText(
+                variant.getQuestion(),
+                BODY_FONT,
+                BODY_FONT_SIZE,
+                CONTENT_WIDTH - 20
             );
+            context.y = writeWrappedLines(context, questionLines, 14, LEFT_MARGIN + 10, context.y);
+            context.y -= QUESTION_GAP;
 
-            if (context.mode == GenerationMode.SOLUTION) {
-                context.y = ensureSpace(context.y);
-                context.y = writeLine(
-                    context.content,
-                    context.y,
-                    "    Variant " + (i + 1) + " A: " + oneLine(variant.getAnswer())
-                );
-            }
+            float boxHeight = estimateAnswerBoxHeight(variant.getAnswer(), task.getPoints());
+            context.y = ensureSpace(context, boxHeight + LINE_HEIGHT);
+            context.y = writeLine(context, context.y, "Answer");
+            drawAnswerBox(context, variant, boxHeight);
         }
     }
 
@@ -142,40 +200,243 @@ public class PdfBoxGenerationService implements PdfGenerationService {
     }
 
     private float writeLine(
-        final PDPageContentStream content,
+        final RenderContext context,
         final float y,
         final String text
     ) throws IOException {
-        content.beginText();
-        content.newLineAtOffset(START_X, y);
-        content.showText(oneLine(text));
-        content.endText();
+        return writeText(context, oneLine(text), LEFT_MARGIN, y, BODY_FONT, BODY_FONT_SIZE);
+    }
+
+    private float writeSectionTitle(final RenderContext context, final String text) throws IOException {
+        context.content.setFont(BOLD_FONT, SUBTITLE_FONT_SIZE);
+        float result = writeText(context, oneLine(text), LEFT_MARGIN, context.y, BOLD_FONT, SUBTITLE_FONT_SIZE);
+        context.content.setFont(BODY_FONT, BODY_FONT_SIZE);
+        return result;
+    }
+
+    private float writeText(
+        final RenderContext context,
+        final String text,
+        final float x,
+        final float y,
+        final PDFont font,
+        final float fontSize
+    ) throws IOException {
+        context.content.setFont(font, fontSize);
+        context.content.beginText();
+        context.content.newLineAtOffset(x, y);
+        context.content.showText(text == null ? "" : text);
+        context.content.endText();
+        context.content.setFont(BODY_FONT, BODY_FONT_SIZE);
         return y - LINE_HEIGHT;
     }
 
-    private float ensureSpace(final float y) {
-        // Keep v1 implementation single-page to stay minimal for this phase.
-        if (y < MIN_Y) {
-            return START_Y;
+    private float writeCenteredLine(
+        final RenderContext context,
+        final float y,
+        final String text,
+        final PDFont font,
+        final float fontSize
+    ) throws IOException {
+        float width = textWidth(font, fontSize, text);
+        float x = LEFT_MARGIN + Math.max(0, (CONTENT_WIDTH - width) / 2f);
+        return writeText(context, text == null ? "" : text, x, y, font, fontSize);
+    }
+
+    private float writeWrappedLines(
+        final RenderContext context,
+        final List<String> lines,
+        final float lineHeight,
+        final float x,
+        final float startY
+    ) throws IOException {
+        float currentY = startY;
+        for (String line : lines) {
+            currentY = writeText(context, line, x, currentY, BODY_FONT, BODY_FONT_SIZE);
+            currentY += LINE_HEIGHT - lineHeight;
         }
-        return y;
+        return currentY;
+    }
+
+    private float ensureSpace(final RenderContext context, final float requiredHeight) throws IOException {
+        if (context.y - requiredHeight < BOTTOM_MARGIN) {
+            context.startNewPage();
+        }
+        return context.y;
+    }
+
+    private void drawAnswerBox(final RenderContext context, final Variant variant, final float boxHeight)
+        throws IOException {
+        float boxWidth = CONTENT_WIDTH;
+        float topY = context.y;
+        float bottomY = topY - boxHeight;
+
+        context.content.setLineWidth(0.8f);
+        context.content.addRect(LEFT_MARGIN, bottomY, boxWidth, boxHeight);
+        context.content.stroke();
+
+        if (context.mode == GenerationMode.SOLUTION) {
+            List<String> answerLines = wrapText(variant.getAnswer(), BODY_FONT, BODY_FONT_SIZE, boxWidth - 2 * ANSWER_PADDING);
+            float textY = topY - ANSWER_PADDING - BODY_FONT_SIZE;
+            for (String line : answerLines) {
+                context.content.setFont(BODY_FONT, BODY_FONT_SIZE);
+                context.content.beginText();
+                context.content.newLineAtOffset(LEFT_MARGIN + ANSWER_PADDING, textY);
+                context.content.showText(line);
+                context.content.endText();
+                textY -= ANSWER_LINE_HEIGHT;
+            }
+        }
+
+        context.y = bottomY - ANSWER_LABEL_GAP;
     }
 
     private String oneLine(final String text) {
         if (text == null) {
             return "";
         }
-        String normalized = text.replace('\n', ' ').replace('\r', ' ').trim();
-        return normalized.length() > MAX_LINE_LENGTH
-            ? normalized.substring(0, MAX_LINE_LENGTH) + "..."
-            : normalized;
+        return text.replace('\n', ' ').replace('\r', ' ').trim();
     }
 
-    private static final class RenderContext {
+    private float totalPoints(final Exam exam, final GenerationMode mode) {
+        float total = 0f;
+        for (Chapter chapter : exam.getChapters()) {
+            total += totalPoints(chapter, mode);
+        }
+        return total;
+    }
+
+    private float totalPoints(final Chapter chapter, final GenerationMode mode) {
+        float total = 0f;
+        for (Task task : includedTasks(chapter, mode)) {
+            total += (float) task.getPoints();
+        }
+        return total;
+    }
+
+    private List<Task> includedTasks(final Chapter chapter, final GenerationMode mode) {
+        List<Task> tasks = new ArrayList<>();
+        for (Task task : chapter.getTasks()) {
+            if (shouldIncludeTask(task, mode)) {
+                tasks.add(task);
+            }
+        }
+        return tasks;
+    }
+
+    private String formatPoints(final double points) {
+        return String.format(java.util.Locale.ROOT, "%.1f", points);
+    }
+
+    private float estimateVariantBlockHeight(final Task task, final Variant variant, final GenerationMode mode)
+        throws IOException {
+        float questionHeight = wrapText(variant.getQuestion(), BODY_FONT, BODY_FONT_SIZE, CONTENT_WIDTH - 20).size() * LINE_HEIGHT;
+        float answerHeight = estimateAnswerBoxHeight(variant.getAnswer(), task.getPoints());
+        float answerTextHeight = mode == GenerationMode.SOLUTION
+            ? wrapText(variant.getAnswer(), BODY_FONT, BODY_FONT_SIZE, CONTENT_WIDTH - 2 * ANSWER_PADDING).size() * ANSWER_LINE_HEIGHT
+            : 0f;
+        return LINE_HEIGHT + questionHeight + QUESTION_GAP + Math.max(answerHeight, answerTextHeight + ANSWER_PADDING * 2) + LINE_HEIGHT;
+    }
+
+    static float estimateAnswerBoxHeight(final String answerText, final double points) throws IOException {
+        List<String> wrapped = wrapText(answerText, BODY_FONT, BODY_FONT_SIZE, CONTENT_WIDTH - 2 * ANSWER_PADDING);
+        float textHeight = wrapped.size() * ANSWER_LINE_HEIGHT;
+        float handwrittenPadding = Math.max(28f, (float) points * 10f);
+        return Math.max(MIN_ANSWER_BOX_HEIGHT, textHeight + handwrittenPadding + (2 * ANSWER_PADDING));
+    }
+
+    private static List<String> wrapText(
+        final String text,
+        final PDFont font,
+        final float fontSize,
+        final float maxWidth
+    ) throws IOException {
+        List<String> lines = new ArrayList<>();
+        if (text == null || text.isBlank()) {
+            lines.add("");
+            return lines;
+        }
+
+        String normalized = text.replace("\r", "");
+        String[] paragraphs = normalized.split("\n", -1);
+        for (String paragraph : paragraphs) {
+            if (paragraph.isBlank()) {
+                lines.add("");
+                continue;
+            }
+
+            StringBuilder currentLine = new StringBuilder();
+            for (String word : paragraph.trim().split("\\s+")) {
+                if (word.isBlank()) {
+                    continue;
+                }
+
+                String candidate = currentLine.isEmpty() ? word : currentLine + " " + word;
+                if (textWidth(font, fontSize, candidate) <= maxWidth) {
+                    currentLine.setLength(0);
+                    currentLine.append(candidate);
+                    continue;
+                }
+
+                if (!currentLine.isEmpty()) {
+                    lines.add(currentLine.toString());
+                    currentLine.setLength(0);
+                }
+
+                if (textWidth(font, fontSize, word) <= maxWidth) {
+                    currentLine.append(word);
+                } else {
+                    List<String> chunks = splitWord(word, font, fontSize, maxWidth);
+                    for (int i = 0; i < chunks.size(); i++) {
+                        String chunk = chunks.get(i);
+                        if (i == chunks.size() - 1) {
+                            currentLine.append(chunk);
+                        } else {
+                            lines.add(chunk);
+                        }
+                    }
+                }
+            }
+
+            if (!currentLine.isEmpty()) {
+                lines.add(currentLine.toString());
+            }
+        }
+
+        return lines;
+    }
+
+    private static List<String> splitWord(
+        final String word,
+        final PDFont font,
+        final float fontSize,
+        final float maxWidth
+    ) throws IOException {
+        List<String> chunks = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+        for (char character : word.toCharArray()) {
+            String candidate = current + String.valueOf(character);
+            if (current.length() > 0 && textWidth(font, fontSize, candidate) > maxWidth) {
+                chunks.add(current.toString());
+                current.setLength(0);
+            }
+            current.append(character);
+        }
+        if (!current.isEmpty()) {
+            chunks.add(current.toString());
+        }
+        return chunks;
+    }
+
+    private static float textWidth(final PDFont font, final float fontSize, final String text) throws IOException {
+        return font.getStringWidth(text == null ? "" : text) / 1000f * fontSize;
+    }
+
+    private static final class RenderContext implements AutoCloseable {
         /**
-         * Active PDF content stream.
+         * Active document.
          */
-        private final PDPageContentStream content;
+        private final PDDocument document;
 
         /**
          * Current generation mode.
@@ -183,18 +444,85 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         private final GenerationMode mode;
 
         /**
+         * Active PDF content stream.
+         */
+        private PDPageContentStream content;
+
+        /**
+         * Current page number.
+         */
+        private int pageNumber;
+
+        /**
          * Current y cursor position.
          */
         private float y;
 
-        private RenderContext(
-            final PDPageContentStream stream,
-            final GenerationMode currentMode,
-            final float startY
-        ) {
-            this.content = stream;
+        private RenderContext(final PDDocument document, final GenerationMode currentMode) throws IOException {
+            this.document = document;
             this.mode = currentMode;
-            this.y = startY;
+            this.pageNumber = 0;
+            startNewPage();
         }
+
+        private void startNewPage() throws IOException {
+            if (content != null) {
+                content.close();
+            }
+
+            pageNumber++;
+            PDPage page = new PDPage(PDRectangle.A4);
+            document.addPage(page);
+            content = new PDPageContentStream(document, page);
+            drawFooter(this);
+            content.setFont(BODY_FONT, BODY_FONT_SIZE);
+            y = PAGE_HEIGHT - TOP_MARGIN;
+        }
+
+        @Override
+        public void close() throws IOException {
+            if (content != null) {
+                content.close();
+            }
+        }
+    }
+
+    private static void drawFooter(final RenderContext context) throws IOException {
+        context.content.setFont(BODY_FONT, SMALL_FONT_SIZE);
+        context.content.beginText();
+        context.content.newLineAtOffset(LEFT_MARGIN, 24);
+        context.content.showText("JExam");
+        context.content.endText();
+
+        context.content.beginText();
+        context.content.newLineAtOffset(PAGE_WIDTH - RIGHT_MARGIN - 60, 24);
+        context.content.showText("Page " + context.pageNumber);
+        context.content.endText();
+    }
+
+    private String chapterSummary(final Chapter chapter) {
+        int includedTaskCount = 0;
+        float points = 0f;
+        int easy = 0;
+        int medium = 0;
+        int hard = 0;
+        for (Task task : chapter.getTasks()) {
+            if (!shouldIncludeTask(task, GenerationMode.EXAM) && !shouldIncludeTask(task, GenerationMode.SOLUTION) && !shouldIncludeTask(task, GenerationMode.MOCK_EXAM)) {
+                continue;
+            }
+            includedTaskCount++;
+            points += (float) task.getPoints();
+            if (task.getDifficulty() == Difficulty.EASY) {
+                easy++;
+            } else if (task.getDifficulty() == Difficulty.MEDIUM) {
+                medium++;
+            } else if (task.getDifficulty() == Difficulty.HARD) {
+                hard++;
+            }
+        }
+
+        return "tasks=" + includedTaskCount
+            + ", points=" + formatPoints(points)
+            + ", difficulty=" + easy + "/" + medium + "/" + hard;
     }
 }

@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PdfBoxGenerationServiceTest {
@@ -59,6 +60,34 @@ class PdfBoxGenerationServiceTest {
         assertTrue(text.contains("Scope EXAM answer"));
     }
 
+    @Test
+    void shouldAddCoverPageAndStartEachChapterOnItsOwnPage() throws Exception {
+        PdfGenerationService service = new PdfBoxGenerationService();
+        Path out = tempDir.resolve("chapter-breaks.pdf");
+
+        service.generate(twoChapterExam(), GenerationMode.EXAM, out);
+
+        try (PDDocument document = Loader.loadPDF(out.toFile())) {
+            assertEquals(3, document.getNumberOfPages());
+        }
+
+        String text = readPdfText(out);
+        assertTrue(text.contains("Deckblatt"));
+        assertTrue(text.contains("Chapter 1: First Chapter"));
+        assertTrue(text.contains("Chapter 2: Second Chapter"));
+    }
+
+    @Test
+    void shouldIncreaseAnswerBoxHeightForLongerAnswers() throws Exception {
+        float shortBox = PdfBoxGenerationService.estimateAnswerBoxHeight("Short answer.", 1.0);
+        float longBox = PdfBoxGenerationService.estimateAnswerBoxHeight(
+            "This is a much longer answer that should require a taller handwritten box because it wraps across multiple lines.",
+            1.0
+        );
+
+        assertTrue(longBox > shortBox);
+    }
+
     private String readPdfText(Path path) throws Exception {
         try (PDDocument document = Loader.loadPDF(path.toFile())) {
             return new PDFTextStripper().getText(document);
@@ -84,5 +113,27 @@ class PdfBoxGenerationServiceTest {
 
         Chapter chapter = new Chapter("Demo Chapter", List.of(examTask, mockTask));
         return new Exam("Demo", List.of(chapter));
+    }
+
+    private Exam twoChapterExam() {
+        Task firstTask = new Task(
+            "First Task",
+            2.0,
+            Difficulty.EASY,
+            Scope.EXAM,
+            List.of(new Variant("First question", "First answer"))
+        );
+
+        Task secondTask = new Task(
+            "Second Task",
+            3.0,
+            Difficulty.HARD,
+            Scope.EXAM,
+            List.of(new Variant("Second question", "Second answer"))
+        );
+
+        Chapter firstChapter = new Chapter("First Chapter", List.of(firstTask));
+        Chapter secondChapter = new Chapter("Second Chapter", List.of(secondTask));
+        return new Exam("Two Chapters", List.of(firstChapter, secondChapter));
     }
 }
