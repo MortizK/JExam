@@ -37,7 +37,7 @@ public final class PdfTabContainer extends BorderPane {
     private final ValidationSummaryComponent validationSummary = new ValidationSummaryComponent();
     private final ChapterConfigurationComponent chapterConfiguration = new ChapterConfigurationComponent();
     private final PreviewRegionComponent previewRegion = new PreviewRegionComponent();
-    private final VBox leftColumn = new VBox(10, generationControls, validationSummary, chapterConfiguration);
+    private final VBox leftColumn = new VBox(10, generationControls, chapterConfiguration);
     private final SplitPane contentSplit = new SplitPane(leftColumn, previewRegion);
 
     private Consumer<String> issueSelectedHandler = path -> { };

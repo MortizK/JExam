@@ -77,10 +77,7 @@ public final class GenerationControlsComponent extends VBox {
             modeBox,
             new Label("If chapter target is infeasible"),
             fallbackBox,
-            new Label("Deterministic seed (optional)"),
-            seedField,
             staleLabel,
-            previewButton,
             exportButton
         );
     }

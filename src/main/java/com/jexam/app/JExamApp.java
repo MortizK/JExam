@@ -49,7 +49,6 @@ public class JExamApp extends Application {
 
         xmlTabContainer = new XmlTabContainer(appService, ui, selectionModel, uiStateManager);
         xmlTabContainer.setOnDirtyStateChanged(headerNavigation::setDirty);
-        xmlTabContainer.setOnExamNameChanged(headerNavigation::setExamName);
         xmlTabContainer.setOnCreateNewExam(this::createNewExam);
         xmlTabContainer.setOnLoadXml(() -> openExam(stage));
         pdfTabContainer = new PdfTabContainer(appService, ui, uiStateManager, stage);
@@ -96,8 +95,6 @@ public class JExamApp extends Application {
     }
 
     private void configureHeader(final Stage stage, final AppHeaderNavigation headerNavigation) {
-        headerNavigation.setTitle(ui.text("app.title"));
-        headerNavigation.setExamName(selectionModel.currentExamName());
         headerNavigation.setButtonText(
             ui.text("button.new"),
             ui.text("button.open"),
@@ -109,7 +106,6 @@ public class JExamApp extends Application {
         headerNavigation.setSelectedLanguage(UiLanguage.ENGLISH);
         headerNavigation.setOnLanguageChanged(value -> {
             ui.setLanguage(value);
-            headerNavigation.setTitle(ui.text("app.title"));
             headerNavigation.setButtonText(
                 ui.text("button.new"),
                 ui.text("button.open"),
