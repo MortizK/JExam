@@ -9,6 +9,9 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -80,6 +83,7 @@ public class JExamApp extends Application {
         });
         xmlTabContainer.updateLayout(scene.getWidth());
         pdfTabContainer.updateLayout(scene.getWidth());
+        configureKeyboardShortcuts(scene, stage);
         configureCloseHandling(stage);
         stage.show();
     }
@@ -134,6 +138,13 @@ public class JExamApp extends Application {
                 event.consume();
             }
         });
+    }
+
+    private void configureKeyboardShortcuts(final Scene scene, final Stage stage) {
+        scene.getAccelerators().put(new KeyCodeCombination(KeyCode.N, KeyCombination.SHORTCUT_DOWN), this::createNewExam);
+        scene.getAccelerators().put(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN), () -> openExam(stage));
+        scene.getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN), () -> saveExam(stage));
+        scene.getAccelerators().put(new KeyCodeCombination(KeyCode.P, KeyCombination.SHORTCUT_DOWN), this::previewPdf);
     }
 
     private void createNewExam() {
