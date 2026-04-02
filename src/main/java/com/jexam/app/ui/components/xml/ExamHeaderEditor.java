@@ -53,4 +53,8 @@ public final class ExamHeaderEditor extends HBox {
             }
         };
     }
+
+    public void requestEditorFocus() {
+        nameField.requestFocus();
+    }
 }

@@ -117,6 +117,10 @@ public final class TaskHeaderEditor extends GridPane {
         };
     }
 
+    public void requestEditorFocus() {
+        nameField.requestFocus();
+    }
+
     private void runWithoutUpdates(final Runnable action) {
         updating = true;
         try {

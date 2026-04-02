@@ -67,6 +67,10 @@ public final class VariantEditorComponent extends VBox {
         };
     }
 
+    public void requestEditorFocus() {
+        questionArea.requestFocus();
+    }
+
     private void runWithoutUpdates(final Runnable action) {
         updating = true;
         try {

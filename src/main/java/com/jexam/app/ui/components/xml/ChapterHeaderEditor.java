@@ -53,4 +53,8 @@ public final class ChapterHeaderEditor extends HBox {
             }
         };
     }
+
+    public void requestEditorFocus() {
+        nameField.requestFocus();
+    }
 }

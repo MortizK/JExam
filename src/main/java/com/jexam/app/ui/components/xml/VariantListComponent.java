@@ -70,4 +70,8 @@ public final class VariantListComponent extends VBox {
     public void setOnDelete(final Consumer<Integer> handler) {
         deleteHandler = handler == null ? index -> { } : handler;
     }
+
+    public void requestTableFocus() {
+        listView.requestFocus();
+    }
 }

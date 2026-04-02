@@ -156,6 +156,22 @@ public final class XmlTabContainer extends BorderPane {
         navigationTree.requestTreeFocus();
     }
 
+    private void focusActiveContent() {
+        if (selectedVariantIndex >= 0) {
+            variantEditor.requestEditorFocus();
+            return;
+        }
+        if (selectedTaskIndex >= 0) {
+            variantList.requestTableFocus();
+            return;
+        }
+        if (selectedChapterIndex >= 0) {
+            taskTable.requestTableFocus();
+            return;
+        }
+        chapterTable.requestTableFocus();
+    }
+
     public void refreshFromService() {
         Exam currentExam = appService.getCurrentExam();
         selectionModel.setExam(currentExam);
@@ -180,6 +196,7 @@ public final class XmlTabContainer extends BorderPane {
         refreshChapterSelection();
         refreshBreadcrumb();
         refreshContentVisibility();
+        focusActiveContent();
     }
 
     public void markSaved() {
@@ -252,6 +269,7 @@ public final class XmlTabContainer extends BorderPane {
                     selectedVariantIndex = -1;
                 }
                 refreshFromService();
+                focusActiveContent();
             } finally {
                 syncingNavigation = false;
             }
@@ -327,6 +345,7 @@ public final class XmlTabContainer extends BorderPane {
             refreshNavigationSelection();
             refreshBreadcrumb();
             refreshContentVisibility();
+            focusActiveContent();
         });
         chapterTable.setOnCreate(() -> {
             appService.addChapter("New Chapter");
@@ -354,6 +373,7 @@ public final class XmlTabContainer extends BorderPane {
             refreshNavigationSelection();
             refreshBreadcrumb();
             refreshContentVisibility();
+            focusActiveContent();
         });
         taskTable.setOnCreate(() -> {
             if (selectedChapterIndex < 0) {
@@ -387,6 +407,7 @@ public final class XmlTabContainer extends BorderPane {
             refreshNavigationSelection();
             refreshBreadcrumb();
             refreshContentVisibility();
+            focusActiveContent();
         });
         variantList.setOnCreate(() -> {
             if (selectedChapterIndex < 0 || selectedTaskIndex < 0) {

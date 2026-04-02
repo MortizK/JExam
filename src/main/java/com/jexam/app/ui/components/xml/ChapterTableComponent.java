@@ -70,4 +70,8 @@ public final class ChapterTableComponent extends VBox {
     public void setOnDelete(final Consumer<Integer> handler) {
         deleteHandler = handler == null ? index -> { } : handler;
     }
+
+    public void requestTableFocus() {
+        listView.requestFocus();
+    }
 }
