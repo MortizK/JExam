@@ -347,6 +347,7 @@ public final class XmlTabContainer extends BorderPane {
 
     private void markDirty() {
         uiStateManager.markDirty();
+        uiStateManager.markPreviewStale();
         dirtyStateChangedHandler.accept(true);
     }
 }

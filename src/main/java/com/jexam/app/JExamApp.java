@@ -8,6 +8,8 @@ import com.jexam.validation.ValidationResult;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -26,6 +28,8 @@ public class JExamApp extends Application {
     private final UiStateManager uiStateManager = new UiStateManager();
 
     private XmlTabContainer xmlTabContainer;
+    private PdfTabContainer pdfTabContainer;
+    private TabPane tabPane;
 
     @Override
     public void start(final Stage stage) {
@@ -37,12 +41,25 @@ public class JExamApp extends Application {
 
         xmlTabContainer = new XmlTabContainer(appService, ui, selectionModel, uiStateManager);
         xmlTabContainer.setOnDirtyStateChanged(headerNavigation::setDirty);
+        pdfTabContainer = new PdfTabContainer(appService, ui, uiStateManager, stage);
+
+        tabPane = new TabPane();
+        Tab xmlTab = new Tab("XML", xmlTabContainer);
+        xmlTab.setClosable(false);
+        Tab pdfTab = new Tab("PDF", pdfTabContainer);
+        pdfTab.setClosable(false);
+        tabPane.getTabs().addAll(xmlTab, pdfTab);
+        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == pdfTab) {
+                pdfTabContainer.refreshFromService();
+            }
+        });
 
         VBox topPane = new VBox(8, headerNavigation);
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(12));
         root.setTop(topPane);
-        root.setCenter(xmlTabContainer);
+        root.setCenter(tabPane);
 
         Scene scene = new Scene(root, 1100, 760);
         stage.setTitle(ui.text("app.title"));
@@ -82,7 +99,9 @@ public class JExamApp extends Application {
             appService.newExam();
             selectionModel.setExam(appService.getCurrentExam());
             xmlTabContainer.refreshFromService();
+            pdfTabContainer.refreshFromService();
             uiStateManager.markSaved();
+            uiStateManager.markPreviewStale();
             headerNavigation.setDirty(false);
             ui.showInfo("New exam created", "Created a new exam in memory.");
         });
@@ -103,7 +122,9 @@ public class JExamApp extends Application {
             appService.openExam(file.toPath());
             selectionModel.setExam(appService.getCurrentExam());
             xmlTabContainer.refreshFromService();
+            pdfTabContainer.refreshFromService();
             uiStateManager.markSaved();
+            uiStateManager.markPreviewStale();
             ui.showInfo("Open successful", "Loaded exam: " + selectionModel.currentExamName());
         } catch (ExamXmlException e) {
             ui.showError("Open failed", e.getMessage());
@@ -137,15 +158,7 @@ public class JExamApp extends Application {
     }
 
     private void previewPdf() {
-        try {
-            Path previewPath = appService.generatePreviewPdf(GenerationMode.EXAM);
-            if (!ui.openFile(previewPath)) {
-                ui.showInfo("Preview ready", "Preview generated at: " + previewPath);
-                return;
-            }
-            ui.showInfo("Preview ready", "Opened preview: " + previewPath);
-        } catch (RuntimeException e) {
-            ui.showError("Preview failed", e.getMessage());
-        }
+        tabPane.getSelectionModel().select(1);
+        pdfTabContainer.generatePreview();
     }
 }
