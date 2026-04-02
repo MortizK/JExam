@@ -20,6 +20,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * PDF tab shell with generation controls, chapter configuration, validation, and preview.
@@ -34,6 +35,8 @@ public final class PdfTabContainer extends BorderPane {
     private final ValidationSummaryComponent validationSummary = new ValidationSummaryComponent();
     private final ChapterConfigurationComponent chapterConfiguration = new ChapterConfigurationComponent();
     private final PreviewRegionComponent previewRegion = new PreviewRegionComponent();
+
+    private Consumer<String> issueSelectedHandler = path -> { };
 
     public PdfTabContainer(
         final ExamApplicationService appService,
@@ -88,6 +91,10 @@ public final class PdfTabContainer extends BorderPane {
         }
     }
 
+    public void setOnIssueSelected(final Consumer<String> handler) {
+        issueSelectedHandler = handler == null ? path -> { } : handler;
+    }
+
     private void configureHandlers() {
         generationControls.setOnPreviewRequested(this::generatePreview);
         generationControls.setOnExportRequested(() -> {
@@ -105,6 +112,7 @@ public final class PdfTabContainer extends BorderPane {
             }
         });
         generationControls.setOnModeChanged(mode -> uiStateManager.markPreviewStale());
+        validationSummary.setOnIssueSelected(path -> issueSelectedHandler.accept(path));
 
         chapterConfiguration.setOnMoveUp(index -> {
             appService.moveGenerationChapterUp(index);

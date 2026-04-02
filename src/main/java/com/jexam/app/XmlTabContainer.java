@@ -140,6 +140,29 @@ public final class XmlTabContainer extends BorderPane {
         dirtyStateChangedHandler.accept(false);
     }
 
+    public void navigateToSelection(final int chapterIndex, final int taskIndex, final int variantIndex) {
+        if (selectionModel.chapterCount() == 0) {
+            return;
+        }
+
+        int boundedChapter = Math.max(0, Math.min(chapterIndex, selectionModel.lastChapterIndex()));
+        selectedChapterIndex = boundedChapter;
+
+        int boundedTask = -1;
+        if (taskIndex >= 0 && selectionModel.taskCount(boundedChapter) > 0) {
+            boundedTask = Math.min(taskIndex, selectionModel.lastTaskIndex(boundedChapter));
+        }
+        selectedTaskIndex = boundedTask;
+
+        int boundedVariant = -1;
+        if (boundedTask >= 0 && variantIndex >= 0 && selectionModel.variantCount(boundedChapter, boundedTask) > 0) {
+            boundedVariant = Math.min(variantIndex, selectionModel.lastVariantIndex(boundedChapter, boundedTask));
+        }
+        selectedVariantIndex = boundedVariant;
+
+        refreshFromService();
+    }
+
     private void configureLoadingState() {
         loadingState.setTitleText(ui.text("label.xml.empty.title"));
         loadingState.setSubtitleText(ui.text("label.xml.empty.subtitle"));

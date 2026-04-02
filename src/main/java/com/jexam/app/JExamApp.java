@@ -2,7 +2,6 @@ package com.jexam.app;
 
 import com.jexam.app.ui.UiStateManager;
 import com.jexam.app.ui.components.AppHeaderNavigation;
-import com.jexam.generation.GenerationMode;
 import com.jexam.io.ExamXmlException;
 import com.jexam.validation.ValidationResult;
 import javafx.application.Application;
@@ -17,11 +16,17 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * JavaFX entry point for JExam.
  */
 public class JExamApp extends Application {
+    private static final Pattern ISSUE_PATH_PATTERN = Pattern.compile(
+        "chapters\\[(\\d+)](?:\\.tasks\\[(\\d+)])?(?:\\.variants\\[(\\d+)])?.*"
+    );
+
     private final ExamApplicationService appService = new ExamApplicationService();
     private final JExamUiSupport ui = new JExamUiSupport();
     private final JExamSelectionModel selectionModel = new JExamSelectionModel();
@@ -41,7 +46,10 @@ public class JExamApp extends Application {
 
         xmlTabContainer = new XmlTabContainer(appService, ui, selectionModel, uiStateManager);
         xmlTabContainer.setOnDirtyStateChanged(headerNavigation::setDirty);
+        xmlTabContainer.setOnCreateNewExam(this::createNewExam);
+        xmlTabContainer.setOnLoadXml(() -> openExam(stage));
         pdfTabContainer = new PdfTabContainer(appService, ui, uiStateManager, stage);
+        pdfTabContainer.setOnIssueSelected(this::navigateToValidationIssue);
 
         tabPane = new TabPane();
         Tab xmlTab = new Tab("XML", xmlTabContainer);
@@ -64,6 +72,7 @@ public class JExamApp extends Application {
         Scene scene = new Scene(root, 1100, 760);
         stage.setTitle(ui.text("app.title"));
         stage.setScene(scene);
+        configureCloseHandling(stage);
         stage.show();
     }
 
@@ -95,20 +104,37 @@ public class JExamApp extends Application {
             headerNavigation.setLanguageLabel(ui.text("label.language"));
             stage.setTitle(ui.text("app.title"));
         });
-        headerNavigation.setOnNew(() -> {
-            appService.newExam();
-            selectionModel.setExam(appService.getCurrentExam());
-            xmlTabContainer.refreshFromService();
-            pdfTabContainer.refreshFromService();
-            uiStateManager.markSaved();
-            uiStateManager.markPreviewStale();
-            headerNavigation.setDirty(false);
-            ui.showInfo("New exam created", "Created a new exam in memory.");
-        });
+        headerNavigation.setOnNew(this::createNewExam);
         headerNavigation.setOnOpen(() -> openExam(stage));
         headerNavigation.setOnSave(() -> saveExam(stage));
         headerNavigation.setOnValidate(this::validateCurrentExam);
         headerNavigation.setOnPreview(this::previewPdf);
+    }
+
+    private void configureCloseHandling(final Stage stage) {
+        stage.setOnCloseRequest(event -> {
+            if (!uiStateManager.isDirty()) {
+                return;
+            }
+
+            boolean shouldClose = ui.confirm(
+                ui.text("label.unsaved.close.title"),
+                ui.text("label.unsaved.close.message")
+            );
+            if (!shouldClose) {
+                event.consume();
+            }
+        });
+    }
+
+    private void createNewExam() {
+        appService.newExam();
+        selectionModel.setExam(appService.getCurrentExam());
+        xmlTabContainer.refreshFromService();
+        pdfTabContainer.refreshFromService();
+        uiStateManager.markSaved();
+        uiStateManager.markPreviewStale();
+        ui.showInfo("New exam created", "Created a new exam in memory.");
     }
 
     private void openExam(final Stage stage) {
@@ -160,5 +186,22 @@ public class JExamApp extends Application {
     private void previewPdf() {
         tabPane.getSelectionModel().select(1);
         pdfTabContainer.generatePreview();
+    }
+
+    private void navigateToValidationIssue(final String issuePath) {
+        tabPane.getSelectionModel().select(0);
+        if (issuePath == null || issuePath.isBlank()) {
+            return;
+        }
+
+        Matcher matcher = ISSUE_PATH_PATTERN.matcher(issuePath);
+        if (!matcher.matches()) {
+            return;
+        }
+
+        int chapterIndex = Integer.parseInt(matcher.group(1));
+        int taskIndex = matcher.group(2) == null ? -1 : Integer.parseInt(matcher.group(2));
+        int variantIndex = matcher.group(3) == null ? -1 : Integer.parseInt(matcher.group(3));
+        xmlTabContainer.navigateToSelection(chapterIndex, taskIndex, variantIndex);
     }
 }
