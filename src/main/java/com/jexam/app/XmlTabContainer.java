@@ -1,7 +1,9 @@
 package com.jexam.app;
 
 import com.jexam.app.ui.UiStateManager;
+import com.jexam.app.ui.components.BreadcrumbNavigation;
 import com.jexam.app.ui.components.DeleteConfirmationDialog;
+import com.jexam.app.ui.components.TreeViewWithFilter;
 import com.jexam.app.ui.components.XmlLoadingState;
 import com.jexam.app.ui.components.xml.ChapterHeaderEditor;
 import com.jexam.app.ui.components.xml.ChapterTableComponent;
@@ -14,17 +16,16 @@ import com.jexam.model.Chapter;
 import com.jexam.model.Exam;
 import com.jexam.model.Task;
 import com.jexam.model.Variant;
-import com.jexam.model.enums.Difficulty;
-import com.jexam.model.enums.Scope;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.TreeItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -40,6 +41,8 @@ public final class XmlTabContainer extends BorderPane {
 
     private final XmlLoadingState loadingState = new XmlLoadingState();
     private final ExamHeaderEditor examHeaderEditor = new ExamHeaderEditor();
+    private final BreadcrumbNavigation breadcrumbNavigation = new BreadcrumbNavigation();
+    private final TreeViewWithFilter<NavigationNode> navigationTree = new TreeViewWithFilter<>(NavigationNode::label);
     private final ChapterTableComponent chapterTable = new ChapterTableComponent();
     private final ChapterHeaderEditor chapterHeaderEditor = new ChapterHeaderEditor();
     private final TaskTableComponent taskTable = new TaskTableComponent();
@@ -59,6 +62,7 @@ public final class XmlTabContainer extends BorderPane {
     private int selectedChapterIndex = -1;
     private int selectedTaskIndex = -1;
     private int selectedVariantIndex = -1;
+    private boolean syncingNavigation;
 
     public XmlTabContainer(
         final ExamApplicationService appService,
@@ -76,17 +80,19 @@ public final class XmlTabContainer extends BorderPane {
         configureLoadingState();
         configureHeaderEditors();
         configureTables();
+        configureNavigation();
         configureEditorPanes();
 
-        VBox leftColumn = new VBox(10, chapterTable, taskTable, variantList);
+        VBox leftColumn = new VBox(10, navigationTree, chapterTable, taskTable, variantList);
         leftColumn.setPrefWidth(320);
+        VBox.setVgrow(navigationTree, Priority.ALWAYS);
         VBox centerColumn = new VBox(12, chapterEditorPane, taskEditorPane, variantEditorPane);
         VBox.setVgrow(centerColumn, Priority.ALWAYS);
         HBox content = new HBox(12, leftColumn, centerColumn);
         HBox.setHgrow(centerColumn, Priority.ALWAYS);
         centerStack.getChildren().addAll(content, loadingState);
 
-        setTop(examHeaderEditor);
+        setTop(new VBox(6, examHeaderEditor, breadcrumbNavigation));
         setCenter(centerStack);
 
         refreshFromService();
@@ -132,7 +138,9 @@ public final class XmlTabContainer extends BorderPane {
             selectedChapterIndex = 0;
         }
         chapterTable.setSelectedIndex(selectedChapterIndex);
+        refreshNavigationTree();
         refreshChapterSelection();
+        refreshBreadcrumb();
     }
 
     public void markSaved() {
@@ -161,6 +169,49 @@ public final class XmlTabContainer extends BorderPane {
         selectedVariantIndex = boundedVariant;
 
         refreshFromService();
+    }
+
+    private void configureNavigation() {
+        breadcrumbNavigation.setOnSegmentClicked(segmentIndex -> {
+            if (segmentIndex <= 0) {
+                selectedChapterIndex = -1;
+                selectedTaskIndex = -1;
+                selectedVariantIndex = -1;
+                refreshFromService();
+                return;
+            }
+            if (segmentIndex == 1) {
+                selectedTaskIndex = -1;
+                selectedVariantIndex = -1;
+                refreshFromService();
+            }
+        });
+
+        navigationTree.setOnItemSelected(node -> {
+            if (syncingNavigation || node == null) {
+                return;
+            }
+
+            syncingNavigation = true;
+            try {
+                if (node.type == NavigationType.EXAM) {
+                    selectedChapterIndex = -1;
+                    selectedTaskIndex = -1;
+                    selectedVariantIndex = -1;
+                } else if (node.type == NavigationType.CHAPTER) {
+                    selectedChapterIndex = node.chapterIndex;
+                    selectedTaskIndex = -1;
+                    selectedVariantIndex = -1;
+                } else if (node.type == NavigationType.TASK) {
+                    selectedChapterIndex = node.chapterIndex;
+                    selectedTaskIndex = node.taskIndex;
+                    selectedVariantIndex = -1;
+                }
+                refreshFromService();
+            } finally {
+                syncingNavigation = false;
+            }
+        });
     }
 
     private void configureLoadingState() {
@@ -228,6 +279,8 @@ public final class XmlTabContainer extends BorderPane {
             selectedTaskIndex = -1;
             selectedVariantIndex = -1;
             refreshChapterSelection();
+            refreshNavigationSelection();
+            refreshBreadcrumb();
         });
         chapterTable.setOnCreate(() -> {
             appService.addChapter("New Chapter");
@@ -252,6 +305,8 @@ public final class XmlTabContainer extends BorderPane {
             selectedTaskIndex = index;
             selectedVariantIndex = -1;
             refreshTaskSelection();
+            refreshNavigationSelection();
+            refreshBreadcrumb();
         });
         taskTable.setOnCreate(() -> {
             if (selectedChapterIndex < 0) {
@@ -282,6 +337,7 @@ public final class XmlTabContainer extends BorderPane {
         variantList.setOnSelect(index -> {
             selectedVariantIndex = index;
             refreshVariantSelection();
+            refreshNavigationSelection();
         });
         variantList.setOnCreate(() -> {
             if (selectedChapterIndex < 0 || selectedTaskIndex < 0) {
@@ -320,10 +376,13 @@ public final class XmlTabContainer extends BorderPane {
         Chapter chapter = selectionModel.chapterAt(selectedChapterIndex);
         if (chapter == null) {
             taskTable.setItems(List.of());
+            taskTable.setSelectedIndex(-1);
             chapterHeaderEditor.clear();
             taskHeaderEditor.clear();
             variantList.setItems(List.of());
+            variantList.setSelectedIndex(-1);
             variantEditor.clear();
+            refreshNavigationSelection();
             return;
         }
 
@@ -334,6 +393,7 @@ public final class XmlTabContainer extends BorderPane {
         }
         taskTable.setSelectedIndex(selectedTaskIndex);
         refreshTaskSelection();
+        refreshNavigationSelection();
     }
 
     private void refreshTaskSelection() {
@@ -341,7 +401,9 @@ public final class XmlTabContainer extends BorderPane {
         if (task == null) {
             taskHeaderEditor.clear();
             variantList.setItems(List.of());
+            variantList.setSelectedIndex(-1);
             variantEditor.clear();
+            refreshNavigationSelection();
             return;
         }
 
@@ -355,6 +417,7 @@ public final class XmlTabContainer extends BorderPane {
         }
         variantList.setSelectedIndex(selectedVariantIndex);
         refreshVariantSelection();
+        refreshNavigationSelection();
     }
 
     private void refreshVariantSelection() {
@@ -372,5 +435,111 @@ public final class XmlTabContainer extends BorderPane {
         uiStateManager.markDirty();
         uiStateManager.markPreviewStale();
         dirtyStateChangedHandler.accept(true);
+    }
+
+    private void refreshNavigationTree() {
+        Exam exam = appService.getCurrentExam();
+        if (exam == null) {
+            navigationTree.setRootItem(null);
+            return;
+        }
+
+        TreeItem<NavigationNode> root = new TreeItem<>(NavigationNode.exam(exam.getName()));
+        root.setExpanded(true);
+
+        for (int chapterIndex = 0; chapterIndex < exam.chapterCount(); chapterIndex++) {
+            Chapter chapter = exam.chapterAt(chapterIndex);
+            TreeItem<NavigationNode> chapterNode = new TreeItem<>(NavigationNode.chapter(chapterIndex, chapter.getName()));
+            chapterNode.setExpanded(true);
+            for (int taskIndex = 0; taskIndex < chapter.taskCount(); taskIndex++) {
+                Task task = chapter.taskAt(taskIndex);
+                chapterNode.getChildren().add(new TreeItem<>(NavigationNode.task(chapterIndex, taskIndex, task.getName())));
+            }
+            root.getChildren().add(chapterNode);
+        }
+
+        navigationTree.setRootItem(root);
+        refreshNavigationSelection();
+    }
+
+    private void refreshNavigationSelection() {
+        if (selectedTaskIndex >= 0) {
+            navigationTree.setSelectedItem(NavigationNode.task(selectedChapterIndex, selectedTaskIndex, ""));
+            return;
+        }
+        if (selectedChapterIndex >= 0) {
+            navigationTree.setSelectedItem(NavigationNode.chapter(selectedChapterIndex, ""));
+            return;
+        }
+        navigationTree.setSelectedItem(NavigationNode.exam(""));
+    }
+
+    private void refreshBreadcrumb() {
+        List<String> segments = new ArrayList<>();
+        segments.add("Exam");
+
+        Chapter chapter = selectionModel.chapterAt(selectedChapterIndex);
+        if (chapter != null) {
+            segments.add(chapter.getName());
+        }
+        Task task = selectionModel.taskAt(selectedChapterIndex, selectedTaskIndex);
+        if (task != null) {
+            segments.add(task.getName());
+        }
+        breadcrumbNavigation.setPath(segments);
+    }
+
+    private enum NavigationType {
+        EXAM,
+        CHAPTER,
+        TASK
+    }
+
+    private static final class NavigationNode {
+        private final NavigationType type;
+        private final int chapterIndex;
+        private final int taskIndex;
+        private final String label;
+
+        private NavigationNode(final NavigationType type, final int chapterIndex, final int taskIndex, final String label) {
+            this.type = type;
+            this.chapterIndex = chapterIndex;
+            this.taskIndex = taskIndex;
+            this.label = label;
+        }
+
+        private static NavigationNode exam(final String label) {
+            return new NavigationNode(NavigationType.EXAM, -1, -1, label == null || label.isBlank() ? "Exam" : label);
+        }
+
+        private static NavigationNode chapter(final int chapterIndex, final String label) {
+            return new NavigationNode(NavigationType.CHAPTER, chapterIndex, -1, label == null || label.isBlank() ? "Chapter" : label);
+        }
+
+        private static NavigationNode task(final int chapterIndex, final int taskIndex, final String label) {
+            return new NavigationNode(NavigationType.TASK, chapterIndex, taskIndex, label == null || label.isBlank() ? "Task" : label);
+        }
+
+        private String label() {
+            return label;
+        }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof NavigationNode that)) {
+                return false;
+            }
+            return type == that.type
+                && chapterIndex == that.chapterIndex
+                && taskIndex == that.taskIndex;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(type, chapterIndex, taskIndex);
+        }
     }
 }

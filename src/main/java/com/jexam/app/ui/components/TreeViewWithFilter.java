@@ -31,6 +31,7 @@ public final class TreeViewWithFilter<T> extends BorderPane {
 
     private Consumer<T> itemSelectionHandler = value -> { };
     private T selectedItem;
+    private boolean updatingSelection;
 
     public TreeViewWithFilter(final Function<T, String> itemLabelProvider) {
         this.labelProvider = Objects.requireNonNull(itemLabelProvider, "itemLabelProvider");
@@ -39,7 +40,7 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         filterField.textProperty().addListener((observable, oldValue, newValue) -> refreshTree());
 
         treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
+            if (!updatingSelection && newValue != null) {
                 selectedItem = newValue.getValue();
                 itemSelectionHandler.accept(newValue.getValue());
             }
@@ -77,10 +78,24 @@ public final class TreeViewWithFilter<T> extends BorderPane {
     }
 
     public void setSelectedItem(final T item) {
-        if (item == null) {
-            treeView.getSelectionModel().clearSelection();
-        }
         selectedItem = item;
+        updatingSelection = true;
+        try {
+            if (item == null) {
+                treeView.getSelectionModel().clearSelection();
+                return;
+            }
+
+            TreeItem<T> root = treeView.getRoot();
+            TreeItem<T> match = findItem(root, item);
+            if (match != null) {
+                treeView.getSelectionModel().select(match);
+            } else {
+                treeView.getSelectionModel().clearSelection();
+            }
+        } finally {
+            updatingSelection = false;
+        }
     }
 
     public TreeView<T> getTreeView() {
@@ -110,6 +125,9 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         }
 
         treeView.setRoot(root);
+        if (selectedItem != null) {
+            setSelectedItem(selectedItem);
+        }
     }
 
     private TreeItem<T> buildTreeItem(final T value) {
@@ -141,5 +159,21 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         copy.getChildren().addAll(filteredChildren);
         copy.setExpanded(true);
         return copy;
+    }
+
+    private TreeItem<T> findItem(final TreeItem<T> root, final T value) {
+        if (root == null) {
+            return null;
+        }
+        if (Objects.equals(root.getValue(), value)) {
+            return root;
+        }
+        for (TreeItem<T> child : root.getChildren()) {
+            TreeItem<T> match = findItem(child, value);
+            if (match != null) {
+                return match;
+            }
+        }
+        return null;
     }
 }
