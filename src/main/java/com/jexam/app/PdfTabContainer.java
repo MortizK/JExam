@@ -70,13 +70,16 @@ public final class PdfTabContainer extends BorderPane {
 
     public void updateLayout(final double width) {
         if (width < 1024) {
-            contentSplit.setOrientation(Orientation.VERTICAL);
-            contentSplit.setDividerPositions(0.52);
             leftColumn.setPrefWidth(Double.MAX_VALUE);
+            previewRegion.setVisible(false);
+            previewRegion.setManaged(false);
+            contentSplit.setDividerPositions(1.0);
         } else {
             contentSplit.setOrientation(Orientation.HORIZONTAL);
             contentSplit.setDividerPositions(width >= 1400 ? 0.30 : 0.34);
             leftColumn.setPrefWidth(380);
+            previewRegion.setVisible(true);
+            previewRegion.setManaged(true);
         }
     }
 
