@@ -113,6 +113,7 @@ public final class PdfTabContainer extends BorderPane {
             previewRegion.setReady(path);
             uiStateManager.clearPreviewStale();
             refreshFromService();
+            showGenerationWarnings("Preview generated with warnings");
         } catch (RuntimeException e) {
             previewRegion.setError(e.getMessage());
             validationSummary.setValidationResult(appService.validateCurrentExam());
@@ -134,7 +135,15 @@ public final class PdfTabContainer extends BorderPane {
             }
             try {
                 appService.generatePdf(mode, output.toPath());
-                ui.showInfo("PDF generated", "Generated " + mode + " at: " + output.toPath());
+                List<String> warnings = appService.getLastGenerationWarnings();
+                if (warnings.isEmpty()) {
+                    ui.showInfo("PDF generated", "Generated " + mode + " at: " + output.toPath());
+                } else {
+                    ui.showInfo(
+                        "PDF generated with warnings",
+                        "Generated " + mode + " at: " + output.toPath() + "\n\nWarnings:\n- " + String.join("\n- ", warnings)
+                    );
+                }
             } catch (RuntimeException e) {
                 ui.showError("PDF generation failed", e.getMessage());
             }
@@ -219,6 +228,13 @@ public final class PdfTabContainer extends BorderPane {
             uiStateManager.markPreviewStale();
         } catch (NumberFormatException ignored) {
             // Keep prior valid value until the user enters a valid numeric seed.
+        }
+    }
+
+    private void showGenerationWarnings(final String title) {
+        List<String> warnings = appService.getLastGenerationWarnings();
+        if (!warnings.isEmpty()) {
+            ui.showInfo(title, "Warnings:\n- " + String.join("\n- ", warnings));
         }
     }
 }

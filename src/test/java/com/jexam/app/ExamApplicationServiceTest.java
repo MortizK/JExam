@@ -49,15 +49,14 @@ class ExamApplicationServiceTest {
     }
 
     @Test
-    void generatePdfShouldRejectWhenDifficultyIsNotInThirds() {
+    void generatePdfShouldWarnWhenDifficultyIsNotBalanced() {
         ExamApplicationService service = new ExamApplicationService();
+        Path output = tempDir.resolve("difficulty-warning.pdf");
 
-        IllegalStateException exception = assertThrows(
-            IllegalStateException.class,
-            () -> service.generatePdf(GenerationMode.EXAM, tempDir.resolve("invalid-exam.pdf"))
-        );
+        assertDoesNotThrow(() -> service.generatePdf(GenerationMode.EXAM, output));
 
-        assertTrue(exception.getMessage().contains("difficultyDistribution"));
+        assertTrue(Files.exists(output));
+        assertTrue(service.getLastGenerationWarnings().stream().anyMatch(w -> w.contains("roughly balanced by difficulty")));
     }
 
     @Test

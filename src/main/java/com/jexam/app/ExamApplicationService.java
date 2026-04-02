@@ -42,6 +42,7 @@ public class ExamApplicationService {
     private final ExamPersistenceService persistenceService;
     private final List<Integer> generationChapterIndices;
     private final Map<Integer, Double> generationChapterGoalPoints;
+    private final List<String> lastGenerationWarnings;
 
     private Exam currentExam;
     private GoalPointFallbackPreference goalPointFallbackPreference;
@@ -66,6 +67,7 @@ public class ExamApplicationService {
         this.currentExam = createDefaultExam();
         this.generationChapterIndices = new ArrayList<>();
         this.generationChapterGoalPoints = new HashMap<>();
+        this.lastGenerationWarnings = new ArrayList<>();
         this.goalPointFallbackPreference = GoalPointFallbackPreference.LOWER;
         this.generationRandomSeed = null;
         resetGenerationChapterSelection();
@@ -125,13 +127,23 @@ public class ExamApplicationService {
      * @param outputPath destination PDF path
      */
     public void generatePdf(GenerationMode mode, Path outputPath) {
+        lastGenerationWarnings.clear();
         Exam generationExam = buildExamForGeneration(mode);
         ValidationResult result = validator.validate(generationExam);
-        appendGenerationRuleErrors(result, mode, generationExam);
         if (!result.isValid()) {
             throw new IllegalStateException("Exam is invalid: " + result.getErrors());
         }
+        lastGenerationWarnings.addAll(collectGenerationWarnings(mode, generationExam));
         pdfGenerationService.generate(generationExam, mode, outputPath);
+    }
+
+    /**
+     * Returns warnings collected during the last preview/export generation run.
+     *
+     * @return immutable list of generation warnings
+     */
+    public List<String> getLastGenerationWarnings() {
+        return Collections.unmodifiableList(lastGenerationWarnings);
     }
 
     /**
@@ -151,25 +163,26 @@ public class ExamApplicationService {
         }
     }
 
-    private void appendGenerationRuleErrors(
-        final ValidationResult result,
+    private List<String> collectGenerationWarnings(
         final GenerationMode mode,
         final Exam generationExam
     ) {
+        List<String> warnings = new ArrayList<>();
         if (mode != GenerationMode.EXAM && mode != GenerationMode.SOLUTION) {
-            return;
+            return warnings;
         }
 
         final int chapterCount = generationExam.chapterCount();
         for (int chapterIndex = 0; chapterIndex < chapterCount; chapterIndex++) {
             final Chapter chapter = generationExam.chapterAt(chapterIndex);
             if (!hasDifficultyThirdsForExamScope(chapter)) {
-                result.addError(
-                    "exam.chapters[" + chapterIndex + "].tasks.difficultyDistribution",
-                    "Exam tasks must be roughly balanced by difficulty (33% +/- 10%) with at least one easy, medium, and hard task."
+                warnings.add(
+                    "Chapter '" + chapter.getName()
+                        + "' is not roughly balanced by difficulty (33% +/- 10%). PDF was generated anyway."
                 );
             }
         }
+        return warnings;
     }
 
     private boolean hasDifficultyThirdsForExamScope(final Chapter chapter) {
