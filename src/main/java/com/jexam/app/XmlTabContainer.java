@@ -18,10 +18,10 @@ import com.jexam.model.Task;
 import com.jexam.model.Variant;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -55,12 +55,24 @@ public final class XmlTabContainer extends BorderPane {
     private final VBox chapterEditorPane = new VBox(8);
     private final VBox taskEditorPane = new VBox(8);
     private final VBox variantEditorPane = new VBox(8);
-    private final VBox leftColumn = new VBox(10, navigationTree, chapterTable, taskTable, variantList);
-    private final VBox centerColumn = new VBox(12, chapterEditorPane, taskEditorPane, variantEditorPane);
-    private final SplitPane contentSplit = new SplitPane(leftColumn, centerColumn);
+    private final VBox leftColumn = new VBox(8, navigationTree);
+    private final VBox rightColumn = new VBox(
+        10,
+        breadcrumbNavigation,
+        examHeaderEditor,
+        chapterHeaderEditor,
+        taskHeaderEditor,
+        variantEditor,
+        chapterTable,
+        taskTable,
+        variantList
+    );
+    private final ScrollPane rightScrollPane = new ScrollPane(rightColumn);
+    private final SplitPane contentSplit = new SplitPane(leftColumn, rightScrollPane);
     private final StackPane centerStack = new StackPane();
 
     private Consumer<Boolean> dirtyStateChangedHandler = value -> { };
+    private Consumer<String> examNameChangedHandler = value -> { };
     private Runnable onCreateNewExam = () -> { };
     private Runnable onLoadXml = () -> { };
 
@@ -86,16 +98,18 @@ public final class XmlTabContainer extends BorderPane {
         configureHeaderEditors();
         configureTables();
         configureNavigation();
-        configureEditorPanes();
-
         VBox.setVgrow(navigationTree, Priority.ALWAYS);
-        VBox.setVgrow(centerColumn, Priority.ALWAYS);
+        VBox.setVgrow(leftColumn, Priority.ALWAYS);
+        rightColumn.setPadding(new Insets(4, 6, 4, 6));
+        rightScrollPane.setFitToWidth(true);
+        rightScrollPane.setPannable(true);
+        rightScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         leftColumn.setPrefWidth(320);
+        rightColumn.setPrefWidth(760);
         contentSplit.setDividerPositions(0.28);
         contentSplit.setStyle("-fx-background-color: transparent;");
         centerStack.getChildren().addAll(contentSplit, loadingState);
 
-        setTop(new VBox(6, examHeaderEditor, breadcrumbNavigation));
         setCenter(centerStack);
 
         refreshFromService();
@@ -104,17 +118,23 @@ public final class XmlTabContainer extends BorderPane {
     public void updateLayout(final double width) {
         if (width < 1024) {
             contentSplit.setOrientation(Orientation.VERTICAL);
-            contentSplit.setDividerPositions(0.48);
+            contentSplit.setDividerPositions(0.40);
             leftColumn.setPrefWidth(Double.MAX_VALUE);
+            rightColumn.setPrefWidth(Double.MAX_VALUE);
         } else {
             contentSplit.setOrientation(Orientation.HORIZONTAL);
             contentSplit.setDividerPositions(width >= 1400 ? 0.24 : 0.28);
             leftColumn.setPrefWidth(320);
+            rightColumn.setPrefWidth(760);
         }
     }
 
     public void setOnDirtyStateChanged(final Consumer<Boolean> handler) {
         dirtyStateChangedHandler = handler == null ? value -> { } : handler;
+    }
+
+    public void setOnExamNameChanged(final Consumer<String> handler) {
+        examNameChangedHandler = handler == null ? value -> { } : handler;
     }
 
     public void setOnCreateNewExam(final Runnable handler) {
@@ -143,19 +163,19 @@ public final class XmlTabContainer extends BorderPane {
         centerStack.getChildren().get(0).setManaged(hasExam);
 
         if (!hasExam) {
+            examNameChangedHandler.accept("");
             return;
         }
 
         examHeaderEditor.setExamName(currentExam.getName());
+        examNameChangedHandler.accept(currentExam.getName());
 
         chapterTable.setItems(currentExam.getChapters().stream().map(Chapter::getName).toList());
-        if (selectedChapterIndex < 0 && currentExam.chapterCount() > 0) {
-            selectedChapterIndex = 0;
-        }
         chapterTable.setSelectedIndex(selectedChapterIndex);
         refreshNavigationTree();
         refreshChapterSelection();
         refreshBreadcrumb();
+        refreshContentVisibility();
     }
 
     public void markSaved() {
@@ -199,6 +219,11 @@ public final class XmlTabContainer extends BorderPane {
                 selectedTaskIndex = -1;
                 selectedVariantIndex = -1;
                 refreshFromService();
+                return;
+            }
+            if (segmentIndex == 2) {
+                selectedVariantIndex = -1;
+                refreshFromService();
             }
         });
 
@@ -239,6 +264,7 @@ public final class XmlTabContainer extends BorderPane {
     private void configureHeaderEditors() {
         examHeaderEditor.setOnChange(() -> {
             appService.getCurrentExam().setName(examHeaderEditor.getExamName());
+            examNameChangedHandler.accept(examHeaderEditor.getExamName());
             markDirty();
         });
 
@@ -296,6 +322,7 @@ public final class XmlTabContainer extends BorderPane {
             refreshChapterSelection();
             refreshNavigationSelection();
             refreshBreadcrumb();
+            refreshContentVisibility();
         });
         chapterTable.setOnCreate(() -> {
             appService.addChapter("New Chapter");
@@ -322,6 +349,7 @@ public final class XmlTabContainer extends BorderPane {
             refreshTaskSelection();
             refreshNavigationSelection();
             refreshBreadcrumb();
+            refreshContentVisibility();
         });
         taskTable.setOnCreate(() -> {
             if (selectedChapterIndex < 0) {
@@ -353,6 +381,8 @@ public final class XmlTabContainer extends BorderPane {
             selectedVariantIndex = index;
             refreshVariantSelection();
             refreshNavigationSelection();
+            refreshBreadcrumb();
+            refreshContentVisibility();
         });
         variantList.setOnCreate(() -> {
             if (selectedChapterIndex < 0 || selectedTaskIndex < 0) {
@@ -381,12 +411,6 @@ public final class XmlTabContainer extends BorderPane {
         });
     }
 
-    private void configureEditorPanes() {
-        chapterEditorPane.getChildren().addAll(new Label("Chapter"), chapterHeaderEditor);
-        taskEditorPane.getChildren().addAll(new Label("Task"), taskHeaderEditor);
-        variantEditorPane.getChildren().addAll(new Label("Variant"), variantEditor);
-    }
-
     private void refreshChapterSelection() {
         Chapter chapter = selectionModel.chapterAt(selectedChapterIndex);
         if (chapter == null) {
@@ -398,17 +422,16 @@ public final class XmlTabContainer extends BorderPane {
             variantList.setSelectedIndex(-1);
             variantEditor.clear();
             refreshNavigationSelection();
+            refreshContentVisibility();
             return;
         }
 
         chapterHeaderEditor.setChapterName(chapter.getName());
         taskTable.setItems(chapter.getTasks().stream().map(selectionModel::taskLabel).toList());
-        if (selectedTaskIndex < 0 && chapter.taskCount() > 0) {
-            selectedTaskIndex = 0;
-        }
         taskTable.setSelectedIndex(selectedTaskIndex);
         refreshTaskSelection();
         refreshNavigationSelection();
+        refreshContentVisibility();
     }
 
     private void refreshTaskSelection() {
@@ -419,6 +442,7 @@ public final class XmlTabContainer extends BorderPane {
             variantList.setSelectedIndex(-1);
             variantEditor.clear();
             refreshNavigationSelection();
+            refreshContentVisibility();
             return;
         }
 
@@ -427,12 +451,10 @@ public final class XmlTabContainer extends BorderPane {
         taskHeaderEditor.setDifficulty(task.getDifficulty());
         taskHeaderEditor.setScope(task.getScope());
         variantList.setItems(task.getVariants().stream().map(Variant::getQuestion).toList());
-        if (selectedVariantIndex < 0 && task.variantCount() > 0) {
-            selectedVariantIndex = 0;
-        }
         variantList.setSelectedIndex(selectedVariantIndex);
         refreshVariantSelection();
         refreshNavigationSelection();
+        refreshContentVisibility();
     }
 
     private void refreshVariantSelection() {
@@ -501,7 +523,76 @@ public final class XmlTabContainer extends BorderPane {
         if (task != null) {
             segments.add(task.getName());
         }
+        Variant variant = selectionModel.variantAt(selectedChapterIndex, selectedTaskIndex, selectedVariantIndex);
+        if (variant != null) {
+            String label = variant.getQuestion();
+            if (label == null || label.isBlank()) {
+                label = "Variant " + (selectedVariantIndex + 1);
+            }
+            segments.add(label);
+        }
         breadcrumbNavigation.setPath(segments);
+    }
+
+    private void refreshContentVisibility() {
+        boolean hasExam = appService.getCurrentExam() != null;
+
+        if (!hasExam) {
+            setSectionVisible(examHeaderEditor, false);
+            setSectionVisible(chapterHeaderEditor, false);
+            setSectionVisible(taskHeaderEditor, false);
+            setSectionVisible(variantEditor, false);
+            setSectionVisible(chapterTable, false);
+            setSectionVisible(taskTable, false);
+            setSectionVisible(variantList, false);
+            return;
+        }
+
+        if (selectedVariantIndex >= 0) {
+            setSectionVisible(examHeaderEditor, false);
+            setSectionVisible(chapterHeaderEditor, false);
+            setSectionVisible(taskHeaderEditor, false);
+            setSectionVisible(variantEditor, true);
+            setSectionVisible(chapterTable, false);
+            setSectionVisible(taskTable, false);
+            setSectionVisible(variantList, false);
+            return;
+        }
+
+        if (selectedTaskIndex >= 0) {
+            setSectionVisible(examHeaderEditor, false);
+            setSectionVisible(chapterHeaderEditor, false);
+            setSectionVisible(taskHeaderEditor, true);
+            setSectionVisible(variantEditor, false);
+            setSectionVisible(chapterTable, false);
+            setSectionVisible(taskTable, false);
+            setSectionVisible(variantList, true);
+            return;
+        }
+
+        if (selectedChapterIndex >= 0) {
+            setSectionVisible(examHeaderEditor, false);
+            setSectionVisible(chapterHeaderEditor, true);
+            setSectionVisible(taskHeaderEditor, false);
+            setSectionVisible(variantEditor, false);
+            setSectionVisible(chapterTable, false);
+            setSectionVisible(taskTable, true);
+            setSectionVisible(variantList, false);
+            return;
+        }
+
+        setSectionVisible(examHeaderEditor, true);
+        setSectionVisible(chapterHeaderEditor, false);
+        setSectionVisible(taskHeaderEditor, false);
+        setSectionVisible(variantEditor, false);
+        setSectionVisible(chapterTable, true);
+        setSectionVisible(taskTable, false);
+        setSectionVisible(variantList, false);
+    }
+
+    private void setSectionVisible(final javafx.scene.Node node, final boolean visible) {
+        node.setVisible(visible);
+        node.setManaged(visible);
     }
 
     private enum NavigationType {
@@ -516,7 +607,12 @@ public final class XmlTabContainer extends BorderPane {
         private final int taskIndex;
         private final String label;
 
-        private NavigationNode(final NavigationType type, final int chapterIndex, final int taskIndex, final String label) {
+        private NavigationNode(
+            final NavigationType type,
+            final int chapterIndex,
+            final int taskIndex,
+            final String label
+        ) {
             this.type = type;
             this.chapterIndex = chapterIndex;
             this.taskIndex = taskIndex;
@@ -528,11 +624,21 @@ public final class XmlTabContainer extends BorderPane {
         }
 
         private static NavigationNode chapter(final int chapterIndex, final String label) {
-            return new NavigationNode(NavigationType.CHAPTER, chapterIndex, -1, label == null || label.isBlank() ? "Chapter" : label);
+            return new NavigationNode(
+                NavigationType.CHAPTER,
+                chapterIndex,
+                -1,
+                label == null || label.isBlank() ? "Chapter" : label
+            );
         }
 
         private static NavigationNode task(final int chapterIndex, final int taskIndex, final String label) {
-            return new NavigationNode(NavigationType.TASK, chapterIndex, taskIndex, label == null || label.isBlank() ? "Task" : label);
+            return new NavigationNode(
+                NavigationType.TASK,
+                chapterIndex,
+                taskIndex,
+                label == null || label.isBlank() ? "Task" : label
+            );
         }
 
         private String label() {

@@ -18,6 +18,7 @@ import java.util.function.Consumer;
  */
 public final class AppHeaderNavigation extends HBox {
     private final Label titleLabel = new Label();
+    private final Label examNameLabel = new Label();
     private final Label dirtyIndicator = new Label();
     private final Button newButton = new Button();
     private final Button openButton = new Button();
@@ -40,6 +41,8 @@ public final class AppHeaderNavigation extends HBox {
         setMinHeight(Region.USE_PREF_SIZE);
 
         titleLabel.getStyleClass().add("app-header-title");
+        examNameLabel.setVisible(false);
+        examNameLabel.managedProperty().bind(examNameLabel.visibleProperty());
         dirtyIndicator.setVisible(false);
         dirtyIndicator.managedProperty().bind(dirtyIndicator.visibleProperty());
 
@@ -50,6 +53,7 @@ public final class AppHeaderNavigation extends HBox {
         previewButton.setOnAction(event -> previewHandler.run());
 
         titleLabel.setAccessibleText("Application title");
+        examNameLabel.setAccessibleText("Current exam name");
         dirtyIndicator.setAccessibleText("Unsaved changes indicator");
         newButton.setAccessibleText("Create a new exam in memory");
         openButton.setAccessibleText("Open an existing exam XML file");
@@ -67,6 +71,7 @@ public final class AppHeaderNavigation extends HBox {
 
         getChildren().addAll(
             titleLabel,
+            examNameLabel,
             dirtyIndicator,
             newButton,
             openButton,
@@ -79,6 +84,12 @@ public final class AppHeaderNavigation extends HBox {
 
     public void setTitle(final String value) {
         titleLabel.setText(value);
+    }
+
+    public void setExamName(final String value) {
+        String trimmed = value == null ? "" : value.trim();
+        examNameLabel.setText(trimmed.isEmpty() ? "" : "Exam: " + trimmed);
+        examNameLabel.setVisible(!trimmed.isEmpty());
     }
 
     public void setDirty(final boolean dirty) {
