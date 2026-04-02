@@ -91,6 +91,14 @@ public final class PdfTabContainer extends BorderPane {
         }
     }
 
+    public void focusDefaultControl() {
+        if (validationSummary.hasIssues()) {
+            validationSummary.requestIssueTreeFocus();
+            return;
+        }
+        generationControls.requestControlFocus();
+    }
+
     public void generatePreview() {
         previewRegion.setLoading();
         try {

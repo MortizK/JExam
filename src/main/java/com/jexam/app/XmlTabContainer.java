@@ -162,14 +162,14 @@ public final class XmlTabContainer extends BorderPane {
             return;
         }
         if (selectedTaskIndex >= 0) {
-            variantList.requestTableFocus();
+            taskHeaderEditor.requestEditorFocus();
             return;
         }
         if (selectedChapterIndex >= 0) {
-            taskTable.requestTableFocus();
+            chapterHeaderEditor.requestEditorFocus();
             return;
         }
-        chapterTable.requestTableFocus();
+        examHeaderEditor.requestEditorFocus();
     }
 
     public void refreshFromService() {

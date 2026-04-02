@@ -22,6 +22,7 @@ public final class ValidationSummaryComponent extends VBox {
     private final Map<TreeItem<String>, String> pathByLeaf = new LinkedHashMap<>();
 
     private Consumer<String> issueSelectedHandler = path -> { };
+    private boolean hasIssues;
 
     public ValidationSummaryComponent() {
         setSpacing(8);
@@ -44,6 +45,7 @@ public final class ValidationSummaryComponent extends VBox {
         TreeItem<String> root = new TreeItem<>("root");
         root.setExpanded(true);
         pathByLeaf.clear();
+        hasIssues = false;
 
         if (result == null || result.isValid()) {
             summary.setText("All validations passed. Ready to generate.");
@@ -51,6 +53,7 @@ public final class ValidationSummaryComponent extends VBox {
             return;
         }
 
+        hasIssues = true;
         summary.setText("Found " + result.getErrors().size() + " issue(s)");
         Map<String, TreeItem<String>> groups = new LinkedHashMap<>();
         for (ValidationError error : result.getErrors()) {
@@ -76,5 +79,13 @@ public final class ValidationSummaryComponent extends VBox {
 
     public void setOnIssueSelected(final Consumer<String> handler) {
         issueSelectedHandler = handler == null ? path -> { } : handler;
+    }
+
+    public void requestIssueTreeFocus() {
+        issueTree.requestFocus();
+    }
+
+    public boolean hasIssues() {
+        return hasIssues;
     }
 }

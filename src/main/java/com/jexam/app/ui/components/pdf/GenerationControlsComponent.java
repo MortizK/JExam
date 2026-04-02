@@ -66,4 +66,8 @@ public final class GenerationControlsComponent extends VBox {
     public void setOnExportRequested(final Runnable handler) {
         exportHandler = handler == null ? () -> { } : handler;
     }
+
+    public void requestControlFocus() {
+        modeBox.requestFocus();
+    }
 }
