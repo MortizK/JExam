@@ -5,6 +5,7 @@ import com.jexam.app.ui.components.AppHeaderNavigation;
 import com.jexam.io.ExamXmlException;
 import com.jexam.validation.ValidationResult;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
@@ -60,12 +61,17 @@ public class JExamApp extends Application {
         Tab pdfTab = new Tab("PDF", pdfTabContainer);
         pdfTab.setClosable(false);
         tabPane.getTabs().addAll(xmlTab, pdfTab);
-        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == pdfTab) {
-                pdfTabContainer.refreshFromService();
-                pdfTabContainer.focusDefaultControl();
-            } else if (newValue == xmlTab) {
-                xmlTabContainer.focusNavigationTree();
+        pdfTab.setOnSelectionChanged(event -> {
+            if (pdfTab.isSelected()) {
+                Platform.runLater(() -> {
+                    pdfTabContainer.refreshFromService();
+                    pdfTabContainer.focusDefaultControl();
+                });
+            }
+        });
+        xmlTab.setOnSelectionChanged(event -> {
+            if (xmlTab.isSelected()) {
+                Platform.runLater(xmlTabContainer::focusNavigationTree);
             }
         });
 

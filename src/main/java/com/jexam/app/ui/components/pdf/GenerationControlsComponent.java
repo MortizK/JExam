@@ -20,8 +20,6 @@ public final class GenerationControlsComponent extends VBox {
         GenerationMode.EXAM,
         GenerationMode.MOCK_EXAM
     ));
-    private final ComboBox<ExamApplicationService.GoalPointFallbackPreference> fallbackBox =
-        new ComboBox<>(FXCollections.observableArrayList(ExamApplicationService.GoalPointFallbackPreference.values()));
     private final TextField seedField = new TextField();
     private final Button previewButton = new Button("Generate Preview");
     private final Button exportButton = new Button("Export PDF");
@@ -30,7 +28,6 @@ public final class GenerationControlsComponent extends VBox {
     private Runnable previewHandler = () -> { };
     private Runnable exportHandler = () -> { };
     private Consumer<GenerationMode> modeHandler = mode -> { };
-    private Consumer<ExamApplicationService.GoalPointFallbackPreference> fallbackHandler = preference -> { };
     private Consumer<String> seedHandler = value -> { };
     private boolean updatingControls;
 
@@ -47,15 +44,6 @@ public final class GenerationControlsComponent extends VBox {
                 modeHandler.accept(newValue);
             }
         });
-        fallbackBox.setValue(ExamApplicationService.GoalPointFallbackPreference.LOWER);
-        fallbackBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (updatingControls) {
-                return;
-            }
-            if (newValue != null) {
-                fallbackHandler.accept(newValue);
-            }
-        });
         seedField.setPromptText("Optional random seed (e.g. 42)");
         seedField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (updatingControls) {
@@ -69,7 +57,6 @@ public final class GenerationControlsComponent extends VBox {
         staleLabel.setManaged(false);
 
         modeBox.setAccessibleText("Generation mode selector");
-        fallbackBox.setAccessibleText("Infeasible goal fallback selector");
         seedField.setAccessibleText("Optional deterministic random seed");
         previewButton.setAccessibleText("Generate PDF preview");
         exportButton.setAccessibleText("Export the selected PDF variant");
@@ -78,8 +65,6 @@ public final class GenerationControlsComponent extends VBox {
         getChildren().addAll(
             new Label("Generation Mode"),
             modeBox,
-            new Label("If chapter target is infeasible"),
-            fallbackBox,
             staleLabel,
             exportButton
         );
@@ -101,7 +86,7 @@ public final class GenerationControlsComponent extends VBox {
     public void setOnFallbackPreferenceChanged(
         final Consumer<ExamApplicationService.GoalPointFallbackPreference> handler
     ) {
-        fallbackHandler = handler == null ? preference -> { } : handler;
+        // Fallback selector was removed from UI by request.
     }
 
     public void setOnSeedChanged(final Consumer<String> handler) {
@@ -109,11 +94,7 @@ public final class GenerationControlsComponent extends VBox {
     }
 
     public void setFallbackPreference(final ExamApplicationService.GoalPointFallbackPreference preference) {
-        if (preference != null) {
-            updatingControls = true;
-            fallbackBox.setValue(preference);
-            updatingControls = false;
-        }
+        // Fallback selector was removed from UI by request.
     }
 
     public void setRandomSeed(final Long seed) {

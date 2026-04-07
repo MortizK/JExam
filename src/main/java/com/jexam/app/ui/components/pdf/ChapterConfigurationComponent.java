@@ -1,20 +1,34 @@
 package com.jexam.app.ui.components.pdf;
 
+import com.jexam.model.Chapter;
+import com.jexam.model.Task;
+import com.jexam.model.enums.Scope;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.OptionalDouble;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -22,12 +36,16 @@ import java.util.function.Consumer;
  * Included/excluded chapter configuration with reorder actions.
  */
 public final class ChapterConfigurationComponent extends VBox {
-    private final ListView<String> includedList = new ListView<>();
+    private static final int POINT_SCALE = 2;
+
+    private final ListView<ChapterRow> includedList = new ListView<>();
     private final ListView<String> excludedList = new ListView<>();
-    private final TextField goalPointsField = new TextField();
     private final List<Integer> includedChapterIndices = new ArrayList<>();
     private final List<Integer> excludedChapterIndices = new ArrayList<>();
-    private final java.util.Map<Integer, Double> chapterGoalPoints = new java.util.HashMap<>();
+    private final Map<Integer, Double> chapterGoalPoints = new HashMap<>();
+    private final Map<Integer, Chapter> chapterByIndex = new HashMap<>();
+    private final Map<Integer, List<Double>> achievablePointsByChapter = new HashMap<>();
+    private final Map<Integer, GoalPointField> goalFieldByChapter = new HashMap<>();
 
     private Consumer<Integer> moveUpHandler = index -> { };
     private Consumer<Integer> moveDownHandler = index -> { };
@@ -36,6 +54,16 @@ public final class ChapterConfigurationComponent extends VBox {
     private BiConsumer<Integer, Double> goalChangedHandler = (chapterIndex, points) -> { };
     private Runnable resetHandler = () -> { };
     private BiConsumer<Integer, Integer> reorderHandler = (fromIndex, toIndex) -> { };
+
+    private record ChapterRow(int chapterIndex, String chapterName) {
+    }
+
+    private record PointOption(double value, String display) {
+        @Override
+        public String toString() {
+            return display;
+        }
+    }
 
     public ChapterConfigurationComponent() {
         setSpacing(8);
@@ -46,19 +74,14 @@ public final class ChapterConfigurationComponent extends VBox {
         Button excludeButton = new Button("Exclude");
         Button includeButton = new Button("Include");
         Button resetButton = new Button("Reset");
-        Button applyGoalButton = new Button("Set Goal");
 
         includedList.setAccessibleText("Included chapters list");
         excludedList.setAccessibleText("Excluded chapters list");
-        goalPointsField.setAccessibleText("Goal points for selected included chapter");
         upButton.setAccessibleText("Move selected chapter up");
         downButton.setAccessibleText("Move selected chapter down");
         excludeButton.setAccessibleText("Exclude selected chapter from generation");
         includeButton.setAccessibleText("Include selected chapter in generation");
         resetButton.setAccessibleText("Reset chapter selection to all chapters");
-        applyGoalButton.setAccessibleText("Apply goal points to selected chapter");
-
-        goalPointsField.setPromptText("Goal points (0.5 steps)");
 
         upButton.setOnAction(event -> moveUpHandler.accept(includedList.getSelectionModel().getSelectedIndex()));
         downButton.setOnAction(event -> moveDownHandler.accept(includedList.getSelectionModel().getSelectedIndex()));
@@ -70,24 +93,16 @@ public final class ChapterConfigurationComponent extends VBox {
             }
         });
         resetButton.setOnAction(event -> resetHandler.run());
-        applyGoalButton.setOnAction(event -> applyGoalFromInput());
-        goalPointsField.setOnAction(event -> applyGoalFromInput());
 
-        includedList.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-            updateGoalInputForSelection(newValue == null ? -1 : newValue.intValue());
-        });
-
-        enableDragDropReorder();
+        configureIncludedCellFactory();
 
         HBox includedActions = new HBox(6, upButton, downButton, excludeButton);
-        HBox goalActions = new HBox(6, goalPointsField, applyGoalButton);
         HBox excludedActions = new HBox(6, includeButton, resetButton);
+
         getChildren().addAll(
             new Label("Included Chapters"),
             includedList,
             includedActions,
-            new Label("Goal points for selected chapter"),
-            goalActions,
             new Label("Excluded Chapters"),
             excludedList,
             excludedActions
@@ -99,9 +114,31 @@ public final class ChapterConfigurationComponent extends VBox {
         final List<Integer> includedOrder,
         final Map<Integer, Double> configuredGoals
     ) {
+        setChapterData(chapterNames, includedOrder, configuredGoals, List.of());
+    }
+
+    public void setChapterData(
+        final List<String> chapterNames,
+        final List<Integer> includedOrder,
+        final Map<Integer, Double> configuredGoals,
+        final List<Chapter> chapters
+    ) {
+        goalFieldByChapter.clear();
         chapterGoalPoints.clear();
         if (configuredGoals != null) {
             chapterGoalPoints.putAll(configuredGoals);
+        }
+
+        chapterByIndex.clear();
+        if (chapters != null) {
+            for (int chapterIndex = 0; chapterIndex < chapters.size(); chapterIndex++) {
+                chapterByIndex.put(chapterIndex, chapters.get(chapterIndex));
+            }
+        }
+
+        achievablePointsByChapter.clear();
+        for (int chapterIndex = 0; chapterIndex < chapterNames.size(); chapterIndex++) {
+            achievablePointsByChapter.put(chapterIndex, computeAchievablePoints(chapterByIndex.get(chapterIndex)));
         }
 
         int previousSelection = includedList.getSelectionModel().getSelectedIndex();
@@ -115,11 +152,13 @@ public final class ChapterConfigurationComponent extends VBox {
             }
         }
 
-        List<String> includedLabels = new ArrayList<>();
+        List<ChapterRow> includedRows = new ArrayList<>();
         for (int chapterIndex : includedChapterIndices) {
             if (chapterIndex >= 0 && chapterIndex < chapterNames.size()) {
-                double points = chapterGoalPoints.getOrDefault(chapterIndex, 0d);
-                includedLabels.add(chapterNames.get(chapterIndex) + " (goal " + formatPoints(points) + " pts)");
+                includedRows.add(new ChapterRow(chapterIndex, chapterNames.get(chapterIndex)));
+                GoalPointField field = goalFieldByChapter.computeIfAbsent(chapterIndex, GoalPointField::new);
+                field.setAvailablePoints(achievablePointsByChapter.getOrDefault(chapterIndex, List.of()));
+                field.setCommittedValue(chapterGoalPoints.getOrDefault(chapterIndex, 0d));
             }
         }
 
@@ -130,15 +169,14 @@ public final class ChapterConfigurationComponent extends VBox {
             }
         }
 
-        includedList.setItems(FXCollections.observableArrayList(includedLabels));
+        includedList.setItems(FXCollections.observableArrayList(includedRows));
         excludedList.setItems(FXCollections.observableArrayList(excludedLabels));
 
-        if (!includedLabels.isEmpty()) {
-            int targetSelection = Math.max(0, Math.min(previousSelection, includedLabels.size() - 1));
+        if (!includedRows.isEmpty()) {
+            int targetSelection = Math.max(0, Math.min(previousSelection, includedRows.size() - 1));
             includedList.getSelectionModel().select(targetSelection);
-            updateGoalInputForSelection(targetSelection);
         } else {
-            goalPointsField.clear();
+            includedList.getSelectionModel().clearSelection();
         }
     }
 
@@ -170,85 +208,312 @@ public final class ChapterConfigurationComponent extends VBox {
         reorderHandler = handler == null ? (fromIndex, toIndex) -> { } : handler;
     }
 
-    private void enableDragDropReorder() {
-        includedList.setCellFactory(list -> {
-            ListCell<String> cell = new ListCell<>() {
-                @Override
-                protected void updateItem(final String item, final boolean empty) {
-                    super.updateItem(item, empty);
-                    setText(empty ? null : item);
-                }
-            };
+    private void configureIncludedCellFactory() {
+        includedList.setCellFactory(listView -> new ListCell<>() {
+            {
+                setOnDragDetected(event -> {
+                    if (isEmpty()) {
+                        return;
+                    }
+                    var dragboard = startDragAndDrop(TransferMode.MOVE);
+                    ClipboardContent content = new ClipboardContent();
+                    content.putString(Integer.toString(getIndex()));
+                    dragboard.setContent(content);
+                    event.consume();
+                });
 
-            cell.setOnDragDetected(event -> {
-                if (cell.isEmpty()) {
+                setOnDragOver(event -> {
+                    if (event.getDragboard().hasString() && getIndex() >= 0) {
+                        event.acceptTransferModes(TransferMode.MOVE);
+                    }
+                    event.consume();
+                });
+
+                setOnDragDropped(event -> {
+                    if (!event.getDragboard().hasString()) {
+                        return;
+                    }
+                    int fromIndex = Integer.parseInt(event.getDragboard().getString());
+                    int toIndex = getIndex();
+                    if (fromIndex != toIndex && fromIndex >= 0 && toIndex >= 0) {
+                        reorderHandler.accept(fromIndex, toIndex);
+                    }
+                    event.setDropCompleted(true);
+                    event.consume();
+                });
+            }
+
+            @Override
+            protected void updateItem(final ChapterRow item, final boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
                     return;
                 }
-                var dragboard = cell.startDragAndDrop(TransferMode.MOVE);
-                ClipboardContent content = new ClipboardContent();
-                content.putString(Integer.toString(cell.getIndex()));
-                dragboard.setContent(content);
-                event.consume();
-            });
 
-            cell.setOnDragOver(event -> {
-                if (event.getDragboard().hasString() && cell.getIndex() >= 0) {
-                    event.acceptTransferModes(TransferMode.MOVE);
-                }
-                event.consume();
-            });
+                GoalPointField goalField = goalFieldByChapter.computeIfAbsent(item.chapterIndex(), GoalPointField::new);
+                Label nameLabel = new Label(item.chapterName());
+                nameLabel.setMinWidth(220);
+                nameLabel.setPrefWidth(220);
+                nameLabel.setMaxWidth(220);
 
-            cell.setOnDragDropped(event -> {
-                if (!event.getDragboard().hasString()) {
-                    return;
-                }
-                int fromIndex = Integer.parseInt(event.getDragboard().getString());
-                int toIndex = cell.getIndex();
-                if (fromIndex != toIndex && fromIndex >= 0 && toIndex >= 0) {
-                    reorderHandler.accept(fromIndex, toIndex);
-                }
-                event.setDropCompleted(true);
-                event.consume();
-            });
-            return cell;
+                HBox row = new HBox(8, nameLabel, goalField);
+                row.setAlignment(Pos.CENTER_LEFT);
+                HBox.setHgrow(goalField, Priority.ALWAYS);
+                setGraphic(row);
+            }
         });
     }
 
-    private void applyGoalFromInput() {
-        int selectedIncludedIndex = includedList.getSelectionModel().getSelectedIndex();
-        if (selectedIncludedIndex < 0 || selectedIncludedIndex >= includedChapterIndices.size()) {
-            return;
+    private List<Double> computeAchievablePoints(final Chapter chapter) {
+        if (chapter == null) {
+            return List.of();
         }
 
-        String raw = goalPointsField.getText();
-        if (raw == null || raw.isBlank()) {
-            return;
+        Set<Integer> sums = new HashSet<>();
+        sums.add(0);
+
+        for (Task task : chapter.getTasks()) {
+            if (task.getScope() != Scope.EXAM) {
+                continue;
+            }
+            int taskUnits = toPointUnits(task.getPoints());
+            if (taskUnits <= 0) {
+                continue;
+            }
+
+            Set<Integer> next = new HashSet<>(sums);
+            for (Integer currentSum : sums) {
+                next.add(currentSum + taskUnits);
+            }
+            sums = next;
         }
 
-        try {
-            double parsedPoints = Double.parseDouble(raw.trim());
-            if (parsedPoints <= 0d) {
+        TreeSet<Double> result = new TreeSet<>();
+        for (Integer sum : sums) {
+            if (sum > 0) {
+                result.add(fromPointUnits(sum));
+            }
+        }
+        return List.copyOf(result);
+    }
+
+    private final class GoalPointField extends ComboBox<PointOption> {
+        private final int chapterIndex;
+        private List<Double> availablePoints = List.of();
+        private boolean updatingFromCode;
+
+        private GoalPointField(final int chapterIndex) {
+            this.chapterIndex = chapterIndex;
+            setEditable(true);
+            setMinWidth(160);
+            setPrefWidth(190);
+            setMaxWidth(Double.MAX_VALUE);
+            setPromptText("Goal points");
+
+            setConverter(new StringConverter<>() {
+                @Override
+                public String toString(final PointOption object) {
+                    return object == null ? "" : object.display();
+                }
+
+                @Override
+                public PointOption fromString(final String string) {
+                    if (string == null || string.isBlank()) {
+                        return null;
+                    }
+                    OptionalDouble parsed = parseInput(string);
+                    if (parsed.isEmpty()) {
+                        return null;
+                    }
+                    return optionForValue(parsed.getAsDouble());
+                }
+            });
+
+            setButtonCell(new ListCell<>() {
+                @Override
+                protected void updateItem(final PointOption item, final boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item.display());
+                }
+            });
+
+            setCellFactory(listView -> new ListCell<>() {
+                @Override
+                protected void updateItem(final PointOption item, final boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item.display());
+                }
+            });
+
+            getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+                if (updatingFromCode) {
+                    return;
+                }
+
+                // Keep typed text untouched; dropdown remains a static list.
+            });
+
+            getEditor().focusedProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue) {
+                    commitCurrentValue();
+                }
+            });
+
+            addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                if (event.getCode() == KeyCode.ENTER) {
+                    commitCurrentValue();
+                    event.consume();
+                } else if (event.getCode() == KeyCode.ESCAPE) {
+                    revertToCommittedValue();
+                    hide();
+                    event.consume();
+                }
+            });
+
+            setOnShowing(event -> { });
+
+            // Keep user typing stable: selecting from popup only fills the editor; commit stays on Enter/blur.
+            valueProperty().addListener((observable, oldValue, newValue) -> {
+                if (updatingFromCode || newValue == null) {
+                    return;
+                }
+                updatingFromCode = true;
+                try {
+                    getEditor().setText(newValue.display());
+                } finally {
+                    updatingFromCode = false;
+                }
+            });
+        }
+
+        private void setAvailablePoints(final List<Double> points) {
+            availablePoints = points == null ? List.of() : List.copyOf(points);
+            setItems(FXCollections.observableArrayList(availablePoints.stream().map(this::toOption).toList()));
+        }
+
+        private void setCommittedValue(final double value) {
+            PointOption option = optionForValue(value);
+            updatingFromCode = true;
+            try {
+                setValue(option);
+                getEditor().setText(option == null ? "" : option.display());
+            } finally {
+                updatingFromCode = false;
+            }
+        }
+
+        private void commitCurrentValue() {
+            String rawText = getEditor().getText();
+            double resolvedValue = resolveValueFromInput(rawText);
+            commitResolvedValue(resolvedValue);
+        }
+
+        private void commitResolvedValue(final double resolvedValue) {
+            PointOption resolvedOption = optionForValue(resolvedValue);
+            if (resolvedOption == null && availablePoints.isEmpty()) {
                 return;
             }
 
-            int chapterIndex = includedChapterIndices.get(selectedIncludedIndex);
-            goalChangedHandler.accept(chapterIndex, parsedPoints);
-        } catch (NumberFormatException ignored) {
-            // Input validation is handled by accepting only valid numeric values.
+            double committedValue = resolvedOption == null ? resolvedValue : resolvedOption.value();
+            updatingFromCode = true;
+            try {
+                setValue(resolvedOption);
+                getEditor().setText(resolvedOption == null ? formatPoints(committedValue) : resolvedOption.display());
+            } finally {
+                updatingFromCode = false;
+            }
+            hide();
+            goalChangedHandler.accept(chapterIndex, committedValue);
+        }
+
+        private void revertToCommittedValue() {
+            PointOption option = optionForValue(chapterGoalPoints.getOrDefault(chapterIndex, 0d));
+            updatingFromCode = true;
+            try {
+                setValue(option);
+                getEditor().setText(option == null ? "" : option.display());
+            } finally {
+                updatingFromCode = false;
+            }
+        }
+
+        private double resolveValueFromInput(final String rawText) {
+            if (rawText == null || rawText.isBlank()) {
+                return chapterGoalPoints.getOrDefault(chapterIndex, 0d);
+            }
+
+            OptionalDouble parsed = parseInput(rawText);
+            if (parsed.isEmpty()) {
+                return chapterGoalPoints.getOrDefault(chapterIndex, 0d);
+            }
+
+            double parsedValue = parsed.getAsDouble();
+            PointOption exact = optionForValue(parsedValue);
+            if (exact != null) {
+                return exact.value();
+            }
+
+            PointOption nearest = nearestOption(parsedValue);
+            if (nearest != null) {
+                return nearest.value();
+            }
+
+            return parsedValue;
+        }
+
+        private PointOption nearestOption(final double target) {
+            if (availablePoints.isEmpty()) {
+                return null;
+            }
+
+            Double nearest = null;
+            double nearestDistance = Double.MAX_VALUE;
+            for (Double candidate : availablePoints) {
+                double distance = Math.abs(candidate - target);
+                if (distance < nearestDistance || (Math.abs(distance - nearestDistance) < 0.0001 && (nearest == null || candidate > nearest))) {
+                    nearest = candidate;
+                    nearestDistance = distance;
+                }
+            }
+            return nearest == null ? null : toOption(nearest);
+        }
+
+        private PointOption optionForValue(final double value) {
+            String formatted = formatPoints(value);
+            for (Double availablePoint : availablePoints) {
+                if (formatPoints(availablePoint).equals(formatted)) {
+                    return toOption(availablePoint);
+                }
+            }
+            return null;
+        }
+
+        private PointOption toOption(final double value) {
+            return new PointOption(value, formatPoints(value));
+        }
+
+        private OptionalDouble parseInput(final String rawText) {
+            try {
+                if (rawText == null || rawText.isBlank()) {
+                    return OptionalDouble.empty();
+                }
+                return OptionalDouble.of(Double.parseDouble(rawText.trim().replace(',', '.')));
+            } catch (NumberFormatException ignored) {
+                return OptionalDouble.empty();
+            }
         }
     }
 
-    private void updateGoalInputForSelection(final int includedSelectionIndex) {
-        if (includedSelectionIndex < 0 || includedSelectionIndex >= includedChapterIndices.size()) {
-            goalPointsField.clear();
-            return;
-        }
-        int chapterIndex = includedChapterIndices.get(includedSelectionIndex);
-        double points = chapterGoalPoints.getOrDefault(chapterIndex, 0d);
-        goalPointsField.setText(formatPoints(points));
+    private int toPointUnits(final double points) {
+        return (int) Math.round(points * POINT_SCALE);
+    }
+
+    private double fromPointUnits(final int units) {
+        return Math.round((units / (double) POINT_SCALE) * POINT_SCALE) / (double) POINT_SCALE;
     }
 
     private String formatPoints(final double points) {
-        return String.format(java.util.Locale.ROOT, "%.1f", points);
+        return String.format(Locale.ROOT, "%.1f", points);
     }
 }

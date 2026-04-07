@@ -76,7 +76,7 @@ public final class PdfTabContainer extends BorderPane {
             contentSplit.setDividerPositions(1.0);
         } else {
             contentSplit.setOrientation(Orientation.HORIZONTAL);
-            contentSplit.setDividerPositions(width >= 1400 ? 0.30 : 0.34);
+            contentSplit.setDividerPositions(width >= 1400 ? 0.40 : 0.50);
             leftColumn.setPrefWidth(380);
             previewRegion.setVisible(true);
             previewRegion.setManaged(true);
@@ -84,11 +84,13 @@ public final class PdfTabContainer extends BorderPane {
     }
 
     public void refreshFromService() {
-        List<String> chapterNames = appService.getCurrentExam().getChapters().stream().map(Chapter::getName).toList();
+        List<Chapter> chapters = appService.getCurrentExam().getChapters();
+        List<String> chapterNames = chapters.stream().map(Chapter::getName).toList();
         chapterConfiguration.setChapterData(
             chapterNames,
             appService.generationChapterOrder(),
-            appService.generationChapterGoalPoints()
+            appService.generationChapterGoalPoints(),
+            chapters
         );
         ValidationResult validationResult = appService.validateCurrentExam();
         validationSummary.setValidationResult(validationResult);
