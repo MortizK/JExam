@@ -22,7 +22,6 @@ public final class AppHeaderNavigation extends HBox {
     private final Button openButton = new Button();
     private final Button saveButton = new Button();
     private final Button validateButton = new Button();
-    private final Button previewButton = new Button();
     private final ComboBox<UiLanguage> languageBox = new ComboBox<>();
 
     private Consumer<UiLanguage> languageHandler = language -> { };
@@ -30,7 +29,6 @@ public final class AppHeaderNavigation extends HBox {
     private Runnable openHandler = () -> { };
     private Runnable saveHandler = () -> { };
     private Runnable validateHandler = () -> { };
-    private Runnable previewHandler = () -> { };
 
     public AppHeaderNavigation() {
         setAlignment(Pos.CENTER_LEFT);
@@ -45,14 +43,12 @@ public final class AppHeaderNavigation extends HBox {
         openButton.setOnAction(event -> openHandler.run());
         saveButton.setOnAction(event -> saveHandler.run());
         validateButton.setOnAction(event -> validateHandler.run());
-        previewButton.setOnAction(event -> previewHandler.run());
 
         dirtyIndicator.setAccessibleText("Unsaved changes indicator");
         newButton.setAccessibleText("Create a new exam in memory");
         openButton.setAccessibleText("Open an existing exam XML file");
         saveButton.setAccessibleText("Save the current exam to XML");
         validateButton.setAccessibleText("Validate the current exam");
-        previewButton.setAccessibleText("Generate or open the PDF preview");
         languageBox.setAccessibleText("Language selector");
 
         languageBox.setItems(FXCollections.observableArrayList(UiLanguage.values()));
@@ -67,7 +63,6 @@ public final class AppHeaderNavigation extends HBox {
             newButton,
             openButton,
             saveButton,
-            previewButton,
             languageBox
         );
     }
@@ -81,14 +76,12 @@ public final class AppHeaderNavigation extends HBox {
         final String newText,
         final String openText,
         final String saveText,
-        final String validateText,
-        final String previewText
+        final String validateText
     ) {
         newButton.setText(newText);
         openButton.setText(openText);
         saveButton.setText(saveText);
         validateButton.setText(validateText);
-        previewButton.setText(previewText);
     }
 
     public void setLanguageLabel(final String value) {
@@ -117,9 +110,5 @@ public final class AppHeaderNavigation extends HBox {
 
     public void setOnValidate(final Runnable handler) {
         validateHandler = handler == null ? () -> { } : handler;
-    }
-
-    public void setOnPreview(final Runnable handler) {
-        previewHandler = handler == null ? () -> { } : handler;
     }
 }

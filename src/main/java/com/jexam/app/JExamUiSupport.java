@@ -9,8 +9,11 @@ import javafx.stage.FileChooser;
 
 import java.awt.Desktop;
 import java.io.IOException;
+import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -20,15 +23,31 @@ import java.util.Optional;
 class JExamUiSupport {
     private final Map<String, String> englishText = new HashMap<>();
     private final Map<String, String> germanText = new HashMap<>();
+    private final List<Runnable> languageChangeListeners = new ArrayList<>();
 
     private UiLanguage language = UiLanguage.ENGLISH;
+    private Path lastXmlDirectory;
+    private Path lastPdfDirectory;
 
     JExamUiSupport() {
         initText();
     }
 
     void setLanguage(UiLanguage value) {
-        this.language = value == null ? UiLanguage.ENGLISH : value;
+        UiLanguage newLanguage = value == null ? UiLanguage.ENGLISH : value;
+        if (newLanguage == this.language) {
+            return;
+        }
+        this.language = newLanguage;
+        for (Runnable listener : languageChangeListeners) {
+            listener.run();
+        }
+    }
+
+    void addLanguageChangeListener(final Runnable listener) {
+        if (listener != null) {
+            languageChangeListeners.add(listener);
+        }
     }
 
     String text(String key) {
@@ -60,6 +79,7 @@ class JExamUiSupport {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(text("file.xml.title"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML", "*.xml"));
+        applyInitialDirectory(fileChooser, lastXmlDirectory);
         return fileChooser;
     }
 
@@ -68,7 +88,16 @@ class JExamUiSupport {
         fileChooser.setTitle(text("file.pdf.title"));
         fileChooser.setInitialFileName("jexam-" + mode.name().toLowerCase() + ".pdf");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
+        applyInitialDirectory(fileChooser, lastPdfDirectory);
         return fileChooser;
+    }
+
+    void setLastXmlDirectory(final Path path) {
+        lastXmlDirectory = path;
+    }
+
+    void setLastPdfDirectory(final Path path) {
+        lastPdfDirectory = path;
     }
 
     void showInfo(String title, String message) {
@@ -105,6 +134,20 @@ class JExamUiSupport {
         }
     }
 
+    private void applyInitialDirectory(final FileChooser chooser, final Path directory) {
+        if (directory == null) {
+            return;
+        }
+        try {
+            File file = directory.toFile();
+            if (file.isDirectory()) {
+                chooser.setInitialDirectory(file);
+            }
+        } catch (IllegalArgumentException ignored) {
+            // Stiller Fallback ohne initialDirectory.
+        }
+    }
+
     private void initText() {
         englishText.put("app.subtitle", "Phase 4 MVP: hierarchy editing + validation + PDF export");
         englishText.put("app.title", "JExam");
@@ -128,6 +171,10 @@ class JExamUiSupport {
         englishText.put("dialog.value", "Value:");
         englishText.put("file.xml.title", "JExam XML File");
         englishText.put("file.pdf.title", "Export PDF");
+        englishText.put("tree.filter.prompt", "Filter...");
+        englishText.put("tree.filter.accessible", "Filter exam chapters and tasks");
+        englishText.put("button.expand.all", "Expand All");
+        englishText.put("button.collapse.all", "Collapse All");
 
         germanText.put("app.subtitle", "Phase 4 MVP: Hierarchie bearbeiten + Validierung + PDF-Export");
     germanText.put("app.title", "JExam");
@@ -151,5 +198,9 @@ class JExamUiSupport {
         germanText.put("dialog.value", "Wert:");
         germanText.put("file.xml.title", "JExam XML-Datei");
         germanText.put("file.pdf.title", "PDF exportieren");
+        germanText.put("tree.filter.prompt", "Filtern...");
+        germanText.put("tree.filter.accessible", "Klausurkapitel und Aufgaben filtern");
+        germanText.put("button.expand.all", "Alle aufklappen");
+        germanText.put("button.collapse.all", "Alle einklappen");
     }
 }

@@ -100,9 +100,14 @@ public final class XmlTabContainer extends BorderPane {
         setPadding(new Insets(8));
 
         configureLoadingState();
+        configureNavigationTreeTexts();
         configureHeaderEditors();
         configureTables();
         configureNavigation();
+        ui.addLanguageChangeListener(() -> {
+            configureLoadingState();
+            configureNavigationTreeTexts();
+        });
         VBox.setVgrow(navigationTree, Priority.ALWAYS);
         VBox.setVgrow(leftColumn, Priority.ALWAYS);
         rightColumn.setPadding(new Insets(4, 6, 4, 6));
@@ -286,6 +291,15 @@ public final class XmlTabContainer extends BorderPane {
         loadingState.setSubtitleText(ui.text("label.xml.empty.subtitle"));
         loadingState.setCreateButtonText(ui.text("button.create.exam"));
         loadingState.setLoadButtonText(ui.text("button.load.xml"));
+    }
+
+    private void configureNavigationTreeTexts() {
+        navigationTree.setHeaderTexts(
+            ui.text("tree.filter.prompt"),
+            ui.text("tree.filter.accessible"),
+            ui.text("button.expand.all"),
+            ui.text("button.collapse.all")
+        );
     }
 
     private void configureHeaderEditors() {

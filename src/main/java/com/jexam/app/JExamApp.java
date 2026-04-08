@@ -35,6 +35,7 @@ public class JExamApp extends Application {
     private final JExamUiSupport ui = new JExamUiSupport();
     private final JExamSelectionModel selectionModel = new JExamSelectionModel();
     private final UiStateManager uiStateManager = new UiStateManager();
+    private final UserPreferencesStore preferencesStore = new UserPreferencesStore();
 
     private XmlTabContainer xmlTabContainer;
     private PdfTabContainer pdfTabContainer;
@@ -42,7 +43,19 @@ public class JExamApp extends Application {
 
     @Override
     public void start(final Stage stage) {
-        ui.setLanguage(UiLanguage.ENGLISH);
+        UiLanguage initialLanguage = preferencesStore.loadLanguage();
+        ui.setLanguage(initialLanguage);
+        ui.setLastXmlDirectory(preferencesStore.loadLastXmlDirectory());
+        ui.setLastPdfDirectory(preferencesStore.loadLastPdfDirectory());
+
+        Path lastXmlFile = preferencesStore.loadLastXmlFile();
+        if (lastXmlFile != null) {
+            try {
+                appService.openExam(lastXmlFile);
+            } catch (ExamXmlException ignored) {
+                // Fallback to current in-memory state when last file cannot be loaded.
+            }
+        }
         selectionModel.setExam(appService.getCurrentExam());
 
         AppHeaderNavigation headerNavigation = new AppHeaderNavigation();
@@ -105,19 +118,18 @@ public class JExamApp extends Application {
             ui.text("button.new"),
             ui.text("button.open"),
             ui.text("button.save"),
-            ui.text("button.validate"),
-            ui.text("button.preview")
+            ui.text("button.validate")
         );
         headerNavigation.setLanguageLabel(ui.text("label.language"));
-        headerNavigation.setSelectedLanguage(UiLanguage.ENGLISH);
+        headerNavigation.setSelectedLanguage(preferencesStore.loadLanguage());
         headerNavigation.setOnLanguageChanged(value -> {
             ui.setLanguage(value);
+            preferencesStore.saveLanguage(value);
             headerNavigation.setButtonText(
                 ui.text("button.new"),
                 ui.text("button.open"),
                 ui.text("button.save"),
-                ui.text("button.validate"),
-                ui.text("button.preview")
+                ui.text("button.validate")
             );
             headerNavigation.setLanguageLabel(ui.text("label.language"));
             stage.setTitle(ui.text("app.title"));
@@ -126,7 +138,6 @@ public class JExamApp extends Application {
         headerNavigation.setOnOpen(() -> openExam(stage));
         headerNavigation.setOnSave(() -> saveExam(stage));
         headerNavigation.setOnValidate(this::validateCurrentExam);
-        headerNavigation.setOnPreview(this::previewPdf);
     }
 
     private void configureCloseHandling(final Stage stage) {
@@ -170,7 +181,12 @@ public class JExamApp extends Application {
         }
 
         try {
-            appService.openExam(file.toPath());
+            Path path = file.toPath();
+            appService.openExam(path);
+            Path parent = path.getParent();
+            preferencesStore.saveLastXmlDirectory(parent);
+            ui.setLastXmlDirectory(parent);
+            preferencesStore.saveLastXmlFile(path);
             selectionModel.setExam(appService.getCurrentExam());
             xmlTabContainer.refreshFromService();
             pdfTabContainer.refreshFromService();
@@ -191,7 +207,11 @@ public class JExamApp extends Application {
 
         try {
             Path path = file.toPath();
+            Path parent = path.getParent();
             appService.saveExam(path);
+            preferencesStore.saveLastXmlDirectory(parent);
+            ui.setLastXmlDirectory(parent);
+            preferencesStore.saveLastXmlFile(path);
             uiStateManager.markSaved();
             ui.showInfo("Save successful", "Saved exam to: " + path);
         } catch (ExamXmlException e) {

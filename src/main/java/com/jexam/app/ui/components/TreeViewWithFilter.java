@@ -3,12 +3,14 @@ package com.jexam.app.ui.components;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
@@ -25,6 +27,8 @@ import java.util.function.Function;
  */
 public final class TreeViewWithFilter<T> extends BorderPane {
     private final TextField filterField = new TextField();
+    private final Button expandAllButton = new Button("Expand All");
+    private final Button collapseAllButton = new Button("Collapse All");
     private final TreeView<T> treeView = new TreeView<>();
     private final Function<T, String> labelProvider;
     private final ObservableList<TreeItem<T>> sourceRoots = FXCollections.observableArrayList();
@@ -41,6 +45,9 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         filterField.setFocusTraversable(true);
         filterField.textProperty().addListener((observable, oldValue, newValue) -> refreshTree());
 
+        expandAllButton.setOnAction(event -> expandAll());
+        collapseAllButton.setOnAction(event -> collapseAll());
+
         treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (!updatingSelection && newValue != null) {
                 selectedItem = newValue.getValue();
@@ -50,7 +57,8 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         treeView.setAccessibleText("Exam hierarchy tree");
         treeView.setFocusTraversable(true);
 
-        VBox header = new VBox(6, filterField);
+        HBox treeActionBar = new HBox(6, expandAllButton, collapseAllButton);
+        VBox header = new VBox(6, treeActionBar, filterField);
         header.setPadding(new Insets(8));
         treeView.setShowRoot(false);
         treeView.setCellFactory(createCellFactory());
@@ -108,6 +116,36 @@ public final class TreeViewWithFilter<T> extends BorderPane {
 
     public void requestTreeFocus() {
         treeView.requestFocus();
+    }
+
+    public void setHeaderTexts(
+        final String filterPrompt,
+        final String filterAccessibleText,
+        final String expandAllLabel,
+        final String collapseAllLabel
+    ) {
+        filterField.setPromptText(filterPrompt);
+        filterField.setAccessibleText(filterAccessibleText);
+        expandAllButton.setText(expandAllLabel);
+        collapseAllButton.setText(collapseAllLabel);
+    }
+
+    public void expandAll() {
+        TreeItem<T> root = treeView.getRoot();
+        if (root == null) {
+            return;
+        }
+        setExpandedRecursive(root, true);
+    }
+
+    public void collapseAll() {
+        TreeItem<T> root = treeView.getRoot();
+        if (root == null) {
+            return;
+        }
+        for (TreeItem<T> child : root.getChildren()) {
+            setExpandedRecursive(child, false);
+        }
     }
 
     private Callback<TreeView<T>, TreeCell<T>> createCellFactory() {
@@ -183,5 +221,12 @@ public final class TreeViewWithFilter<T> extends BorderPane {
             }
         }
         return null;
+    }
+
+    private void setExpandedRecursive(final TreeItem<T> item, final boolean expanded) {
+        item.setExpanded(expanded);
+        for (TreeItem<T> child : item.getChildren()) {
+            setExpandedRecursive(child, expanded);
+        }
     }
 }

@@ -10,7 +10,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
@@ -117,13 +116,13 @@ public final class VariantListComponent extends VBox {
     private final class VariantRowCell extends ListCell<String> {
         private final Label textLabel = new Label();
         private final Button deleteButton = new Button("Delete");
-        private final Region spacer = new Region();
-        private final HBox content = new HBox(8, textLabel, spacer, deleteButton);
+        private final HBox content = new HBox(8, textLabel, deleteButton);
 
         private VariantRowCell() {
             setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             textLabel.setWrapText(true);
-            HBox.setHgrow(spacer, Priority.ALWAYS);
+            textLabel.maxWidthProperty().bind(listView.widthProperty().subtract(80));
+            HBox.setHgrow(textLabel, Priority.ALWAYS);
             deleteButton.setFocusTraversable(false);
             deleteButton.setOnAction(event -> {
                 if (!isEmpty() && getIndex() >= 0) {

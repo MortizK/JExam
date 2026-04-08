@@ -32,6 +32,7 @@ public final class PdfTabContainer extends BorderPane {
     private final JExamUiSupport ui;
     private final UiStateManager uiStateManager;
     private final Stage stage;
+    private final UserPreferencesStore preferencesStore = new UserPreferencesStore();
 
     private final GenerationControlsComponent generationControls = new GenerationControlsComponent();
     private final ValidationSummaryComponent validationSummary = new ValidationSummaryComponent();
@@ -131,35 +132,7 @@ public final class PdfTabContainer extends BorderPane {
 
     private void configureHandlers() {
         generationControls.setOnPreviewRequested(this::generatePreview);
-        generationControls.setOnExportRequested(() -> {
-            GenerationMode mode = generationControls.getSelectedMode();
-            if (mode != GenerationMode.EXAM && mode != GenerationMode.MOCK_EXAM) {
-                ui.showError("Unsupported mode", "Please select EXAM or MOCK_EXAM.");
-                return;
-            }
-            FileChooser chooser = ui.pdfFileChooser(mode);
-            File output = chooser.showSaveDialog(stage);
-            if (output == null) {
-                return;
-            }
-            try {
-                List<Path> generatedFiles = appService.generatePdfPair(mode, output.toPath());
-                List<String> warnings = appService.getLastGenerationWarnings();
-                String fileList = generatedFiles.stream()
-                    .map(Path::toString)
-                    .collect(java.util.stream.Collectors.joining("\n- ", "- ", ""));
-                if (warnings.isEmpty()) {
-                    ui.showInfo("PDF files generated", "Generated " + mode + " files:\n" + fileList);
-                } else {
-                    ui.showInfo(
-                        "PDF files generated with warnings",
-                        "Generated " + mode + " files:\n" + fileList + "\n\nWarnings:\n- " + String.join("\n- ", warnings)
-                    );
-                }
-            } catch (RuntimeException e) {
-                ui.showError("PDF generation failed", e.getMessage());
-            }
-        });
+        generationControls.setOnExportRequested(this::exportPdf);
         generationControls.setOnModeChanged(mode -> uiStateManager.markPreviewStale());
         generationControls.setOnFallbackPreferenceChanged(preference -> {
             appService.setGoalPointFallbackPreference(preference);
@@ -217,15 +190,46 @@ public final class PdfTabContainer extends BorderPane {
         });
 
         previewRegion.setOnRefresh(this::generatePreview);
-        previewRegion.setOnOpenExternal(() -> {
-            Path path = previewRegion.getPreviewPath();
-            if (path == null) {
-                return;
+        previewRegion.setOnExportRequested(this::exportPdf);
+    }
+
+    private void exportPdf() {
+        GenerationMode mode = generationControls.getSelectedMode();
+        if (mode != GenerationMode.EXAM && mode != GenerationMode.MOCK_EXAM) {
+            ui.showError("Unsupported mode", "Please select EXAM or MOCK_EXAM.");
+            return;
+        }
+
+        FileChooser chooser = ui.pdfFileChooser(mode);
+        File output = chooser.showSaveDialog(stage);
+        if (output == null) {
+            return;
+        }
+
+        Path parent = output.toPath().getParent();
+        preferencesStore.saveLastPdfDirectory(parent);
+        ui.setLastPdfDirectory(parent);
+
+        try {
+            final boolean canReusePreview = previewRegion.getPreviewPath() != null && !uiStateManager.isPreviewStale();
+            final List<Path> generatedFiles = canReusePreview
+                ? appService.generatePdfPairFromLastPreview(mode, output.toPath())
+                : appService.generatePdfPair(mode, output.toPath());
+            List<String> warnings = appService.getLastGenerationWarnings();
+            String fileList = generatedFiles.stream()
+                .map(Path::toString)
+                .collect(java.util.stream.Collectors.joining("\n- ", "- ", ""));
+            if (warnings.isEmpty()) {
+                ui.showInfo("PDF files generated", "Generated " + mode + " files:\n" + fileList);
+            } else {
+                ui.showInfo(
+                    "PDF files generated with warnings",
+                    "Generated " + mode + " files:\n" + fileList + "\n\nWarnings:\n- " + String.join("\n- ", warnings)
+                );
             }
-            if (!ui.openFile(path)) {
-                ui.showError("Open failed", "Could not open preview file externally.");
-            }
-        });
+        } catch (RuntimeException e) {
+            ui.showError("PDF generation failed", e.getMessage());
+        }
     }
 
     private void handleSeedChanged(final String rawValue) {

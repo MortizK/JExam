@@ -45,6 +45,8 @@ public class ExamApplicationService {
     private final List<String> lastGenerationWarnings;
 
     private Exam currentExam;
+    private Exam lastPreviewExam;
+    private GenerationMode lastPreviewMode;
     private GoalPointFallbackPreference goalPointFallbackPreference;
     private Long generationRandomSeed;
 
@@ -68,6 +70,8 @@ public class ExamApplicationService {
         this.generationChapterIndices = new ArrayList<>();
         this.generationChapterGoalPoints = new HashMap<>();
         this.lastGenerationWarnings = new ArrayList<>();
+        this.lastPreviewExam = null;
+        this.lastPreviewMode = null;
         this.goalPointFallbackPreference = GoalPointFallbackPreference.LOWER;
         this.generationRandomSeed = null;
         resetGenerationChapterSelection();
@@ -168,6 +172,34 @@ public class ExamApplicationService {
     }
 
     /**
+     * Generates primary and solutions PDFs using the last preview snapshot.
+     * This keeps exported questions identical to the already rendered preview.
+     *
+     * @param mode generation mode that must match the preview mode
+     * @param outputPath destination path for primary PDF
+     * @return generated file paths [primary, solutions]
+     */
+    public List<Path> generatePdfPairFromLastPreview(final GenerationMode mode, final Path outputPath) {
+        lastGenerationWarnings.clear();
+        if (lastPreviewExam == null || lastPreviewMode != mode) {
+            return generatePdfPair(mode, outputPath);
+        }
+
+        final ValidationResult result = validator.validate(lastPreviewExam);
+        if (!result.isValid()) {
+            throw new IllegalStateException("Exam is invalid: " + result.getErrors());
+        }
+
+        lastGenerationWarnings.addAll(collectGenerationWarnings(mode, lastPreviewExam));
+
+        final Path primaryPath = outputPath;
+        final Path solutionPath = solutionOutputPath(outputPath);
+        pdfGenerationService.generate(lastPreviewExam, mode, primaryPath);
+        pdfGenerationService.generate(lastPreviewExam, GenerationMode.SOLUTION, solutionPath);
+        return List.of(primaryPath, solutionPath);
+    }
+
+    /**
      * Returns warnings collected during the last preview/export generation run.
      *
      * @return immutable list of generation warnings
@@ -186,7 +218,18 @@ public class ExamApplicationService {
         try {
             Path previewPath = Files.createTempFile("jexam-preview-", ".pdf");
             previewPath.toFile().deleteOnExit();
-            generatePdf(mode, previewPath);
+
+            lastGenerationWarnings.clear();
+            Exam generationExam = buildExamForGeneration(mode, generationRandom(mode));
+            ValidationResult result = validator.validate(generationExam);
+            if (!result.isValid()) {
+                throw new IllegalStateException("Exam is invalid: " + result.getErrors());
+            }
+            lastGenerationWarnings.addAll(collectGenerationWarnings(mode, generationExam));
+            pdfGenerationService.generate(generationExam, mode, previewPath);
+
+            lastPreviewExam = generationExam;
+            lastPreviewMode = mode;
             return previewPath.toAbsolutePath();
         } catch (IOException e) {
             throw new RuntimeException("Failed to create preview file.", e);
