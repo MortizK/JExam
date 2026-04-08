@@ -6,11 +6,11 @@ This page records the current build metrics from the latest generated reports in
 
 | Metric | Value |
 | --- | --- |
-| Instructions covered | 3,850 of 14,755 |
+| Instructions covered | 3,872 of 14,755 |
 | Instruction coverage | 26% |
-| Branches covered | 317 of 1,156 |
-| Branch coverage | 27% |
-| Lines covered | 854 of 3,314 |
+| Branches covered | 323 of 1,156 |
+| Branch coverage | 28% |
+| Lines covered | 859 of 3,314 |
 | Line coverage | 26% |
 | Methods covered | 196 of 712 |
 | Method coverage | 28% |
@@ -27,8 +27,8 @@ This page records the current build metrics from the latest generated reports in
 | `com.jexam.model` | 97% | 63% |
 | `com.jexam.io` | 99% | 93% |
 | `com.jexam.validation` | 95% | 91% |
-| `com.jexam.generation` | 85% | 60% |
-| `com.jexam.app` | 24% | 33% |
+| `com.jexam.generation` | 85% | 61% |
+| `com.jexam.app` | 24% | 34% |
 
 ### Weakest Areas
 
@@ -45,7 +45,7 @@ This page records the current build metrics from the latest generated reports in
 
 | Metric | Value |
 | --- | --- |
-| Tests | 60 |
+| Tests | 65 |
 | Errors | 0 |
 | Failures | 0 |
 | Skipped | 0 |
@@ -54,7 +54,7 @@ This page records the current build metrics from the latest generated reports in
 ## Iteration Delta (2026-04-08)
 
 - Line coverage increased from 22% to 26% (+4 percentage points).
-- Branch coverage increased from 21% to 27% (+6 percentage points).
+- Branch coverage increased from 21% to 28% (+7 percentage points).
 - Method coverage increased from 23% to 28% (+5 percentage points).
 - Class coverage increased from 30% to 34% (+4 percentage points).
 

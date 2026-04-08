@@ -6,6 +6,7 @@ import com.jexam.model.enums.Scope;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -122,5 +123,48 @@ class ExamApplicationServiceBranchesTest {
         service.generatePdf(GenerationMode.MOCK_EXAM, tempDir.resolve("mock.pdf"));
 
         assertTrue(service.getLastGenerationWarnings().isEmpty());
+    }
+
+    @Test
+    void examModeShouldRejectChaptersWithoutExamScopeTasks() {
+        ExamApplicationService service = new ExamApplicationService();
+        service.updateTaskDetails(0, 0, "Mock only", 1.0, Difficulty.EASY, Scope.MOCK_EXAM);
+
+        IllegalStateException exception = assertThrows(
+            IllegalStateException.class,
+            () -> service.generatePdf(GenerationMode.EXAM, tempDir.resolve("exam-fail.pdf"))
+        );
+
+        assertEquals(
+            "Chapter 'New Chapter' has no tasks available for mode EXAM.",
+            exception.getMessage()
+        );
+    }
+
+    @Test
+    void generationShouldRejectTasksWithoutVariants() {
+        ExamApplicationService service = new ExamApplicationService();
+        service.getCurrentExam().taskAt(0, 0).removeVariant(0);
+
+        IllegalStateException exception = assertThrows(
+            IllegalStateException.class,
+            () -> service.generatePdf(GenerationMode.EXAM, tempDir.resolve("missing-variant.pdf"))
+        );
+
+        assertTrue(exception.getMessage().contains("has no variants."));
+    }
+
+    @Test
+    void pairGenerationShouldSupportOutputWithoutPdfExtension() {
+        ExamApplicationService service = new ExamApplicationService();
+        Path output = tempDir.resolve("pair-output");
+
+        List<Path> generated = service.generatePdfPair(GenerationMode.EXAM, output);
+
+        assertEquals(2, generated.size());
+        assertTrue(generated.get(0).getFileName().toString().equals("pair-output"));
+        assertTrue(generated.get(1).getFileName().toString().equals("pair-output_solutions.pdf"));
+        assertTrue(Files.exists(generated.get(0)));
+        assertTrue(Files.exists(generated.get(1)));
     }
 }
