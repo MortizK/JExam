@@ -8,8 +8,14 @@ JExam is a Java 17 JavaFX desktop application for editing XML-based exam content
 
 1. [Getting Started](Getting-Started.md)
 2. [Architecture](Architecture.md)
-3. [Testing](Testing.md)
-4. [Metrics Snapshot](Metrics.md)
+3. [Application Layer](Application-Layer.md)
+4. [Domain Model](Domain-Model.md)
+5. [Persistence And XML](Persistence-and-XML.md)
+6. [PDF Generation](PDF-Generation.md)
+7. [Testing](Testing.md)
+8. [Contributor Workflow](Contributor-Workflow.md)
+9. [Refactoring Hotspots](Refactoring-Hotspots.md)
+10. [Metrics Snapshot](Metrics.md)
 
 ## What Lives Where
 
@@ -33,3 +39,8 @@ JExam is a Java 17 JavaFX desktop application for editing XML-based exam content
 - Understanding responsibility boundaries between packages
 - Checking which areas are well covered by tests and which are not
 - Locating the current build metrics without searching the target directory manually
+
+## Export And Publish
+
+- [GitHub Wiki Export](GitHub-Wiki-Export.md)
+- [Publish Guide](Publish-Guide.md)
