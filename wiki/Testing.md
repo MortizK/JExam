@@ -13,7 +13,7 @@ The current test suite is small but organized along the same boundaries as the m
 
 ## Current Surefire Snapshot
 
-- Tests: 52
+- Tests: 55
 - Failures: 0
 - Errors: 0
 - Skipped: 0
@@ -33,6 +33,8 @@ The current test suite is small but organized along the same boundaries as the m
 - Enum XML parsing behavior (`Difficulty`, `Scope`)
 - XML loader/writer edge cases and nested directory handling
 - Application service generation selection and preview fallback branches
+- Validator null/blank field aggregation
+- Persistence load-validation failure path
 - One end-to-end workflow across XML and PDF generation
 
 ## Where The Coverage Is Thin

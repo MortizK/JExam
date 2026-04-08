@@ -47,6 +47,19 @@ class ExamXmlLoaderWriterTest {
         assertEquals("Root element must be <exam>.", exception.getMessage());
     }
 
+  @Test
+  void loaderShouldRejectMalformedXmlDocuments() throws Exception {
+    Path malformed = tempDir.resolve("malformed.xml");
+    Files.writeString(malformed, "<exam><chapter></exam>");
+
+    ExamXmlException exception = assertThrows(
+      ExamXmlException.class,
+      () -> new ExamXmlLoader().load(malformed)
+    );
+
+    assertEquals("Failed to parse exam XML.", exception.getMessage());
+  }
+
     @Test
     void loaderShouldRejectInvalidEnumValues() throws Exception {
         Path invalid = tempDir.resolve("invalid-enum.xml");

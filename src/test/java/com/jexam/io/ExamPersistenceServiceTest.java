@@ -12,6 +12,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Path;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -48,4 +49,37 @@ class ExamPersistenceServiceTest {
 
         assertTrue(loaded.getChapters().size() == 1);
     }
+
+        @Test
+        void loadValidatedShouldRejectInvalidXml() throws Exception {
+                Path invalidXml = tempDir.resolve("invalid.xml");
+                java.nio.file.Files.writeString(
+                        invalidXml,
+                        """
+                                <exam name=" ">
+                                    <chapter name="Chapter">
+                                        <task name="Task" points="1.0" difficulty="easy" scope="exam">
+                                            <variant>
+                                                <question>Q</question>
+                                                <answer>A</answer>
+                                            </variant>
+                                        </task>
+                                    </chapter>
+                                </exam>
+                                """
+                );
+
+                ExamPersistenceService service = new ExamPersistenceService(
+                        new ExamXmlLoader(),
+                        new ExamXmlWriter(),
+                        new ExamValidator()
+                );
+
+                ExamXmlException exception = assertThrows(
+                        ExamXmlException.class,
+                        () -> service.loadValidated(invalidXml)
+                );
+
+                assertEquals("Loaded XML is invalid: [exam.name: Exam name must not be blank.]", exception.getMessage());
+        }
 }
