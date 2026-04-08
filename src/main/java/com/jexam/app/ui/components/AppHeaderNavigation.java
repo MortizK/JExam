@@ -34,10 +34,18 @@ public final class AppHeaderNavigation extends HBox {
      * Creates the application header with global actions and language selector.
      */
     public AppHeaderNavigation() {
+        getStyleClass().add("app-header");
         setAlignment(Pos.CENTER_LEFT);
         setSpacing(10);
         setPadding(new Insets(10));
         setMinHeight(Region.USE_PREF_SIZE);
+
+        dirtyIndicator.getStyleClass().add("dirty-indicator");
+        newButton.getStyleClass().add("secondary-action");
+        openButton.getStyleClass().add("secondary-action");
+        saveButton.getStyleClass().add("primary-action");
+        validateButton.getStyleClass().add("primary-action");
+        languageBox.getStyleClass().add("language-selector");
 
         dirtyIndicator.setVisible(false);
         dirtyIndicator.managedProperty().bind(dirtyIndicator.visibleProperty());
@@ -66,6 +74,7 @@ public final class AppHeaderNavigation extends HBox {
             newButton,
             openButton,
             saveButton,
+            validateButton,
             languageBox
         );
     }

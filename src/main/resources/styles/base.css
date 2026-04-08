@@ -1,0 +1,156 @@
+.root {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-font-size: 12px;
+}
+
+.jexam-root {
+    -fx-background-color: -jexam-surface;
+    -fx-text-fill: -jexam-fg;
+}
+
+.app-top-pane {
+    -fx-background-color: -jexam-surface;
+}
+
+.app-header {
+    -fx-padding: 10;
+    -fx-spacing: 10;
+    -fx-alignment: center-left;
+    -fx-background-color: -jexam-surface;
+    -fx-border-color: transparent transparent -jexam-border transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.app-header .button,
+.app-header .combo-box {
+    -fx-background-color: -jexam-surface;
+    -fx-text-fill: -jexam-fg;
+    -fx-border-color: -jexam-border;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.button.secondary-action {
+    -fx-background-color: -jexam-surface;
+    -fx-text-fill: -jexam-fg;
+    -fx-border-color: -jexam-border;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.button.primary-action {
+    -fx-background-color: -jexam-primary;
+    -fx-text-fill: white;
+    -fx-border-color: -jexam-primary;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.button.primary-action:hover {
+    -fx-background-color: -jexam-primary-dark;
+    -fx-border-color: -jexam-primary-dark;
+}
+
+.app-header .primary-action {
+    -fx-background-color: -jexam-primary;
+    -fx-text-fill: white;
+    -fx-border-color: -jexam-primary;
+}
+
+.app-header .primary-action:hover {
+    -fx-background-color: -jexam-primary-dark;
+    -fx-border-color: -jexam-primary-dark;
+}
+
+.app-header .dirty-indicator {
+    -fx-text-fill: -jexam-warning;
+    -fx-font-weight: 600;
+}
+
+.breadcrumb {
+    -fx-padding: 6 10 6 10;
+    -fx-spacing: 6;
+    -fx-alignment: center-left;
+    -fx-background-color: -jexam-surface;
+    -fx-border-color: transparent transparent -jexam-border transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.breadcrumb-separator,
+.breadcrumb-current {
+    -fx-text-fill: -jexam-fg;
+}
+
+.breadcrumb-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: -jexam-primary;
+    -fx-border-color: transparent;
+    -fx-underline: true;
+}
+
+.xml-tab,
+.pdf-tab {
+    -fx-background-color: -jexam-surface;
+}
+
+.small-muted {
+    -fx-font-size: 11px;
+    -fx-opacity: 0.82;
+}
+
+.xml-loading-state {
+    -fx-alignment: center;
+    -fx-spacing: 12;
+    -fx-padding: 24;
+}
+
+.xml-loading-state .loading-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -jexam-fg;
+}
+
+.xml-loading-state .loading-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: -jexam-muted;
+}
+
+.tree-filter-panel {
+    -fx-background-color: -jexam-surface;
+    -fx-border-color: transparent transparent transparent -jexam-border;
+    -fx-border-width: 0;
+}
+
+.tree-filter-header {
+    -fx-padding: 8;
+    -fx-spacing: 6;
+    -fx-background-color: -jexam-surface;
+}
+
+.tree-filter-input {
+    -fx-background-color: -jexam-surface;
+    -fx-text-fill: -jexam-fg;
+    -fx-border-color: -jexam-border;
+    -fx-border-radius: 2;
+    -fx-background-radius: 2;
+}
+
+.tree-filter-view {
+    -fx-background-color: -jexam-surface;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: -jexam-surface;
+}
+
+.tab-pane .tab {
+    -fx-background-color: -jexam-primary-light;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: -jexam-primary;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: white;
+}

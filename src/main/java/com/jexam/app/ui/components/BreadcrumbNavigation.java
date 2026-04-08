@@ -23,6 +23,7 @@ public final class BreadcrumbNavigation extends HBox {
      * Creates the breadcrumb container used for hierarchy navigation.
      */
     public BreadcrumbNavigation() {
+        getStyleClass().add("breadcrumb");
         setAlignment(Pos.CENTER_LEFT);
         setSpacing(6);
         setPadding(new Insets(6, 10, 6, 10));
@@ -60,11 +61,15 @@ public final class BreadcrumbNavigation extends HBox {
             final String segment = segments.get(i);
             final String displaySegment = shorten(segment);
             if (i > 0) {
-                getChildren().add(new Label(">"));
+                Label separator = new Label(">");
+                separator.getStyleClass().add("breadcrumb-separator");
+                getChildren().add(separator);
             }
 
             if (i == segments.size() - 1) {
-                getChildren().add(new Label(displaySegment));
+                Label current = new Label(displaySegment);
+                current.getStyleClass().add("breadcrumb-current");
+                getChildren().add(current);
             } else {
                 Button button = new Button(displaySegment);
                 button.setOnAction(event -> selectionHandler.accept(segmentIndex));

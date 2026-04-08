@@ -62,6 +62,8 @@ public final class PdfTabContainer extends BorderPane {
         this.uiStateManager = Objects.requireNonNull(uiStateManager, "uiStateManager");
         this.stage = Objects.requireNonNull(stage, "stage");
 
+        getStyleClass().add("pdf-tab");
+
         setPadding(new Insets(8));
 
         leftColumn.setPrefWidth(380);

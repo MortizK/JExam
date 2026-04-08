@@ -1,5 +1,7 @@
 package com.jexam.app;
 
+import com.jexam.app.ui.styling.UiTheme;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.util.prefs.Preferences;
@@ -12,6 +14,7 @@ final class UserPreferencesStore {
     private static final String KEY_LAST_XML_DIR = "path.lastXmlDir";
     private static final String KEY_LAST_XML_FILE = "path.lastXmlFile";
     private static final String KEY_LAST_PDF_DIR = "path.lastPdfDir";
+    private static final String KEY_UI_THEME = "ui.theme";
 
     private final Preferences preferences = Preferences.userNodeForPackage(UserPreferencesStore.class);
 
@@ -27,6 +30,20 @@ final class UserPreferencesStore {
     void saveLanguage(final UiLanguage language) {
         UiLanguage safeLanguage = language == null ? UiLanguage.ENGLISH : language;
         preferences.put(KEY_LANGUAGE, safeLanguage.name());
+    }
+
+    UiTheme loadTheme() {
+        String raw = preferences.get(KEY_UI_THEME, UiTheme.LIGHT.name());
+        try {
+            return UiTheme.valueOf(raw);
+        } catch (IllegalArgumentException ignored) {
+            return UiTheme.LIGHT;
+        }
+    }
+
+    void saveTheme(final UiTheme theme) {
+        UiTheme safeTheme = theme == null ? UiTheme.LIGHT : theme;
+        preferences.put(KEY_UI_THEME, safeTheme.name());
     }
 
     Path loadLastXmlDirectory() {

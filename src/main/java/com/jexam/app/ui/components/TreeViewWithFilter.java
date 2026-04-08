@@ -45,6 +45,12 @@ public final class TreeViewWithFilter<T> extends BorderPane {
     public TreeViewWithFilter(final Function<T, String> itemLabelProvider) {
         this.labelProvider = Objects.requireNonNull(itemLabelProvider, "itemLabelProvider");
 
+        getStyleClass().add("tree-filter-panel");
+        filterField.getStyleClass().add("tree-filter-input");
+        expandAllButton.getStyleClass().add("secondary-action");
+        collapseAllButton.getStyleClass().add("secondary-action");
+        treeView.getStyleClass().add("tree-filter-view");
+
         filterField.setPromptText("Filter...");
         filterField.setAccessibleText("Filter exam chapters and tasks");
         filterField.setFocusTraversable(true);
@@ -63,7 +69,9 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         treeView.setFocusTraversable(true);
 
         HBox treeActionBar = new HBox(6, expandAllButton, collapseAllButton);
+        treeActionBar.getStyleClass().add("tree-filter-actions");
         VBox header = new VBox(6, treeActionBar, filterField);
+        header.getStyleClass().add("tree-filter-header");
         header.setPadding(new Insets(8));
         treeView.setShowRoot(false);
         treeView.setCellFactory(createCellFactory());

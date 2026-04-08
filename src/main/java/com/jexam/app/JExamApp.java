@@ -1,6 +1,8 @@
 package com.jexam.app;
 
 import com.jexam.app.ui.UiStateManager;
+import com.jexam.app.ui.styling.ThemeManager;
+import com.jexam.app.ui.styling.UiTheme;
 import com.jexam.app.ui.components.AppHeaderNavigation;
 import com.jexam.io.ExamXmlException;
 import com.jexam.validation.ValidationResult;
@@ -36,14 +38,17 @@ public class JExamApp extends Application {
     private final JExamSelectionModel selectionModel = new JExamSelectionModel();
     private final UiStateManager uiStateManager = new UiStateManager();
     private final UserPreferencesStore preferencesStore = new UserPreferencesStore();
+    private final ThemeManager themeManager = new ThemeManager();
 
     private XmlTabContainer xmlTabContainer;
     private PdfTabContainer pdfTabContainer;
     private TabPane tabPane;
+    private UiTheme activeTheme;
 
     @Override
     public void start(final Stage stage) {
         UiLanguage initialLanguage = preferencesStore.loadLanguage();
+        activeTheme = preferencesStore.loadTheme();
         ui.setLanguage(initialLanguage);
         ui.setLastXmlDirectory(preferencesStore.loadLastXmlDirectory());
         ui.setLastPdfDirectory(preferencesStore.loadLastPdfDirectory());
@@ -90,11 +95,15 @@ public class JExamApp extends Application {
 
         VBox topPane = new VBox(8, headerNavigation);
         BorderPane root = new BorderPane();
+        root.getStyleClass().add("jexam-root");
+        topPane.getStyleClass().add("app-top-pane");
         root.setPadding(new Insets(12));
         root.setTop(topPane);
         root.setCenter(tabPane);
+        tabPane.getStyleClass().add("jexam-tabs");
 
         Scene scene = new Scene(root, 1100, 760);
+        themeManager.applyTheme(scene, activeTheme);
         stage.setTitle(ui.text("app.title"));
         stage.setScene(scene);
         scene.widthProperty().addListener((observable, oldValue, newValue) -> {
@@ -161,6 +170,13 @@ public class JExamApp extends Application {
         scene.getAccelerators().put(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN), () -> openExam(stage));
         scene.getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN), () -> saveExam(stage));
         scene.getAccelerators().put(new KeyCodeCombination(KeyCode.P, KeyCombination.SHORTCUT_DOWN), this::previewPdf);
+        scene.getAccelerators().put(
+            new KeyCodeCombination(KeyCode.T, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN),
+            () -> {
+                activeTheme = themeManager.toggleTheme(scene);
+                preferencesStore.saveTheme(activeTheme);
+            }
+        );
     }
 
     private void createNewExam() {

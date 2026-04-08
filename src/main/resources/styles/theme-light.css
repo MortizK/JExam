@@ -1,0 +1,16 @@
+.root {
+    -jexam-primary: #0078D4;
+    -jexam-primary-dark: #005A9E;
+    -jexam-primary-light: #E7F1FB;
+    -jexam-success: #107C10;
+    -jexam-warning: #FFB900;
+    -jexam-error: #E74856;
+
+    -jexam-fg: #323130;
+    -jexam-surface: #FFFFFF;
+    -jexam-border: #D2D0CE;
+    -jexam-muted: #A19F9D;
+
+    -fx-background-color: -jexam-surface;
+    -fx-text-fill: -jexam-fg;
+}

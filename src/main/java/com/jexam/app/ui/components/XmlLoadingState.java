@@ -24,9 +24,15 @@ public final class XmlLoadingState extends VBox {
      * Creates the XML empty/loading state panel with create and load actions.
      */
     public XmlLoadingState() {
+        getStyleClass().add("xml-loading-state");
         setAlignment(Pos.CENTER);
         setSpacing(10);
         setPadding(new Insets(24));
+
+        titleLabel.getStyleClass().add("loading-title");
+        subtitleLabel.getStyleClass().add("loading-subtitle");
+        createButton.getStyleClass().add("primary-action");
+        loadButton.getStyleClass().add("secondary-action");
 
         createButton.setOnAction(event -> createHandler.accept(null));
         loadButton.setOnAction(event -> loadHandler.accept(null));

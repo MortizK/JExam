@@ -105,6 +105,8 @@ public final class XmlTabContainer extends BorderPane {
         this.selectionModel = Objects.requireNonNull(selectionModel, "selectionModel");
         this.uiStateManager = Objects.requireNonNull(uiStateManager, "uiStateManager");
 
+        getStyleClass().add("xml-tab");
+
         setPadding(new Insets(8));
 
         configureLoadingState();
@@ -125,7 +127,6 @@ public final class XmlTabContainer extends BorderPane {
         leftColumn.setPrefWidth(320);
         rightColumn.setPrefWidth(760);
         contentSplit.setDividerPositions(0.28);
-        contentSplit.setStyle("-fx-background-color: transparent;");
         centerStack.getChildren().addAll(contentSplit, loadingState);
 
         setCenter(centerStack);

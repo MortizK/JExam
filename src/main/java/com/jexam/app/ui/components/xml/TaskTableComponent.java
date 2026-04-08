@@ -168,7 +168,7 @@ public final class TaskTableComponent extends VBox {
             setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             primaryLabel.setWrapText(true);
             statsLabel.setWrapText(true);
-            statsLabel.setStyle("-fx-font-size: 11px; -fx-opacity: 0.82;");
+            statsLabel.getStyleClass().add("small-muted");
             HBox.setHgrow(spacer, Priority.ALWAYS);
             deleteButton.setFocusTraversable(false);
             deleteButton.setOnAction(event -> {

@@ -707,3 +707,39 @@ Implemented behavior affects perceived visual emphasis on tab switch:
 - otherwise: generation controls become initial focus target
 
 This supports faster keyboard-first workflows in the PDF tab.
+
+### 9.5 Theme Infrastructure and Tokenized Styling
+
+Implemented baseline theming infrastructure for both light and dark modes:
+- JavaFX stylesheet pipeline added at scene startup (`base.css` + active theme css)
+- Theme persistence in user preferences (`ui.theme`)
+- Runtime theme toggle via keyboard shortcut (`Ctrl+Shift+T`)
+
+Implemented assets:
+- `src/main/resources/styles/base.css`
+- `src/main/resources/styles/theme-light.css`
+- `src/main/resources/styles/theme-dark.css`
+
+Implemented Java wiring:
+- `ThemeManager` for apply/toggle behavior
+- `UiTheme` enum for available themes and stylesheet mapping
+- `DesignTokens` as centralized color/spacing/radius constants for styling references
+
+Initial style-class integration completed for shared/high-impact components:
+- app root and top pane (`jexam-root`, `app-top-pane`)
+- header navigation (`app-header`, `primary-action`, `dirty-indicator`)
+- breadcrumb navigation (`breadcrumb`, `breadcrumb-link`, `breadcrumb-current`)
+- tab containers (`xml-tab`, `pdf-tab`)
+- muted stats labels in chapter/task row cells (`small-muted`)
+
+This closes the first implementation slice of Phase 2 and establishes a stable base for component-level visual refinement.
+
+### 9.6 Second Pass Styling Coverage
+
+Extended style-class wiring to additional XML tab surfaces:
+- XML loading/empty state now uses dedicated classes for title, subtitle, and action emphasis
+- tree filter panel now exposes class hooks for header, actions, input, and tree view body
+
+Result:
+- a larger portion of the XML workflow now renders through centralized CSS tokens instead of implicit control defaults
+- remaining styling work can proceed component-by-component without further scene/bootstrap changes
