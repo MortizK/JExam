@@ -25,6 +25,12 @@ import java.util.List;
  * Right-hand preview region with lifecycle states.
  */
 public final class PreviewRegionComponent extends VBox {
+    private static final String STATE_IDLE = "preview-idle";
+    private static final String STATE_LOADING = "preview-loading";
+    private static final String STATE_READY = "preview-ready";
+    private static final String STATE_STALE = "preview-stale";
+    private static final String STATE_ERROR = "preview-error";
+
     private static final float PREVIEW_DPI = 140f;
 
     private final Label stateLabel = new Label("No preview generated yet.");
@@ -63,6 +69,7 @@ public final class PreviewRegionComponent extends VBox {
         refreshButton.setOnAction(event -> refreshHandler.run());
         exportButton.setOnAction(event -> exportHandler.run());
         exportButton.setDisable(false);
+        setPreviewState(STATE_IDLE);
         stateLabel.setAccessibleText("Preview state message");
         refreshButton.setAccessibleText("Refresh the preview image");
         exportButton.setAccessibleText("Export the selected PDF");
@@ -73,6 +80,7 @@ public final class PreviewRegionComponent extends VBox {
      * Transitions to idle state and clears rendered preview.
      */
     public void setIdle() {
+        setPreviewState(STATE_IDLE);
         stateLabel.setText("No preview generated yet.");
         previewPath = null;
         pageContainer.getChildren().clear();
@@ -83,6 +91,7 @@ public final class PreviewRegionComponent extends VBox {
      * Transitions to loading state during PDF generation.
      */
     public void setLoading() {
+        setPreviewState(STATE_LOADING);
         stateLabel.setText("Generating preview...");
     }
 
@@ -94,6 +103,7 @@ public final class PreviewRegionComponent extends VBox {
     public void setReady(final Path path) {
         previewPath = path;
         if (path == null || !Files.exists(path)) {
+            setPreviewState(STATE_ERROR);
             stateLabel.setText("Preview failed");
             pageContainer.getChildren().clear();
             return;
@@ -101,8 +111,10 @@ public final class PreviewRegionComponent extends VBox {
 
         try {
             renderAllPages(path);
+            setPreviewState(STATE_READY);
             stateLabel.setText("Preview ready");
         } catch (IOException e) {
+            setPreviewState(STATE_ERROR);
             pageContainer.getChildren().clear();
             stateLabel.setText("Embedded preview unavailable");
         }
@@ -115,6 +127,7 @@ public final class PreviewRegionComponent extends VBox {
      */
     public void setStale(final boolean stale) {
         if (stale) {
+            setPreviewState(STATE_STALE);
             stateLabel.setText("Preview is stale. Refresh required.");
         }
     }
@@ -125,8 +138,14 @@ public final class PreviewRegionComponent extends VBox {
      * @param message error description
      */
     public void setError(final String message) {
+        setPreviewState(STATE_ERROR);
         stateLabel.setText("Preview failed");
         pageContainer.getChildren().clear();
+    }
+
+    private void setPreviewState(final String stateClass) {
+        getStyleClass().removeAll(STATE_IDLE, STATE_LOADING, STATE_READY, STATE_STALE, STATE_ERROR);
+        getStyleClass().add(stateClass);
     }
 
     /**

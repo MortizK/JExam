@@ -33,6 +33,8 @@ public final class XmlLoadingState extends VBox {
         subtitleLabel.getStyleClass().add("loading-subtitle");
         createButton.getStyleClass().add("primary-action");
         loadButton.getStyleClass().add("secondary-action");
+        createButton.setMaxWidth(Double.MAX_VALUE);
+        loadButton.setMaxWidth(Double.MAX_VALUE);
 
         createButton.setOnAction(event -> createHandler.accept(null));
         loadButton.setOnAction(event -> loadHandler.accept(null));

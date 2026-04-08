@@ -16,6 +16,9 @@ import java.util.function.Consumer;
  * Displays validation issues grouped by top-level path segment.
  */
 public final class ValidationSummaryComponent extends VBox {
+    private static final String CLASS_STATE_SUCCESS = "validation-success";
+    private static final String CLASS_STATE_ERROR = "validation-error";
+
     private final Label title = new Label("Validation");
     private final Label summary = new Label();
     private final TreeView<String> issueTree = new TreeView<>();
@@ -59,14 +62,17 @@ public final class ValidationSummaryComponent extends VBox {
         root.setExpanded(true);
         pathByLeaf.clear();
         hasIssues = false;
+        getStyleClass().removeAll(CLASS_STATE_SUCCESS, CLASS_STATE_ERROR);
 
         if (result == null || result.isValid()) {
+            getStyleClass().add(CLASS_STATE_SUCCESS);
             summary.setText("All validations passed. Ready to generate.");
             issueTree.setRoot(root);
             return;
         }
 
         hasIssues = true;
+        getStyleClass().add(CLASS_STATE_ERROR);
         summary.setText("Found " + result.getErrors().size() + " issue(s)");
         Map<String, TreeItem<String>> groups = new LinkedHashMap<>();
         for (ValidationError error : result.getErrors()) {

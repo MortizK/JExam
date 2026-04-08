@@ -756,3 +756,14 @@ Functional correction included in the same increment:
 Styling effect:
 - component structure now consistently exposes semantic hooks (`section-label`, `editor-input`, `primary-action`, `secondary-action`, etc.)
 - CSS can be evolved without revisiting component layout code for common visual refinements
+
+### 9.8 Figure-Aligned Visual Refinement
+
+Applied a refinement pass to align runtime visuals more closely with the LaTeX figure mockups in `doc/LaTeX/fig/*.pdf`:
+- flatter, border-first panel surfaces
+- tighter corner radii and compact spacing
+- stronger section separators for header/edit blocks
+- consistent list/table hover and selected states
+- explicit preview and validation state coloring (idle/loading/ready/stale/error)
+
+Additionally, loading-state actions were updated to full-width emphasis to mirror the figure-based call-to-action layout.
