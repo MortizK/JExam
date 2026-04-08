@@ -6,16 +6,16 @@ This page records the current build metrics from the latest generated reports in
 
 | Metric | Value |
 | --- | --- |
-| Instructions covered | 3,314 of 14,755 |
-| Instruction coverage | 22% |
-| Branches covered | 245 of 1,156 |
-| Branch coverage | 21% |
-| Lines covered | 735 of 3,314 |
-| Line coverage | 22% |
-| Methods covered | 156 of 712 |
-| Method coverage | 23% |
-| Classes covered | 18 of 61 |
-| Class coverage | 30% |
+| Instructions covered | 3,645 of 14,755 |
+| Instruction coverage | 25% |
+| Branches covered | 283 of 1,156 |
+| Branch coverage | 24% |
+| Lines covered | 803 of 3,314 |
+| Line coverage | 24% |
+| Methods covered | 188 of 712 |
+| Method coverage | 26% |
+| Classes covered | 21 of 61 |
+| Class coverage | 34% |
 
 ## Package Coverage Highlights
 
@@ -23,11 +23,11 @@ This page records the current build metrics from the latest generated reports in
 
 | Package | Instruction coverage | Branch coverage |
 | --- | --- | --- |
+| `com.jexam.model.enums` | 100% | n/a |
+| `com.jexam.model` | 97% | 63% |
 | `com.jexam.io` | 92% | 88% |
-| `com.jexam.model.enums` | 88% | n/a |
-| `com.jexam.generation` | 83% | 58% |
-| `com.jexam.model` | 73% | 50% |
-| `com.jexam.validation` | 68% | 60% |
+| `com.jexam.validation` | 86% | 76% |
+| `com.jexam.generation` | 84% | 58% |
 
 ### Weakest Areas
 
@@ -44,11 +44,18 @@ This page records the current build metrics from the latest generated reports in
 
 | Metric | Value |
 | --- | --- |
-| Tests | 28 |
+| Tests | 44 |
 | Errors | 0 |
 | Failures | 0 |
 | Skipped | 0 |
 | Success rate | 100% |
+
+## Iteration Delta (2026-04-08)
+
+- Line coverage increased from 22% to 24% (+2 percentage points).
+- Branch coverage increased from 21% to 24% (+3 percentage points).
+- Method coverage increased from 23% to 26% (+3 percentage points).
+- Class coverage increased from 30% to 34% (+4 percentage points).
 
 ## Notes On Other Quality Tools
 
