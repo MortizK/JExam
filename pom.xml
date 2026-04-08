@@ -17,6 +17,7 @@
         <jacoco.version>0.8.12</jacoco.version>
         <spotbugs.plugin.version>4.9.3.0</spotbugs.plugin.version>
         <checkstyle.plugin.version>3.4.0</checkstyle.plugin.version>
+        <skipTests>false</skipTests>
         <spotbugs.skip>true</spotbugs.skip>
     </properties>
 
@@ -55,6 +56,23 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.2</version>
+                <configuration>
+                    <skipTests>${skipTests}</skipTests>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>3.5.2</version>
+                <executions>
+                    <execution>
+                        <id>test-report</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>report-only</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -75,13 +93,18 @@
                 <version>${jacoco.version}</version>
                 <executions>
                     <execution>
+                        <configuration>
+                            <includes>
+                                <include>com.jexam.*</include>
+                            </includes>
+                        </configuration>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>report</id>
-                        <phase>verify</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
