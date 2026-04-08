@@ -163,12 +163,6 @@
     -fx-padding: 12;
 }
 
-.chapter-header-editor,
-.task-header-editor,
-.variant-editor {
-    -fx-background-color: -jexam-primary-light;
-}
-
 .exam-header-editor {
     -fx-border-color: transparent transparent -jexam-border transparent;
     -fx-border-width: 0 0 2 0;

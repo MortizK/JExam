@@ -74,7 +74,6 @@ public final class PdfTabContainer extends BorderPane {
         refreshFromService();
 
         uiStateManager.previewStaleProperty().addListener((observable, oldValue, newValue) -> {
-            generationControls.setStaleIndicatorVisible(newValue);
             previewRegion.setStale(newValue);
         });
     }
@@ -113,7 +112,6 @@ public final class PdfTabContainer extends BorderPane {
         );
         ValidationResult validationResult = appService.validateCurrentExam();
         validationSummary.setValidationResult(validationResult);
-        generationControls.setStaleIndicatorVisible(uiStateManager.isPreviewStale());
         generationControls.setFallbackPreference(appService.getGoalPointFallbackPreference());
         generationControls.setRandomSeed(appService.getGenerationRandomSeed());
         if (previewRegion.getPreviewPath() == null) {

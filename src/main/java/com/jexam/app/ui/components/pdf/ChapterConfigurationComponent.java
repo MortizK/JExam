@@ -89,7 +89,7 @@ public final class ChapterConfigurationComponent extends VBox {
         upButton.getStyleClass().add("secondary-action");
         downButton.getStyleClass().add("secondary-action");
         excludeButton.getStyleClass().add("secondary-action");
-        includeButton.getStyleClass().add("primary-action");
+        includeButton.getStyleClass().add("secondary-action");
         resetButton.getStyleClass().add("secondary-action");
 
         includedList.setAccessibleText("Included chapters list");

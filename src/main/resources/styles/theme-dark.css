@@ -1,15 +1,15 @@
 .root {
-    -jexam-primary: #4aa3ff;
-    -jexam-primary-dark: #2f78bf;
-    -jexam-primary-light: #1e2a36;
-    -jexam-success: #4ecb71;
-    -jexam-warning: #ffca57;
-    -jexam-error: #ff6b7a;
+    -jexam-primary: #93C07A;
+    -jexam-primary-dark: #6F9E5B;
+    -jexam-primary-light: #243021;
+    -jexam-success: #7DB06E;
+    -jexam-warning: #B99E64;
+    -jexam-error: #B8747C;
 
     -jexam-fg: #F3F2F1;
-    -jexam-surface: #1E1E1E;
-    -jexam-border: #3E3E42;
-    -jexam-muted: #9C9C9C;
+    -jexam-surface: #1C1F1A;
+    -jexam-border: #464B41;
+    -jexam-muted: #A9ADA1;
 
     -fx-background-color: -jexam-surface;
     -fx-text-fill: -jexam-fg;

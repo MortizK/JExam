@@ -55,8 +55,8 @@ public final class PreviewRegionComponent extends VBox {
 
         stateLabel.getStyleClass().add("preview-state");
         actionBar.getStyleClass().add("preview-actions");
-        refreshButton.getStyleClass().add("primary-action");
-        exportButton.getStyleClass().add("secondary-action");
+        refreshButton.getStyleClass().add("secondary-action");
+        exportButton.getStyleClass().add("primary-action");
         previewScroll.getStyleClass().add("preview-scroll");
         pageContainer.getStyleClass().add("preview-pages");
 

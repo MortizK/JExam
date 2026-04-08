@@ -21,7 +21,6 @@ public final class AppHeaderNavigation extends HBox {
     private final Button newButton = new Button();
     private final Button openButton = new Button();
     private final Button saveButton = new Button();
-    private final Button validateButton = new Button();
     private final ComboBox<UiLanguage> languageBox = new ComboBox<>();
 
     private Consumer<UiLanguage> languageHandler = language -> { };
@@ -44,7 +43,6 @@ public final class AppHeaderNavigation extends HBox {
         newButton.getStyleClass().add("secondary-action");
         openButton.getStyleClass().add("secondary-action");
         saveButton.getStyleClass().add("primary-action");
-        validateButton.getStyleClass().add("primary-action");
         languageBox.getStyleClass().add("language-selector");
 
         dirtyIndicator.setVisible(false);
@@ -53,13 +51,11 @@ public final class AppHeaderNavigation extends HBox {
         newButton.setOnAction(event -> newHandler.run());
         openButton.setOnAction(event -> openHandler.run());
         saveButton.setOnAction(event -> saveHandler.run());
-        validateButton.setOnAction(event -> validateHandler.run());
 
         dirtyIndicator.setAccessibleText("Unsaved changes indicator");
         newButton.setAccessibleText("Create a new exam in memory");
         openButton.setAccessibleText("Open an existing exam XML file");
         saveButton.setAccessibleText("Save the current exam to XML");
-        validateButton.setAccessibleText("Validate the current exam");
         languageBox.setAccessibleText("Language selector");
 
         languageBox.setItems(FXCollections.observableArrayList(UiLanguage.values()));
@@ -70,12 +66,11 @@ public final class AppHeaderNavigation extends HBox {
         });
 
         getChildren().addAll(
-            dirtyIndicator,
             newButton,
             openButton,
             saveButton,
-            validateButton,
-            languageBox
+            languageBox,
+            dirtyIndicator
         );
     }
 
@@ -106,7 +101,6 @@ public final class AppHeaderNavigation extends HBox {
         newButton.setText(newText);
         openButton.setText(openText);
         saveButton.setText(saveText);
-        validateButton.setText(validateText);
     }
 
     /**

@@ -17,15 +17,11 @@ import java.util.function.Consumer;
  */
 public final class GenerationControlsComponent extends VBox {
     private final Label modeLabel = new Label("Generation Mode");
-    private final Label seedLabel = new Label("Random Seed");
     private final ComboBox<GenerationMode> modeBox = new ComboBox<>(FXCollections.observableArrayList(
         GenerationMode.EXAM,
         GenerationMode.MOCK_EXAM
     ));
-    private final TextField seedField = new TextField();
-    private final Button previewButton = new Button("Generate Preview");
     private final Button exportButton = new Button("Export PDF");
-    private final Label staleLabel = new Label("Preview is stale. Refresh manually.");
 
     private Runnable previewHandler = () -> { };
     private Runnable exportHandler = () -> { };
@@ -42,12 +38,8 @@ public final class GenerationControlsComponent extends VBox {
         setPadding(new Insets(8));
 
         modeLabel.getStyleClass().add("section-label");
-        seedLabel.getStyleClass().add("section-label");
         modeBox.getStyleClass().add("generation-mode-box");
-        seedField.getStyleClass().add("seed-field");
-        previewButton.getStyleClass().add("primary-action");
-        exportButton.getStyleClass().add("secondary-action");
-        staleLabel.getStyleClass().add("stale-indicator");
+        exportButton.getStyleClass().add("primary-action");
 
         modeBox.setValue(GenerationMode.EXAM);
         modeBox.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -58,31 +50,14 @@ public final class GenerationControlsComponent extends VBox {
                 modeHandler.accept(newValue);
             }
         });
-        seedField.setPromptText("Optional random seed (e.g. 42)");
-        seedField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (updatingControls) {
-                return;
-            }
-            seedHandler.accept(newValue);
-        });
-        previewButton.setOnAction(event -> previewHandler.run());
         exportButton.setOnAction(event -> exportHandler.run());
-        staleLabel.setVisible(false);
-        staleLabel.setManaged(false);
 
         modeBox.setAccessibleText("Generation mode selector");
-        seedField.setAccessibleText("Optional deterministic random seed");
-        previewButton.setAccessibleText("Generate PDF preview");
         exportButton.setAccessibleText("Export the selected PDF variant");
-        staleLabel.setAccessibleText("Preview stale indicator");
 
         getChildren().addAll(
             modeLabel,
             modeBox,
-            seedLabel,
-            seedField,
-            staleLabel,
-            previewButton,
             exportButton
         );
     }
@@ -94,16 +69,6 @@ public final class GenerationControlsComponent extends VBox {
      */
     public GenerationMode getSelectedMode() {
         return modeBox.getValue();
-    }
-
-    /**
-     * Toggles visibility of the preview-stale indicator.
-     *
-     * @param value whether stale indicator should be shown
-     */
-    public void setStaleIndicatorVisible(final boolean value) {
-        staleLabel.setVisible(value);
-        staleLabel.setManaged(value);
     }
 
     /**
@@ -151,7 +116,6 @@ public final class GenerationControlsComponent extends VBox {
      */
     public void setRandomSeed(final Long seed) {
         updatingControls = true;
-        seedField.setText(seed == null ? "" : Long.toString(seed));
         updatingControls = false;
     }
 
