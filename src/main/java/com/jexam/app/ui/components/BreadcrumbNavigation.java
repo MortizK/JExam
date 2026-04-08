@@ -19,12 +19,20 @@ public final class BreadcrumbNavigation extends HBox {
     private final List<String> segments = new ArrayList<>();
     private IntConsumer selectionHandler = index -> { };
 
+    /**
+     * Creates the breadcrumb container used for hierarchy navigation.
+     */
     public BreadcrumbNavigation() {
         setAlignment(Pos.CENTER_LEFT);
         setSpacing(6);
         setPadding(new Insets(6, 10, 6, 10));
     }
 
+    /**
+     * Replaces the breadcrumb path and re-renders visible segments.
+     *
+     * @param pathSegments ordered path segments from root to current item
+     */
     public void setPath(final List<String> pathSegments) {
         segments.clear();
         if (pathSegments != null) {
@@ -33,10 +41,18 @@ public final class BreadcrumbNavigation extends HBox {
         render();
     }
 
+    /**
+     * Registers a callback for ancestor-segment clicks.
+     *
+     * @param handler callback receiving clicked segment index; {@code null} resets to no-op
+     */
     public void setOnSegmentClicked(final IntConsumer handler) {
         selectionHandler = handler == null ? index -> { } : handler;
     }
 
+    /**
+     * Rebuilds visual breadcrumb controls from current path segments.
+     */
     private void render() {
         getChildren().clear();
         for (int i = 0; i < segments.size(); i++) {
@@ -58,6 +74,12 @@ public final class BreadcrumbNavigation extends HBox {
         }
     }
 
+    /**
+     * Shortens a segment to a stable maximum display length.
+     *
+     * @param segment raw segment text
+     * @return shortened display text
+     */
     private String shorten(final String segment) {
         if (segment == null) {
             return "";
@@ -78,6 +100,12 @@ public final class BreadcrumbNavigation extends HBox {
         return candidate + "...";
     }
 
+    /**
+     * Finds the last whitespace index in a value.
+     *
+     * @param value input string
+     * @return index of last whitespace, or -1 when absent
+     */
     private int lastWhitespaceIndex(final String value) {
         for (int i = value.length() - 1; i >= 0; i--) {
             if (Character.isWhitespace(value.charAt(i))) {

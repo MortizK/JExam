@@ -24,6 +24,9 @@ public final class ValidationSummaryComponent extends VBox {
     private Consumer<String> issueSelectedHandler = path -> { };
     private boolean hasIssues;
 
+    /**
+     * Creates the validation summary panel with grouped issue tree.
+     */
     public ValidationSummaryComponent() {
         setSpacing(8);
         setPadding(new Insets(8));
@@ -41,6 +44,11 @@ public final class ValidationSummaryComponent extends VBox {
         setValidationResult(new ValidationResult());
     }
 
+    /**
+     * Renders validation output and groups issues by top-level hierarchy path.
+     *
+     * @param result validation result to display
+     */
     public void setValidationResult(final ValidationResult result) {
         TreeItem<String> root = new TreeItem<>("root");
         root.setExpanded(true);
@@ -77,14 +85,27 @@ public final class ValidationSummaryComponent extends VBox {
         issueTree.setRoot(root);
     }
 
+    /**
+     * Registers callback for selecting a concrete validation issue path.
+     *
+     * @param handler callback receiving selected issue path; {@code null} resets to no-op
+     */
     public void setOnIssueSelected(final Consumer<String> handler) {
         issueSelectedHandler = handler == null ? path -> { } : handler;
     }
 
+    /**
+     * Requests keyboard focus for the issue tree control.
+     */
     public void requestIssueTreeFocus() {
         issueTree.requestFocus();
     }
 
+    /**
+     * Returns whether current validation output contains issues.
+     *
+     * @return {@code true} when at least one issue exists
+     */
     public boolean hasIssues() {
         return hasIssues;
     }

@@ -20,6 +20,9 @@ public final class XmlLoadingState extends VBox {
     private Consumer<Void> createHandler = ignored -> { };
     private Consumer<Void> loadHandler = ignored -> { };
 
+    /**
+     * Creates the XML empty/loading state panel with create and load actions.
+     */
     public XmlLoadingState() {
         setAlignment(Pos.CENTER);
         setSpacing(10);
@@ -36,22 +39,47 @@ public final class XmlLoadingState extends VBox {
         getChildren().addAll(titleLabel, subtitleLabel, createButton, loadButton);
     }
 
+    /**
+     * Sets the loading-state title text.
+     *
+     * @param value title text
+     */
     public void setTitleText(final String value) {
         titleLabel.setText(value);
     }
 
+    /**
+     * Sets the loading-state subtitle text.
+     *
+     * @param value subtitle text
+     */
     public void setSubtitleText(final String value) {
         subtitleLabel.setText(value);
     }
 
+    /**
+     * Sets the create button label.
+     *
+     * @param value button text
+     */
     public void setCreateButtonText(final String value) {
         createButton.setText(value);
     }
 
+    /**
+     * Sets the load button label.
+     *
+     * @param value button text
+     */
     public void setLoadButtonText(final String value) {
         loadButton.setText(value);
     }
 
+    /**
+     * Registers callback for the create-new-exam action.
+     *
+     * @param handler action callback; {@code null} clears action behavior
+     */
     public void setOnCreateNewExam(final Runnable handler) {
         createHandler = ignored -> {
             if (handler != null) {
@@ -60,6 +88,11 @@ public final class XmlLoadingState extends VBox {
         };
     }
 
+    /**
+     * Registers callback for the load-XML action.
+     *
+     * @param handler action callback; {@code null} clears action behavior
+     */
     public void setOnLoadXml(final Runnable handler) {
         loadHandler = ignored -> {
             if (handler != null) {

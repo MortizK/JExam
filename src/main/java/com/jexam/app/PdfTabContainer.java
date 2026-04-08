@@ -43,6 +43,14 @@ public final class PdfTabContainer extends BorderPane {
 
     private Consumer<String> issueSelectedHandler = path -> { };
 
+    /**
+     * Creates the PDF tab container and wires core services with UI state.
+     *
+     * @param appService application service facade
+     * @param ui UI support and localization helper
+     * @param uiStateManager shared UI state manager
+     * @param stage owner stage for native file chooser dialogs
+     */
     public PdfTabContainer(
         final ExamApplicationService appService,
         final JExamUiSupport ui,
@@ -69,6 +77,11 @@ public final class PdfTabContainer extends BorderPane {
         });
     }
 
+    /**
+     * Adapts the split-pane layout for smaller or wider windows.
+     *
+     * @param width current scene width in pixels
+     */
     public void updateLayout(final double width) {
         if (width < 1024) {
             leftColumn.setPrefWidth(Double.MAX_VALUE);
@@ -84,6 +97,9 @@ public final class PdfTabContainer extends BorderPane {
         }
     }
 
+    /**
+     * Rebinds all UI controls to the latest state from the application service.
+     */
     public void refreshFromService() {
         List<Chapter> chapters = appService.getCurrentExam().getChapters();
         List<String> chapterNames = chapters.stream().map(Chapter::getName).toList();
@@ -103,6 +119,9 @@ public final class PdfTabContainer extends BorderPane {
         }
     }
 
+    /**
+     * Moves focus to the first meaningful control in the PDF tab.
+     */
     public void focusDefaultControl() {
         if (validationSummary.hasIssues()) {
             validationSummary.requestIssueTreeFocus();
@@ -111,6 +130,9 @@ public final class PdfTabContainer extends BorderPane {
         generationControls.requestControlFocus();
     }
 
+    /**
+     * Generates an in-app preview PDF and updates stale-state and validation feedback.
+     */
     public void generatePreview() {
         previewRegion.setLoading();
         try {
@@ -126,10 +148,18 @@ public final class PdfTabContainer extends BorderPane {
         }
     }
 
+    /**
+     * Registers the callback that handles selection of validation issue paths.
+     *
+     * @param handler consumer receiving a selected issue path; {@code null} resets to no-op
+     */
     public void setOnIssueSelected(final Consumer<String> handler) {
         issueSelectedHandler = handler == null ? path -> { } : handler;
     }
 
+    /**
+     * Wires all child-component event handlers to service operations and UI state updates.
+     */
     private void configureHandlers() {
         generationControls.setOnPreviewRequested(this::generatePreview);
         generationControls.setOnExportRequested(this::exportPdf);
@@ -193,6 +223,9 @@ public final class PdfTabContainer extends BorderPane {
         previewRegion.setOnExportRequested(this::exportPdf);
     }
 
+    /**
+     * Exports the selected generation mode as PDF files using either preview reuse or fresh generation.
+     */
     private void exportPdf() {
         GenerationMode mode = generationControls.getSelectedMode();
         if (mode != GenerationMode.EXAM && mode != GenerationMode.MOCK_EXAM) {
@@ -232,6 +265,11 @@ public final class PdfTabContainer extends BorderPane {
         }
     }
 
+    /**
+     * Validates and applies the optional random seed used for deterministic generation.
+     *
+     * @param rawValue user-entered seed text; blank clears the seed
+     */
     private void handleSeedChanged(final String rawValue) {
         if (rawValue == null || rawValue.isBlank()) {
             appService.setGenerationRandomSeed(null);
@@ -247,6 +285,11 @@ public final class PdfTabContainer extends BorderPane {
         }
     }
 
+    /**
+     * Displays non-blocking generation warnings produced by the last service call.
+     *
+     * @param title dialog title used for the warning message
+     */
     private void showGenerationWarnings(final String title) {
         List<String> warnings = appService.getLastGenerationWarnings();
         if (!warnings.isEmpty()) {

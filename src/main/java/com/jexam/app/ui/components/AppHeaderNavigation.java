@@ -30,6 +30,9 @@ public final class AppHeaderNavigation extends HBox {
     private Runnable saveHandler = () -> { };
     private Runnable validateHandler = () -> { };
 
+    /**
+     * Creates the application header with global actions and language selector.
+     */
     public AppHeaderNavigation() {
         setAlignment(Pos.CENTER_LEFT);
         setSpacing(10);
@@ -67,11 +70,24 @@ public final class AppHeaderNavigation extends HBox {
         );
     }
 
+    /**
+     * Toggles the unsaved-changes indicator.
+     *
+     * @param dirty whether unsaved changes are present
+     */
     public void setDirty(final boolean dirty) {
         dirtyIndicator.setText(dirty ? "Unsaved changes" : "");
         dirtyIndicator.setVisible(dirty);
     }
 
+    /**
+     * Applies localized labels for the global action buttons.
+     *
+     * @param newText label for the create action
+     * @param openText label for the open action
+     * @param saveText label for the save action
+     * @param validateText label for the validate action
+     */
     public void setButtonText(
         final String newText,
         final String openText,
@@ -84,30 +100,65 @@ public final class AppHeaderNavigation extends HBox {
         validateButton.setText(validateText);
     }
 
+    /**
+     * Sets the prompt text shown for language selection.
+     *
+     * @param value localized prompt value
+     */
     public void setLanguageLabel(final String value) {
         languageBox.setPromptText(value);
     }
 
+    /**
+     * Updates the currently selected language in the dropdown.
+     *
+     * @param value selected language value
+     */
     public void setSelectedLanguage(final UiLanguage value) {
         languageBox.setValue(value);
     }
 
+    /**
+     * Registers a callback for language changes.
+     *
+     * @param handler callback receiving the new language; {@code null} resets to no-op
+     */
     public void setOnLanguageChanged(final Consumer<UiLanguage> handler) {
         languageHandler = handler == null ? language -> { } : handler;
     }
 
+    /**
+     * Registers the new-exam action.
+     *
+     * @param handler callback for create action; {@code null} resets to no-op
+     */
     public void setOnNew(final Runnable handler) {
         newHandler = handler == null ? () -> { } : handler;
     }
 
+    /**
+     * Registers the open-exam action.
+     *
+     * @param handler callback for open action; {@code null} resets to no-op
+     */
     public void setOnOpen(final Runnable handler) {
         openHandler = handler == null ? () -> { } : handler;
     }
 
+    /**
+     * Registers the save-exam action.
+     *
+     * @param handler callback for save action; {@code null} resets to no-op
+     */
     public void setOnSave(final Runnable handler) {
         saveHandler = handler == null ? () -> { } : handler;
     }
 
+    /**
+     * Registers the validate action.
+     *
+     * @param handler callback for validation action; {@code null} resets to no-op
+     */
     public void setOnValidate(final Runnable handler) {
         validateHandler = handler == null ? () -> { } : handler;
     }

@@ -37,6 +37,11 @@ public final class TreeViewWithFilter<T> extends BorderPane {
     private T selectedItem;
     private boolean updatingSelection;
 
+    /**
+     * Creates a filterable tree view using the provided item label function.
+     *
+     * @param itemLabelProvider label provider used for rendering and filtering items
+     */
     public TreeViewWithFilter(final Function<T, String> itemLabelProvider) {
         this.labelProvider = Objects.requireNonNull(itemLabelProvider, "itemLabelProvider");
 
@@ -67,10 +72,20 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         setCenter(treeView);
     }
 
+    /**
+     * Registers a callback for tree-item selection changes.
+     *
+     * @param handler callback receiving selected item value; {@code null} resets to no-op
+     */
     public void setOnItemSelected(final Consumer<T> handler) {
         itemSelectionHandler = handler == null ? value -> { } : handler;
     }
 
+    /**
+     * Replaces root items with a flat list converted to root-level nodes.
+     *
+     * @param items root-level item values
+     */
     public void setRootItems(final List<T> items) {
         sourceRoots.clear();
         if (items != null) {
@@ -81,6 +96,11 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         refreshTree();
     }
 
+    /**
+     * Replaces the source root with a pre-built tree item.
+     *
+     * @param rootItem root item, or {@code null} to clear
+     */
     public void setRootItem(final TreeItem<T> rootItem) {
         sourceRoots.clear();
         if (rootItem != null) {
@@ -89,6 +109,11 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         refreshTree();
     }
 
+    /**
+     * Programmatically selects a tree item by value when present.
+     *
+     * @param item value to select
+     */
     public void setSelectedItem(final T item) {
         selectedItem = item;
         updatingSelection = true;
@@ -110,14 +135,30 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         }
     }
 
+    /**
+     * Exposes the underlying JavaFX tree view for advanced configuration.
+     *
+     * @return backing tree view instance
+     */
     public TreeView<T> getTreeView() {
         return treeView;
     }
 
+    /**
+     * Requests keyboard focus for the tree control.
+     */
     public void requestTreeFocus() {
         treeView.requestFocus();
     }
 
+    /**
+     * Applies localized texts for filter and expansion controls.
+     *
+     * @param filterPrompt prompt shown in the filter input
+     * @param filterAccessibleText accessible text for the filter input
+     * @param expandAllLabel label for expand-all action
+     * @param collapseAllLabel label for collapse-all action
+     */
     public void setHeaderTexts(
         final String filterPrompt,
         final String filterAccessibleText,
@@ -130,6 +171,9 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         collapseAllButton.setText(collapseAllLabel);
     }
 
+    /**
+     * Expands the full visible tree hierarchy.
+     */
     public void expandAll() {
         TreeItem<T> root = treeView.getRoot();
         if (root == null) {
@@ -138,6 +182,9 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         setExpandedRecursive(root, true);
     }
 
+    /**
+     * Collapses all visible top-level branches.
+     */
     public void collapseAll() {
         TreeItem<T> root = treeView.getRoot();
         if (root == null) {
@@ -148,6 +195,11 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         }
     }
 
+    /**
+     * Creates a tree-cell factory that renders item labels via the configured label provider.
+     *
+     * @return tree-cell callback
+     */
     private Callback<TreeView<T>, TreeCell<T>> createCellFactory() {
         return view -> new TreeCell<>() {
             @Override
@@ -158,6 +210,9 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         };
     }
 
+    /**
+     * Rebuilds the visible tree from source roots and current filter text.
+     */
     private void refreshTree() {
         String filterText = filterField.getText();
         TreeItem<T> root = new TreeItem<>();
@@ -176,11 +231,24 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         }
     }
 
+    /**
+     * Wraps a raw value into a tree item.
+     *
+     * @param value item value
+     * @return tree item wrapping value
+     */
     private TreeItem<T> buildTreeItem(final T value) {
         TreeItem<T> item = new TreeItem<>(value);
         return item;
     }
 
+    /**
+     * Creates a filtered tree copy keeping matching nodes and ancestor paths.
+     *
+     * @param sourceItem source tree node
+     * @param filterText normalized filter text
+     * @return filtered node copy, or {@code null} when fully filtered out
+     */
     private TreeItem<T> filterTree(final TreeItem<T> sourceItem, final String filterText) {
         if (sourceItem == null || sourceItem.getValue() == null) {
             return null;
@@ -207,6 +275,13 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         return copy;
     }
 
+    /**
+     * Finds the first tree node matching the provided value.
+     *
+     * @param root subtree root to search
+     * @param value value to match
+     * @return matching tree item, or {@code null} when absent
+     */
     private TreeItem<T> findItem(final TreeItem<T> root, final T value) {
         if (root == null) {
             return null;
@@ -223,6 +298,12 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         return null;
     }
 
+    /**
+     * Sets expansion state recursively for a subtree.
+     *
+     * @param item subtree root item
+     * @param expanded desired expansion state
+     */
     private void setExpandedRecursive(final TreeItem<T> item, final boolean expanded) {
         item.setExpanded(expanded);
         for (TreeItem<T> child : item.getChildren()) {

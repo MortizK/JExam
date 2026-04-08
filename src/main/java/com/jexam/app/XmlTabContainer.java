@@ -86,6 +86,14 @@ public final class XmlTabContainer extends BorderPane {
     private int selectedVariantIndex = -1;
     private boolean syncingNavigation;
 
+    /**
+     * Creates the XML tab container and wires all XML editing components.
+     *
+     * @param appService application service facade
+     * @param ui UI support and localization helper
+     * @param selectionModel hierarchical selection model
+     * @param uiStateManager shared UI state manager
+     */
     public XmlTabContainer(
         final ExamApplicationService appService,
         final JExamUiSupport ui,
@@ -125,6 +133,11 @@ public final class XmlTabContainer extends BorderPane {
         refreshFromService();
     }
 
+    /**
+     * Switches the split-pane orientation and sizes based on available width.
+     *
+     * @param width current scene width in pixels
+     */
     public void updateLayout(final double width) {
         if (width < 1024) {
             contentSplit.setOrientation(Orientation.VERTICAL);
@@ -139,14 +152,29 @@ public final class XmlTabContainer extends BorderPane {
         }
     }
 
+    /**
+     * Registers a callback for dirty-state changes caused by edit operations.
+     *
+     * @param handler callback receiving dirty-state changes; {@code null} resets to no-op
+     */
     public void setOnDirtyStateChanged(final Consumer<Boolean> handler) {
         dirtyStateChangedHandler = handler == null ? value -> { } : handler;
     }
 
+    /**
+     * Registers a callback for exam-name changes.
+     *
+     * @param handler callback receiving the current exam name; {@code null} resets to no-op
+     */
     public void setOnExamNameChanged(final Consumer<String> handler) {
         examNameChangedHandler = handler == null ? value -> { } : handler;
     }
 
+    /**
+     * Registers the create-exam action used by the empty/loading state.
+     *
+     * @param handler callback invoked when the user requests a new exam; {@code null} resets to no-op
+     */
     public void setOnCreateNewExam(final Runnable handler) {
         onCreateNewExam = handler == null ? () -> { } : handler;
         loadingState.setOnCreateNewExam(() -> {
@@ -157,15 +185,26 @@ public final class XmlTabContainer extends BorderPane {
         });
     }
 
+    /**
+     * Registers the load-XML action used by the empty/loading state.
+     *
+     * @param handler callback invoked when the user requests XML loading; {@code null} resets to no-op
+     */
     public void setOnLoadXml(final Runnable handler) {
         onLoadXml = handler == null ? () -> { } : handler;
         loadingState.setOnLoadXml(() -> onLoadXml.run());
     }
 
+    /**
+     * Requests keyboard focus for the left navigation tree.
+     */
     public void focusNavigationTree() {
         navigationTree.requestTreeFocus();
     }
 
+    /**
+     * Moves focus to the most specific editor matching the current selection depth.
+     */
     private void focusActiveContent() {
         if (selectedVariantIndex >= 0) {
             variantEditor.requestEditorFocus();
@@ -182,6 +221,9 @@ public final class XmlTabContainer extends BorderPane {
         examHeaderEditor.requestEditorFocus();
     }
 
+    /**
+     * Reloads tab state from the application service and updates editor visibility and selection.
+     */
     public void refreshFromService() {
         Exam currentExam = appService.getCurrentExam();
         selectionModel.setExam(currentExam);
@@ -209,11 +251,21 @@ public final class XmlTabContainer extends BorderPane {
         focusActiveContent();
     }
 
+    /**
+     * Marks the current state as saved and notifies dirty-state listeners.
+     */
     public void markSaved() {
         uiStateManager.markSaved();
         dirtyStateChangedHandler.accept(false);
     }
 
+    /**
+     * Navigates to the nearest valid chapter/task/variant selection indices.
+     *
+     * @param chapterIndex target chapter index
+     * @param taskIndex target task index
+     * @param variantIndex target variant index
+     */
     public void navigateToSelection(final int chapterIndex, final int taskIndex, final int variantIndex) {
         if (selectionModel.chapterCount() == 0) {
             return;
@@ -237,6 +289,9 @@ public final class XmlTabContainer extends BorderPane {
         refreshFromService();
     }
 
+    /**
+     * Binds breadcrumb and navigation-tree selection handlers.
+     */
     private void configureNavigation() {
         breadcrumbNavigation.setOnSegmentClicked(segmentIndex -> {
             if (segmentIndex <= 0) {
@@ -286,6 +341,9 @@ public final class XmlTabContainer extends BorderPane {
         });
     }
 
+    /**
+     * Applies localized strings to the XML empty/loading state panel.
+     */
     private void configureLoadingState() {
         loadingState.setTitleText(ui.text("label.xml.empty.title"));
         loadingState.setSubtitleText(ui.text("label.xml.empty.subtitle"));
@@ -293,6 +351,9 @@ public final class XmlTabContainer extends BorderPane {
         loadingState.setLoadButtonText(ui.text("button.load.xml"));
     }
 
+    /**
+     * Applies localized texts for tree header controls and filter prompt.
+     */
     private void configureNavigationTreeTexts() {
         navigationTree.setHeaderTexts(
             ui.text("tree.filter.prompt"),
@@ -302,6 +363,9 @@ public final class XmlTabContainer extends BorderPane {
         );
     }
 
+    /**
+     * Connects exam/chapter/task/variant editor change events to service updates.
+     */
     private void configureHeaderEditors() {
         examHeaderEditor.setOnChange(() -> {
             appService.getCurrentExam().setName(examHeaderEditor.getExamName());
@@ -355,6 +419,9 @@ public final class XmlTabContainer extends BorderPane {
         });
     }
 
+    /**
+     * Connects chapter/task/variant table and list actions to CRUD operations.
+     */
     private void configureTables() {
         chapterTable.setOnSelect(index -> {
             selectedChapterIndex = index;
@@ -459,6 +526,9 @@ public final class XmlTabContainer extends BorderPane {
         });
     }
 
+    /**
+     * Refreshes UI state for the currently selected chapter and dependent task content.
+     */
     private void refreshChapterSelection() {
         Chapter chapter = selectionModel.chapterAt(selectedChapterIndex);
         if (chapter == null) {
@@ -482,6 +552,9 @@ public final class XmlTabContainer extends BorderPane {
         refreshContentVisibility();
     }
 
+    /**
+     * Refreshes UI state for the currently selected task and dependent variant content.
+     */
     private void refreshTaskSelection() {
         Task task = selectionModel.taskAt(selectedChapterIndex, selectedTaskIndex);
         if (task == null) {
@@ -505,6 +578,9 @@ public final class XmlTabContainer extends BorderPane {
         refreshContentVisibility();
     }
 
+    /**
+     * Refreshes the variant editor from the currently selected variant.
+     */
     private void refreshVariantSelection() {
         Variant variant = selectionModel.variantAt(selectedChapterIndex, selectedTaskIndex, selectedVariantIndex);
         if (variant == null) {
@@ -516,12 +592,18 @@ public final class XmlTabContainer extends BorderPane {
         variantEditor.setAnswerText(variant.getAnswer());
     }
 
+    /**
+     * Marks XML state as dirty and preview as stale, then notifies listeners.
+     */
     private void markDirty() {
         uiStateManager.markDirty();
         uiStateManager.markPreviewStale();
         dirtyStateChangedHandler.accept(true);
     }
 
+    /**
+     * Rebuilds the navigation tree from the current exam hierarchy.
+     */
     private void refreshNavigationTree() {
         Exam exam = appService.getCurrentExam();
         if (exam == null) {
@@ -547,6 +629,9 @@ public final class XmlTabContainer extends BorderPane {
         refreshNavigationSelection();
     }
 
+    /**
+     * Updates navigation tree selection to mirror current chapter/task selection.
+     */
     private void refreshNavigationSelection() {
         if (selectedTaskIndex >= 0) {
             navigationTree.setSelectedItem(NavigationNode.task(selectedChapterIndex, selectedTaskIndex, ""));
@@ -559,6 +644,9 @@ public final class XmlTabContainer extends BorderPane {
         navigationTree.setSelectedItem(NavigationNode.exam(""));
     }
 
+    /**
+     * Builds and applies breadcrumb labels for exam, chapter, task, and variant levels.
+     */
     private void refreshBreadcrumb() {
         List<String> segments = new ArrayList<>();
         segments.add("Exam");
@@ -582,6 +670,9 @@ public final class XmlTabContainer extends BorderPane {
         breadcrumbNavigation.setPath(segments);
     }
 
+    /**
+     * Shows only the editor sections relevant to the current selection depth.
+     */
     private void refreshContentVisibility() {
         boolean hasExam = appService.getCurrentExam() != null;
 
@@ -638,11 +729,23 @@ public final class XmlTabContainer extends BorderPane {
         setSectionVisible(variantList, false);
     }
 
+    /**
+     * Applies visibility and layout-management flags for a section node.
+     *
+     * @param node UI node to toggle
+     * @param visible whether the node should be visible and managed
+     */
     private void setSectionVisible(final javafx.scene.Node node, final boolean visible) {
         node.setVisible(visible);
         node.setManaged(visible);
     }
 
+    /**
+     * Builds a chapter row label including task/variant counts, points, and distribution stats.
+     *
+     * @param chapter chapter to summarize
+     * @return multi-line chapter label used in the chapter table
+     */
     private String chapterRowLabel(final Chapter chapter) {
         List<Task> tasks = chapter.getTasks();
         int taskCount = tasks.size();
@@ -664,6 +767,12 @@ public final class XmlTabContainer extends BorderPane {
         return chapter.getName() + "\n" + stats;
     }
 
+    /**
+     * Builds a task row label including variant count, points, and taxonomy fields.
+     *
+     * @param task task to summarize
+     * @return multi-line task label used in the task table
+     */
     private String taskRowLabel(final Task task) {
         String stats = "Children " + task.variantCount()
             + " variants"
@@ -673,16 +782,34 @@ public final class XmlTabContainer extends BorderPane {
         return task.getName() + "\n" + stats;
     }
 
+    /**
+     * Formats numeric points consistently with one decimal place.
+     *
+     * @param points points value
+     * @return localized-independent one-decimal string
+     */
     private String formatPoints(final double points) {
         return String.format(Locale.ROOT, "%.1f", points);
     }
 
+    /**
+     * Formats difficulty distribution as easy/medium/hard counts.
+     *
+     * @param difficulties map of difficulty to count
+     * @return compact distribution label
+     */
     private String formatDifficultyDistribution(final Map<Difficulty, Integer> difficulties) {
         return Difficulty.EASY.toXmlValue() + " " + difficulties.getOrDefault(Difficulty.EASY, 0)
             + "/" + Difficulty.MEDIUM.toXmlValue() + " " + difficulties.getOrDefault(Difficulty.MEDIUM, 0)
             + "/" + Difficulty.HARD.toXmlValue() + " " + difficulties.getOrDefault(Difficulty.HARD, 0);
     }
 
+    /**
+     * Formats scope distribution as exam/mock-exam counts.
+     *
+     * @param scopes map of scope to count
+     * @return compact distribution label
+     */
     private String formatScopeDistribution(final Map<Scope, Integer> scopes) {
         return Scope.EXAM.toXmlValue() + " " + scopes.getOrDefault(Scope.EXAM, 0)
             + "/" + Scope.MOCK_EXAM.toXmlValue() + " " + scopes.getOrDefault(Scope.MOCK_EXAM, 0);
@@ -700,6 +827,14 @@ public final class XmlTabContainer extends BorderPane {
         private final int taskIndex;
         private final String label;
 
+        /**
+         * Creates a navigation node for the tree hierarchy.
+         *
+         * @param type navigation depth type
+         * @param chapterIndex chapter index for chapter/task nodes
+         * @param taskIndex task index for task nodes
+         * @param label display label
+         */
         private NavigationNode(
             final NavigationType type,
             final int chapterIndex,
@@ -712,10 +847,23 @@ public final class XmlTabContainer extends BorderPane {
             this.label = label;
         }
 
+        /**
+         * Creates the root exam navigation node.
+         *
+         * @param label preferred display label
+         * @return exam node
+         */
         private static NavigationNode exam(final String label) {
             return new NavigationNode(NavigationType.EXAM, -1, -1, label == null || label.isBlank() ? "Exam" : label);
         }
 
+        /**
+         * Creates a chapter navigation node.
+         *
+         * @param chapterIndex chapter index represented by this node
+         * @param label preferred display label
+         * @return chapter node
+         */
         private static NavigationNode chapter(final int chapterIndex, final String label) {
             return new NavigationNode(
                 NavigationType.CHAPTER,
@@ -725,6 +873,14 @@ public final class XmlTabContainer extends BorderPane {
             );
         }
 
+        /**
+         * Creates a task navigation node.
+         *
+         * @param chapterIndex chapter index for the task
+         * @param taskIndex task index represented by this node
+         * @param label preferred display label
+         * @return task node
+         */
         private static NavigationNode task(final int chapterIndex, final int taskIndex, final String label) {
             return new NavigationNode(
                 NavigationType.TASK,
@@ -734,10 +890,21 @@ public final class XmlTabContainer extends BorderPane {
             );
         }
 
+        /**
+         * Returns the rendered label text for tree display.
+         *
+         * @return node label
+         */
         private String label() {
             return label;
         }
 
+        /**
+         * Compares nodes by semantic navigation identity.
+         *
+         * @param o object to compare
+         * @return {@code true} when type and indices match
+         */
         @Override
         public boolean equals(final Object o) {
             if (this == o) {
@@ -751,6 +918,11 @@ public final class XmlTabContainer extends BorderPane {
                 && taskIndex == that.taskIndex;
         }
 
+        /**
+         * Computes hash code based on node type and hierarchy indices.
+         *
+         * @return stable hash for collection lookups
+         */
         @Override
         public int hashCode() {
             return Objects.hash(type, chapterIndex, taskIndex);

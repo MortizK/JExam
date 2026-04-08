@@ -31,6 +31,9 @@ public final class GenerationControlsComponent extends VBox {
     private Consumer<String> seedHandler = value -> { };
     private boolean updatingControls;
 
+    /**
+     * Creates generation controls for mode selection and export actions.
+     */
     public GenerationControlsComponent() {
         setSpacing(8);
         setPadding(new Insets(8));
@@ -70,47 +73,95 @@ public final class GenerationControlsComponent extends VBox {
         );
     }
 
+    /**
+     * Returns the currently selected generation mode.
+     *
+     * @return selected generation mode
+     */
     public GenerationMode getSelectedMode() {
         return modeBox.getValue();
     }
 
+    /**
+     * Toggles visibility of the preview-stale indicator.
+     *
+     * @param value whether stale indicator should be shown
+     */
     public void setStaleIndicatorVisible(final boolean value) {
         staleLabel.setVisible(value);
         staleLabel.setManaged(value);
     }
 
+    /**
+     * Registers callback for generation-mode changes.
+     *
+     * @param handler callback receiving selected mode; {@code null} resets to no-op
+     */
     public void setOnModeChanged(final Consumer<GenerationMode> handler) {
         modeHandler = handler == null ? mode -> { } : handler;
     }
 
+    /**
+     * Retained API hook for fallback preference changes.
+     *
+     * @param handler ignored because fallback selector is not currently rendered
+     */
     public void setOnFallbackPreferenceChanged(
         final Consumer<ExamApplicationService.GoalPointFallbackPreference> handler
     ) {
         // Fallback selector was removed from UI by request.
     }
 
+    /**
+     * Registers callback for random-seed input changes.
+     *
+     * @param handler callback receiving raw seed text; {@code null} resets to no-op
+     */
     public void setOnSeedChanged(final Consumer<String> handler) {
         seedHandler = handler == null ? value -> { } : handler;
     }
 
+    /**
+     * Retained API hook for fallback preference state.
+     *
+     * @param preference ignored because fallback selector is not currently rendered
+     */
     public void setFallbackPreference(final ExamApplicationService.GoalPointFallbackPreference preference) {
         // Fallback selector was removed from UI by request.
     }
 
+    /**
+     * Updates seed field from application state without triggering input callbacks.
+     *
+     * @param seed seed value, or {@code null} to clear
+     */
     public void setRandomSeed(final Long seed) {
         updatingControls = true;
         seedField.setText(seed == null ? "" : Long.toString(seed));
         updatingControls = false;
     }
 
+    /**
+     * Registers callback for preview generation requests.
+     *
+     * @param handler preview action callback; {@code null} resets to no-op
+     */
     public void setOnPreviewRequested(final Runnable handler) {
         previewHandler = handler == null ? () -> { } : handler;
     }
 
+    /**
+     * Registers callback for export requests.
+     *
+     * @param handler export action callback; {@code null} resets to no-op
+     */
     public void setOnExportRequested(final Runnable handler) {
         exportHandler = handler == null ? () -> { } : handler;
     }
 
+    /**
+     * Requests keyboard focus for the primary control in this component.
+     */
     public void requestControlFocus() {
         modeBox.requestFocus();
     }
