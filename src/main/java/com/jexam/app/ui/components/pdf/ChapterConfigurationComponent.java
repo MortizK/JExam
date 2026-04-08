@@ -65,6 +65,10 @@ public final class ChapterConfigurationComponent extends VBox {
         }
     }
 
+    /**
+     * Creates the chapter configuration panel with included/excluded lists, reorder actions, and goal point fields.
+     * Initializes UI controls for managing included chapters, excluded chapters, and their goal points.
+     */
     public ChapterConfigurationComponent() {
         setSpacing(8);
         setPadding(new Insets(8));
@@ -109,6 +113,12 @@ public final class ChapterConfigurationComponent extends VBox {
         );
     }
 
+    /**
+     * Sets chapter data with default excluded chapters list.
+     * @param chapterNames names of all chapters
+     * @param includedOrder indices of chapters to include in order
+     * @param configuredGoals map of chapter index to goal points
+     */
     public void setChapterData(
         final List<String> chapterNames,
         final List<Integer> includedOrder,
@@ -117,6 +127,13 @@ public final class ChapterConfigurationComponent extends VBox {
         setChapterData(chapterNames, includedOrder, configuredGoals, List.of());
     }
 
+    /**
+     * Sets complete chapter data including chapters for point calculation.
+     * @param chapterNames names of all chapters
+     * @param includedOrder indices of chapters to include in order
+     * @param configuredGoals map of chapter index to goal points
+     * @param chapters the full chapter list for achievable points computation
+     */
     public void setChapterData(
         final List<String> chapterNames,
         final List<Integer> includedOrder,
@@ -180,34 +197,66 @@ public final class ChapterConfigurationComponent extends VBox {
         }
     }
 
+    /**
+     * Sets callback handler when user requests moving selected chapter up in included list.
+     * @param handler consumer accepting the chapter index to move up; null clears the handler
+     */
     public void setOnMoveUp(final Consumer<Integer> handler) {
         moveUpHandler = handler == null ? index -> { } : handler;
     }
 
+    /**
+     * Sets callback handler when user requests moving selected chapter down in included list.
+     * @param handler consumer accepting the chapter index to move down; null clears the handler
+     */
     public void setOnMoveDown(final Consumer<Integer> handler) {
         moveDownHandler = handler == null ? index -> { } : handler;
     }
 
+    /**
+     * Sets callback handler when user excludes a chapter from generation.
+     * @param handler consumer accepting the chapter index to exclude; null clears the handler
+     */
     public void setOnExclude(final Consumer<Integer> handler) {
         excludeHandler = handler == null ? index -> { } : handler;
     }
 
+    /**
+     * Sets callback handler when user includes an excluded chapter in generation.
+     * @param handler consumer accepting the chapter index to include; null clears the handler
+     */
     public void setOnInclude(final Consumer<Integer> handler) {
         includeHandler = handler == null ? chapterIndex -> { } : handler;
     }
 
+    /**
+     * Sets callback handler when user changes goal points for a chapter.
+     * @param handler bi-consumer accepting (chapter index, goal points); null clears the handler
+     */
     public void setOnGoalChanged(final BiConsumer<Integer, Double> handler) {
         goalChangedHandler = handler == null ? (chapterIndex, points) -> { } : handler;
     }
 
+    /**
+     * Sets callback handler when user requests reset of chapter selection to all chapters.
+     * @param handler runnable to execute on reset request; null clears the handler
+     */
     public void setOnReset(final Runnable handler) {
         resetHandler = handler == null ? () -> { } : handler;
     }
 
+    /**
+     * Sets callback handler when user reorders chapters in the included list via drag-drop.
+     * @param handler bi-consumer accepting (from index, to index); null clears the handler
+     */
     public void setOnReorder(final BiConsumer<Integer, Integer> handler) {
         reorderHandler = handler == null ? (fromIndex, toIndex) -> { } : handler;
     }
 
+    /**
+     * Configures the cell factory for the included chapters list with drag-drop reordering support.
+     * Each cell displays chapter name and goal point field with keyboard event handling.
+     */
     private void configureIncludedCellFactory() {
         includedList.setCellFactory(listView -> new ListCell<>() {
             {
@@ -265,6 +314,12 @@ public final class ChapterConfigurationComponent extends VBox {
         });
     }
 
+    /**
+     * Computes achievable point totals for a chapter based on its exam-scoped tasks.
+     * Uses dynamic programming to find all possible sums from exam task points.
+     * @param chapter the chapter to compute points for
+     * @return sorted list of achievable point values, or empty list if chapter is null
+     */
     private List<Double> computeAchievablePoints(final Chapter chapter) {
         if (chapter == null) {
             return List.of();
@@ -303,6 +358,10 @@ public final class ChapterConfigurationComponent extends VBox {
         private List<Double> availablePoints = List.of();
         private boolean updatingFromCode;
 
+        /**
+         * Initializes a goal point field for a specific chapter.
+         * @param chapterIndex the chapter index this field manages
+         */
         private GoalPointField(final int chapterIndex) {
             this.chapterIndex = chapterIndex;
             setEditable(true);
@@ -387,11 +446,20 @@ public final class ChapterConfigurationComponent extends VBox {
             });
         }
 
+        /**
+         * Sets the list of achievable point values for this chapter based on task points.
+         * @param points list of valid point values to display in dropdown
+         */
         private void setAvailablePoints(final List<Double> points) {
             availablePoints = points == null ? List.of() : List.copyOf(points);
             setItems(FXCollections.observableArrayList(availablePoints.stream().map(this::toOption).toList()));
         }
 
+        /**
+         * Sets the initial committed value for this field's chapter goal points.
+         * Updates editor display and fires goalChangedHandler callback.
+         * @param value the goal points value to commit
+         */
         private void setCommittedValue(final double value) {
             PointOption option = optionForValue(value);
             updatingFromCode = true;
@@ -403,12 +471,20 @@ public final class ChapterConfigurationComponent extends VBox {
             }
         }
 
+        /**
+         * Parses editor text input and commits the resolved value.
+         * Performs fuzzy matching to nearest achievable point and signals goalChangedHandler.
+         */
         private void commitCurrentValue() {
             String rawText = getEditor().getText();
             double resolvedValue = resolveValueFromInput(rawText);
             commitResolvedValue(resolvedValue);
         }
 
+        /**
+         * Commits a resolved point value, performing option matching and fuzzy nearest-value selection.
+         * @param resolvedValue the point value to commit
+         */
         private void commitResolvedValue(final double resolvedValue) {
             PointOption resolvedOption = optionForValue(resolvedValue);
             if (resolvedOption == null && availablePoints.isEmpty()) {
@@ -427,6 +503,10 @@ public final class ChapterConfigurationComponent extends VBox {
             goalChangedHandler.accept(chapterIndex, committedValue);
         }
 
+        /**
+         * Reverts editor text to the last committed value for this chapter.
+         * Used on Escape key to undo uncommitted edits.
+         */
         private void revertToCommittedValue() {
             PointOption option = optionForValue(chapterGoalPoints.getOrDefault(chapterIndex, 0d));
             updatingFromCode = true;
@@ -438,6 +518,14 @@ public final class ChapterConfigurationComponent extends VBox {
             }
         }
 
+        /**
+         * Resolves user input text to a goal point value using fallback precedence:
+         * 1. Exact match in available points
+         * 2. Fuzzy nearest-match to available points
+         * 3. Raw parsed input value
+         * @param rawText user-entered text from editor
+         * @return resolved point value
+         */
         private double resolveValueFromInput(final String rawText) {
             if (rawText == null || rawText.isBlank()) {
                 return chapterGoalPoints.getOrDefault(chapterIndex, 0d);
@@ -462,6 +550,11 @@ public final class ChapterConfigurationComponent extends VBox {
             return parsedValue;
         }
 
+        /**
+         * Finds achievable point value nearest to target, with tie-breaking by higher value preference.
+         * @param target desired point value
+         * @return nearest PointOption, or null if no achievable points available
+         */
         private PointOption nearestOption(final double target) {
             if (availablePoints.isEmpty()) {
                 return null;
@@ -479,6 +572,11 @@ public final class ChapterConfigurationComponent extends VBox {
             return nearest == null ? null : toOption(nearest);
         }
 
+        /**
+         * Finds a PointOption matching a target value via display string formatted comparison.
+         * @param value the point value to match
+         * @return matching PointOption, or null if value not in achievable points
+         */
         private PointOption optionForValue(final double value) {
             String formatted = formatPoints(value);
             for (Double availablePoint : availablePoints) {
@@ -489,10 +587,21 @@ public final class ChapterConfigurationComponent extends VBox {
             return null;
         }
 
+        /**
+         * Converts a point value to a PointOption with formatted display text.
+         * @param value the point value to convert
+         * @return new PointOption with formatted display
+         */
         private PointOption toOption(final double value) {
             return new PointOption(value, formatPoints(value));
         }
 
+        /**
+         * Parses user input string to optional double value.
+         * Handles locale-specific decimal separators (comma or period).
+         * @param rawText user-entered text
+         * @return OptionalDouble with parsed value, or empty on invalid input
+         */
         private OptionalDouble parseInput(final String rawText) {
             try {
                 if (rawText == null || rawText.isBlank()) {
@@ -505,14 +614,30 @@ public final class ChapterConfigurationComponent extends VBox {
         }
     }
 
+    /**
+     * Converts point values to integer units for internal computation (multiplied by POINT_SCALE).
+     * @param points point value to convert
+     * @return integer units (points * POINT_SCALE, rounded)
+     */
     private int toPointUnits(final double points) {
         return (int) Math.round(points * POINT_SCALE);
     }
 
+    /**
+     * Converts integer units (from POINT_SCALE) back to point values.
+     * Rounds result to match POINT_SCALE precision.
+     * @param units integer units value
+     * @return converted point value
+     */
     private double fromPointUnits(final int units) {
         return Math.round((units / (double) POINT_SCALE) * POINT_SCALE) / (double) POINT_SCALE;
     }
 
+    /**
+     * Formats a double point value to locale-independent string (one decimal place, Locale.ROOT).
+     * @param points point value to format
+     * @return formatted string representation
+     */
     private String formatPoints(final double points) {
         return String.format(Locale.ROOT, "%.1f", points);
     }

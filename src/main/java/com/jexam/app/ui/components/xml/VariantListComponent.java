@@ -28,6 +28,9 @@ public final class VariantListComponent extends VBox {
     private Runnable tabBackwardHandler = () -> { };
     private boolean updating;
 
+    /**
+     * Creates the variant list with add/delete actions and keyboard navigation.
+     */
     public VariantListComponent() {
         setSpacing(6);
         setPadding(new Insets(0, 0, 0, 0));
@@ -66,6 +69,11 @@ public final class VariantListComponent extends VBox {
         getChildren().addAll(new Label("Variants"), listView, new HBox(6, addButton));
     }
 
+    /**
+     * Updates list view items without triggering selection callbacks.
+     *
+     * @param values variant question labels
+     */
     public void setItems(final List<String> values) {
         updating = true;
         try {
@@ -75,6 +83,11 @@ public final class VariantListComponent extends VBox {
         }
     }
 
+    /**
+     * Sets the selected row index without triggering selection callbacks.
+     *
+     * @param index selected variant index
+     */
     public void setSelectedIndex(final int index) {
         updating = true;
         try {
@@ -88,27 +101,56 @@ public final class VariantListComponent extends VBox {
         }
     }
 
+    /**
+     * Registers a callback for row selection changes.
+     *
+     * @param handler callback receiving selected index; {@code null} resets to no-op
+     */
     public void setOnSelect(final Consumer<Integer> handler) {
         selectHandler = handler == null ? index -> { } : handler;
     }
 
+    /**
+     * Registers a callback for create action.
+     *
+     * @param handler callback for add action; {@code null} resets to no-op
+     */
     public void setOnCreate(final Runnable handler) {
         createHandler = handler == null ? () -> { } : handler;
     }
 
+    /**
+     * Registers a callback for delete action.
+     *
+     * @param handler callback receiving deleted index; {@code null} resets to no-op
+     */
     public void setOnDelete(final Consumer<Integer> handler) {
         deleteHandler = handler == null ? index -> { } : handler;
     }
 
+    /**
+     * Registers a callback for Enter key action.
+     *
+     * @param handler callback for enter; {@code null} resets to no-op
+     */
     public void setOnEnter(final Runnable handler) {
         enterHandler = handler == null ? () -> { } : handler;
     }
 
+    /**
+     * Registers callbacks for Tab navigation (forward and backward).
+     *
+     * @param onForward callback for forward navigation; {@code null} resets to no-op
+     * @param onBackward callback for backward navigation; {@code null} resets to no-op
+     */
     public void setOnTabNavigation(final Runnable onForward, final Runnable onBackward) {
         tabForwardHandler = onForward == null ? () -> { } : onForward;
         tabBackwardHandler = onBackward == null ? () -> { } : onBackward;
     }
 
+    /**
+     * Requests keyboard focus for the list.
+     */
     public void requestTableFocus() {
         listView.requestFocus();
     }

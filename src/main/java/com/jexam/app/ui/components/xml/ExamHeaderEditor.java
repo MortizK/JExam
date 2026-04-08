@@ -16,6 +16,9 @@ public final class ExamHeaderEditor extends HBox {
     private Consumer<Void> changeHandler = ignored -> { };
     private boolean updating;
 
+    /**
+     * Creates the inline exam name editor.
+     */
     public ExamHeaderEditor() {
         setSpacing(8);
         setPadding(new Insets(8, 0, 8, 0));
@@ -29,6 +32,11 @@ public final class ExamHeaderEditor extends HBox {
         });
     }
 
+    /**
+     * Updates the exam name field without triggering change callbacks.
+     *
+     * @param name exam name text
+     */
     public void setExamName(final String name) {
         updating = true;
         try {
@@ -38,14 +46,27 @@ public final class ExamHeaderEditor extends HBox {
         }
     }
 
+    /**
+     * Returns the current exam name text.
+     *
+     * @return exam name
+     */
     public String getExamName() {
         return nameField.getText();
     }
 
+    /**
+     * Clears the exam name field.
+     */
     public void clear() {
         setExamName("");
     }
 
+    /**
+     * Registers a callback for exam-name changes.
+     *
+     * @param handler callback for change events; {@code null} clears callback
+     */
     public void setOnChange(final Runnable handler) {
         changeHandler = ignored -> {
             if (handler != null) {
@@ -54,6 +75,9 @@ public final class ExamHeaderEditor extends HBox {
         };
     }
 
+    /**
+     * Requests keyboard focus for the name field.
+     */
     public void requestEditorFocus() {
         nameField.requestFocus();
     }

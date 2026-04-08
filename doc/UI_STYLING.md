@@ -1,6 +1,6 @@
 # UI Styling (Checkpoint 3)
 
-Status: Draft for review
+Status: Release-ready
 Scope: Design system, visual hierarchy, per-component styling specifications with figure references.
 Depends on approved structure in [doc/UI_STRUCTURE.md](doc/UI_STRUCTURE.md) and components in [doc/UI_COMPONENTS.md](doc/UI_COMPONENTS.md).
 

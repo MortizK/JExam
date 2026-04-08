@@ -1,6 +1,6 @@
 # UI Structure (Checkpoint 1)
 
-Status: Draft for review
+Status: Release-ready
 Scope: Structure only (XML tab + PDF tab), based on tex sources and current app constraints.
 
 ## 1. Sources and Traceability

@@ -16,6 +16,9 @@ public final class ChapterHeaderEditor extends HBox {
     private Consumer<Void> changeHandler = ignored -> { };
     private boolean updating;
 
+    /**
+     * Creates the inline chapter name editor.
+     */
     public ChapterHeaderEditor() {
         setSpacing(8);
         setPadding(new Insets(8, 0, 8, 0));
@@ -29,6 +32,11 @@ public final class ChapterHeaderEditor extends HBox {
         });
     }
 
+    /**
+     * Updates the chapter name field without triggering change callbacks.
+     *
+     * @param name chapter name text
+     */
     public void setChapterName(final String name) {
         updating = true;
         try {
@@ -38,14 +46,27 @@ public final class ChapterHeaderEditor extends HBox {
         }
     }
 
+    /**
+     * Returns the current chapter name text.
+     *
+     * @return chapter name
+     */
     public String getChapterName() {
         return nameField.getText();
     }
 
+    /**
+     * Clears the chapter name field.
+     */
     public void clear() {
         setChapterName("");
     }
 
+    /**
+     * Registers a callback for chapter-name changes.
+     *
+     * @param handler callback for change events; {@code null} clears callback
+     */
     public void setOnChange(final Runnable handler) {
         changeHandler = ignored -> {
             if (handler != null) {
@@ -54,6 +75,9 @@ public final class ChapterHeaderEditor extends HBox {
         };
     }
 
+    /**
+     * Requests keyboard focus for the name field.
+     */
     public void requestEditorFocus() {
         nameField.requestFocus();
     }

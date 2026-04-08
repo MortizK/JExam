@@ -24,6 +24,9 @@ public final class TaskHeaderEditor extends GridPane {
     private Consumer<Void> changeHandler = ignored -> { };
     private boolean updating;
 
+    /**
+     * Creates the inline task metadata editor with name, points, difficulty, and scope fields.
+     */
     public TaskHeaderEditor() {
         setHgap(8);
         setVgap(8);
@@ -68,38 +71,81 @@ public final class TaskHeaderEditor extends GridPane {
         });
     }
 
+    /**
+     * Updates the task name field without triggering change callbacks.
+     *
+     * @param value task name text
+     */
     public void setTaskName(final String value) {
         runWithoutUpdates(() -> nameField.setText(value));
     }
 
+    /**
+     * Updates the points field without triggering change callbacks.
+     *
+     * @param value points value
+     */
     public void setPoints(final double value) {
         runWithoutUpdates(() -> pointsField.setText(Double.toString(value)));
     }
 
+    /**
+     * Updates the difficulty selector without triggering change callbacks.
+     *
+     * @param value difficulty enumeration
+     */
     public void setDifficulty(final Difficulty value) {
         runWithoutUpdates(() -> difficultyBox.setValue(value));
     }
 
+    /**
+     * Updates the scope selector without triggering change callbacks.
+     *
+     * @param value scope enumeration
+     */
     public void setScope(final Scope value) {
         runWithoutUpdates(() -> scopeBox.setValue(value));
     }
 
+    /**
+     * Returns the current task name text.
+     *
+     * @return task name
+     */
     public String getTaskName() {
         return nameField.getText();
     }
 
+    /**
+     * Returns the current points field text.
+     *
+     * @return points text (may be invalid/empty)
+     */
     public String getPointsText() {
         return pointsField.getText();
     }
 
+    /**
+     * Returns the currently selected difficulty.
+     *
+     * @return difficulty value
+     */
     public Difficulty getDifficulty() {
         return difficultyBox.getValue();
     }
 
+    /**
+     * Returns the currently selected scope.
+     *
+     * @return scope value
+     */
     public Scope getScope() {
         return scopeBox.getValue();
     }
 
+    /**
+     * Clears all task metadata fields.
+     */
     public void clear() {
         runWithoutUpdates(() -> {
             nameField.clear();
@@ -109,6 +155,11 @@ public final class TaskHeaderEditor extends GridPane {
         });
     }
 
+    /**
+     * Registers a callback for task-metadata changes.
+     *
+     * @param handler callback for change events; {@code null} clears callback
+     */
     public void setOnChange(final Runnable handler) {
         changeHandler = ignored -> {
             if (handler != null) {
@@ -117,10 +168,18 @@ public final class TaskHeaderEditor extends GridPane {
         };
     }
 
+    /**
+     * Requests keyboard focus for the first input field.
+     */
     public void requestEditorFocus() {
         nameField.requestFocus();
     }
 
+    /**
+     * Executes an action with change-event notifications suppressed.
+     *
+     * @param action runnable to execute
+     */
     private void runWithoutUpdates(final Runnable action) {
         updating = true;
         try {

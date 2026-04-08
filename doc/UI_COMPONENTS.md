@@ -1,6 +1,6 @@
 # UI Components (Checkpoint 2)
 
-Status: Draft for review
+Status: Release-ready
 Scope: Detailed component specification for XML tab, PDF tab, and shared components.
 Depends on approved structure in [doc/UI_STRUCTURE.md](doc/UI_STRUCTURE.md).
 
