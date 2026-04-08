@@ -13,7 +13,7 @@ The current test suite is small but organized along the same boundaries as the m
 
 ## Current Surefire Snapshot
 
-- Tests: 44
+- Tests: 52
 - Failures: 0
 - Errors: 0
 - Skipped: 0
@@ -31,6 +31,8 @@ The current test suite is small but organized along the same boundaries as the m
 - Stub PDF generation failure contract (`UnsupportedOperationException`)
 - Model aggregate behavior (`Exam`, `Chapter`, `Task`, `Variant`)
 - Enum XML parsing behavior (`Difficulty`, `Scope`)
+- XML loader/writer edge cases and nested directory handling
+- Application service generation selection and preview fallback branches
 - One end-to-end workflow across XML and PDF generation
 
 ## Where The Coverage Is Thin
