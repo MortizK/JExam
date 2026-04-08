@@ -139,6 +139,65 @@
     -fx-background-color: -jexam-surface;
 }
 
+.generation-controls,
+.validation-summary,
+.chapter-configuration,
+.preview-region,
+.chapter-table,
+.task-table,
+.variant-list,
+.exam-header-editor,
+.chapter-header-editor,
+.task-header-editor,
+.variant-editor {
+    -fx-background-color: -jexam-surface;
+}
+
+.section-label,
+.section-title {
+    -fx-text-fill: -jexam-fg;
+    -fx-font-weight: 600;
+}
+
+.summary-text,
+.preview-state,
+.stale-indicator {
+    -fx-text-fill: -jexam-muted;
+}
+
+.stale-indicator {
+    -fx-text-fill: -jexam-warning;
+}
+
+.generation-mode-box,
+.seed-field,
+.editor-input,
+.editor-select,
+.editor-area,
+.chapter-items,
+.task-items,
+.variant-items,
+.included-chapter-list,
+.excluded-chapter-list,
+.validation-tree,
+.preview-scroll {
+    -fx-background-color: -jexam-surface;
+    -fx-text-fill: -jexam-fg;
+    -fx-border-color: -jexam-border;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.preview-pages {
+    -fx-padding: 8;
+    -fx-spacing: 12;
+}
+
+.preview-actions,
+.list-actions {
+    -fx-spacing: 6;
+}
+
 .tab-pane .tab-header-area .tab-header-background {
     -fx-background-color: -jexam-surface;
 }

@@ -43,8 +43,16 @@ public final class PreviewRegionComponent extends VBox {
      * Creates the PDF preview region with refresh/export controls and page rendering.
      */
     public PreviewRegionComponent() {
+        getStyleClass().add("preview-region");
         setSpacing(8);
         setPadding(new Insets(8));
+
+        stateLabel.getStyleClass().add("preview-state");
+        actionBar.getStyleClass().add("preview-actions");
+        refreshButton.getStyleClass().add("primary-action");
+        exportButton.getStyleClass().add("secondary-action");
+        previewScroll.getStyleClass().add("preview-scroll");
+        pageContainer.getStyleClass().add("preview-pages");
 
         pageContainer.setFillWidth(true);
         previewScroll.setFitToWidth(true);
@@ -171,6 +179,7 @@ public final class PreviewRegionComponent extends VBox {
                 previewImagePaths.add(imagePath);
 
                 ImageView pageImage = new ImageView(new Image(imagePath.toUri().toString()));
+                pageImage.getStyleClass().add("preview-page-image");
                 pageImage.setPreserveRatio(true);
                 pageImage.setSmooth(true);
                 pageImage.setFitWidth(650);

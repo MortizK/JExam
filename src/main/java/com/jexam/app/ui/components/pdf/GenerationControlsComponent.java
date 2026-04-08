@@ -16,6 +16,8 @@ import java.util.function.Consumer;
  * Top-left generation mode and actions section.
  */
 public final class GenerationControlsComponent extends VBox {
+    private final Label modeLabel = new Label("Generation Mode");
+    private final Label seedLabel = new Label("Random Seed");
     private final ComboBox<GenerationMode> modeBox = new ComboBox<>(FXCollections.observableArrayList(
         GenerationMode.EXAM,
         GenerationMode.MOCK_EXAM
@@ -35,8 +37,17 @@ public final class GenerationControlsComponent extends VBox {
      * Creates generation controls for mode selection and export actions.
      */
     public GenerationControlsComponent() {
+        getStyleClass().add("generation-controls");
         setSpacing(8);
         setPadding(new Insets(8));
+
+        modeLabel.getStyleClass().add("section-label");
+        seedLabel.getStyleClass().add("section-label");
+        modeBox.getStyleClass().add("generation-mode-box");
+        seedField.getStyleClass().add("seed-field");
+        previewButton.getStyleClass().add("primary-action");
+        exportButton.getStyleClass().add("secondary-action");
+        staleLabel.getStyleClass().add("stale-indicator");
 
         modeBox.setValue(GenerationMode.EXAM);
         modeBox.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -66,9 +77,12 @@ public final class GenerationControlsComponent extends VBox {
         staleLabel.setAccessibleText("Preview stale indicator");
 
         getChildren().addAll(
-            new Label("Generation Mode"),
+            modeLabel,
             modeBox,
+            seedLabel,
+            seedField,
             staleLabel,
+            previewButton,
             exportButton
         );
     }

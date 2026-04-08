@@ -70,6 +70,7 @@ public final class ChapterConfigurationComponent extends VBox {
      * Initializes UI controls for managing included chapters, excluded chapters, and their goal points.
      */
     public ChapterConfigurationComponent() {
+        getStyleClass().add("chapter-configuration");
         setSpacing(8);
         setPadding(new Insets(8));
 
@@ -78,6 +79,18 @@ public final class ChapterConfigurationComponent extends VBox {
         Button excludeButton = new Button("Exclude");
         Button includeButton = new Button("Include");
         Button resetButton = new Button("Reset");
+        Label includedLabel = new Label("Included Chapters");
+        Label excludedLabel = new Label("Excluded Chapters");
+
+        includedLabel.getStyleClass().add("section-label");
+        excludedLabel.getStyleClass().add("section-label");
+        includedList.getStyleClass().add("included-chapter-list");
+        excludedList.getStyleClass().add("excluded-chapter-list");
+        upButton.getStyleClass().add("secondary-action");
+        downButton.getStyleClass().add("secondary-action");
+        excludeButton.getStyleClass().add("secondary-action");
+        includeButton.getStyleClass().add("primary-action");
+        resetButton.getStyleClass().add("secondary-action");
 
         includedList.setAccessibleText("Included chapters list");
         excludedList.setAccessibleText("Excluded chapters list");
@@ -102,12 +115,14 @@ public final class ChapterConfigurationComponent extends VBox {
 
         HBox includedActions = new HBox(6, upButton, downButton, excludeButton);
         HBox excludedActions = new HBox(6, includeButton, resetButton);
+        includedActions.getStyleClass().add("list-actions");
+        excludedActions.getStyleClass().add("list-actions");
 
         getChildren().addAll(
-            new Label("Included Chapters"),
+            includedLabel,
             includedList,
             includedActions,
-            new Label("Excluded Chapters"),
+            excludedLabel,
             excludedList,
             excludedActions
         );

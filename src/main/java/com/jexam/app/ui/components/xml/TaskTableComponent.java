@@ -21,6 +21,7 @@ import java.util.function.Consumer;
  */
 public final class TaskTableComponent extends VBox {
     private final ListView<String> listView = new ListView<>();
+    private final Label titleLabel = new Label("Tasks");
     private Consumer<Integer> selectHandler = index -> { };
     private Runnable createHandler = () -> { };
     private Consumer<Integer> deleteHandler = index -> { };
@@ -33,10 +34,14 @@ public final class TaskTableComponent extends VBox {
      * Creates the task table with add/delete actions and keyboard navigation.
      */
     public TaskTableComponent() {
+        getStyleClass().add("task-table");
         setSpacing(6);
         setPadding(new Insets(0, 0, 0, 0));
 
         Button addButton = new Button("Add Task");
+        titleLabel.getStyleClass().add("section-label");
+        addButton.getStyleClass().add("primary-action");
+        listView.getStyleClass().add("task-items");
         addButton.setOnAction(event -> createHandler.run());
         listView.setCellFactory(list -> new TaskRowCell());
         listView.setOnKeyPressed(event -> {
@@ -67,7 +72,7 @@ public final class TaskTableComponent extends VBox {
                 selectHandler.accept(newValue.intValue());
             }
         });
-        getChildren().addAll(new Label("Tasks"), listView, new HBox(6, addButton));
+        getChildren().addAll(titleLabel, listView, new HBox(6, addButton));
     }
 
     /**

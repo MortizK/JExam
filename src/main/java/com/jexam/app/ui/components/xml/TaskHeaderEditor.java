@@ -28,18 +28,32 @@ public final class TaskHeaderEditor extends GridPane {
      * Creates the inline task metadata editor with name, points, difficulty, and scope fields.
      */
     public TaskHeaderEditor() {
+        getStyleClass().add("task-header-editor");
         setHgap(8);
         setVgap(8);
         setPadding(new Insets(8, 0, 8, 0));
 
-        add(new Label("Task"), 0, 0);
+        Label taskLabel = new Label("Task");
+        taskLabel.getStyleClass().add("section-label");
+        add(taskLabel, 0, 0);
         add(nameField, 1, 0);
-        add(new Label("Points"), 0, 1);
+        Label pointsLabel = new Label("Points");
+        pointsLabel.getStyleClass().add("section-label");
+        add(pointsLabel, 0, 1);
         add(pointsField, 1, 1);
-        add(new Label("Difficulty"), 2, 0);
+        Label difficultyLabel = new Label("Difficulty");
+        difficultyLabel.getStyleClass().add("section-label");
+        add(difficultyLabel, 2, 0);
         add(difficultyBox, 3, 0);
-        add(new Label("Scope"), 2, 1);
+        Label scopeLabel = new Label("Scope");
+        scopeLabel.getStyleClass().add("section-label");
+        add(scopeLabel, 2, 1);
         add(scopeBox, 3, 1);
+
+        nameField.getStyleClass().add("editor-input");
+        pointsField.getStyleClass().add("editor-input");
+        difficultyBox.getStyleClass().add("editor-select");
+        scopeBox.getStyleClass().add("editor-select");
 
         HBox.setHgrow(nameField, Priority.ALWAYS);
         HBox.setHgrow(pointsField, Priority.ALWAYS);

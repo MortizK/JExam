@@ -12,6 +12,7 @@ import java.util.function.Consumer;
  * Inline exam name editor.
  */
 public final class ExamHeaderEditor extends HBox {
+    private final Label titleLabel = new Label("Exam");
     private final TextField nameField = new TextField();
     private Consumer<Void> changeHandler = ignored -> { };
     private boolean updating;
@@ -20,9 +21,12 @@ public final class ExamHeaderEditor extends HBox {
      * Creates the inline exam name editor.
      */
     public ExamHeaderEditor() {
+        getStyleClass().add("exam-header-editor");
         setSpacing(8);
         setPadding(new Insets(8, 0, 8, 0));
-        getChildren().addAll(new Label("Exam"), nameField);
+        titleLabel.getStyleClass().add("section-label");
+        nameField.getStyleClass().add("editor-input");
+        getChildren().addAll(titleLabel, nameField);
         HBox.setHgrow(nameField, Priority.ALWAYS);
         nameField.setAccessibleText("Exam name field");
         nameField.textProperty().addListener((observable, oldValue, newValue) -> {

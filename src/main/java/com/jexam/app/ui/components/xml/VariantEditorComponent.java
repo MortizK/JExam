@@ -11,6 +11,8 @@ import java.util.function.Consumer;
  * Inline variant editor for question and answer text.
  */
 public final class VariantEditorComponent extends VBox {
+    private final Label questionLabel = new Label("Question");
+    private final Label answerLabel = new Label("Answer");
     private final TextArea questionArea = new TextArea();
     private final TextArea answerArea = new TextArea();
     private Consumer<Void> changeHandler = ignored -> { };
@@ -20,8 +22,13 @@ public final class VariantEditorComponent extends VBox {
      * Creates the inline variant editor with question and answer text areas.
      */
     public VariantEditorComponent() {
+        getStyleClass().add("variant-editor");
         setSpacing(8);
         setPadding(new Insets(8, 0, 8, 0));
+        questionLabel.getStyleClass().add("section-label");
+        answerLabel.getStyleClass().add("section-label");
+        questionArea.getStyleClass().add("editor-area");
+        answerArea.getStyleClass().add("editor-area");
         questionArea.setPrefRowCount(3);
         answerArea.setPrefRowCount(3);
         questionArea.setWrapText(true);
@@ -38,7 +45,7 @@ public final class VariantEditorComponent extends VBox {
                 changeHandler.accept(null);
             }
         });
-        getChildren().addAll(new Label("Question"), questionArea, new Label("Answer"), answerArea);
+        getChildren().addAll(questionLabel, questionArea, answerLabel, answerArea);
     }
 
     /**

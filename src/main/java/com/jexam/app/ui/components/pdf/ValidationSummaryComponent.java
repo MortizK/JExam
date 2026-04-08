@@ -28,8 +28,13 @@ public final class ValidationSummaryComponent extends VBox {
      * Creates the validation summary panel with grouped issue tree.
      */
     public ValidationSummaryComponent() {
+        getStyleClass().add("validation-summary");
         setSpacing(8);
         setPadding(new Insets(8));
+
+        title.getStyleClass().add("section-title");
+        summary.getStyleClass().add("summary-text");
+        issueTree.getStyleClass().add("validation-tree");
         issueTree.setShowRoot(false);
         issueTree.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {

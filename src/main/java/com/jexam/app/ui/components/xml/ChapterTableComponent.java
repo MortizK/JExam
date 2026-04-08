@@ -21,6 +21,7 @@ import java.util.function.Consumer;
  */
 public final class ChapterTableComponent extends VBox {
     private final ListView<String> listView = new ListView<>();
+    private final Label titleLabel = new Label("Chapters");
     private Consumer<Integer> selectHandler = index -> { };
     private Runnable createHandler = () -> { };
     private Consumer<Integer> deleteHandler = index -> { };
@@ -33,10 +34,14 @@ public final class ChapterTableComponent extends VBox {
      * Creates the chapter table with add/delete actions and keyboard navigation.
      */
     public ChapterTableComponent() {
+        getStyleClass().add("chapter-table");
         setSpacing(6);
         setPadding(new Insets(0, 0, 0, 0));
 
         Button addButton = new Button("Add Chapter");
+        titleLabel.getStyleClass().add("section-label");
+        addButton.getStyleClass().add("primary-action");
+        listView.getStyleClass().add("chapter-items");
         addButton.setOnAction(event -> createHandler.run());
         listView.setCellFactory(list -> new ChapterRowCell());
         listView.setOnKeyPressed(event -> {
@@ -67,7 +72,7 @@ public final class ChapterTableComponent extends VBox {
                 selectHandler.accept(newValue.intValue());
             }
         });
-        getChildren().addAll(new Label("Chapters"), listView, new HBox(6, addButton));
+        getChildren().addAll(titleLabel, listView, new HBox(6, addButton));
     }
 
     /**

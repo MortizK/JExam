@@ -743,3 +743,16 @@ Extended style-class wiring to additional XML tab surfaces:
 Result:
 - a larger portion of the XML workflow now renders through centralized CSS tokens instead of implicit control defaults
 - remaining styling work can proceed component-by-component without further scene/bootstrap changes
+
+### 9.7 Expanded Component Hook Coverage
+
+Implemented style-class wiring across remaining high-use XML and PDF components:
+- PDF generation controls, validation summary, chapter configuration, and preview region
+- XML header editors, task metadata editor, chapter/task/variant list blocks, and variant text editor
+
+Functional correction included in the same increment:
+- generation controls now render both random-seed input and preview action in the visible panel layout
+
+Styling effect:
+- component structure now consistently exposes semantic hooks (`section-label`, `editor-input`, `primary-action`, `secondary-action`, etc.)
+- CSS can be evolved without revisiting component layout code for common visual refinements

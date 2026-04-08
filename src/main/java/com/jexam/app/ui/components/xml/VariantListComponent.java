@@ -20,6 +20,7 @@ import java.util.function.Consumer;
  */
 public final class VariantListComponent extends VBox {
     private final ListView<String> listView = new ListView<>();
+    private final Label titleLabel = new Label("Variants");
     private Consumer<Integer> selectHandler = index -> { };
     private Runnable createHandler = () -> { };
     private Consumer<Integer> deleteHandler = index -> { };
@@ -32,10 +33,14 @@ public final class VariantListComponent extends VBox {
      * Creates the variant list with add/delete actions and keyboard navigation.
      */
     public VariantListComponent() {
+        getStyleClass().add("variant-list");
         setSpacing(6);
         setPadding(new Insets(0, 0, 0, 0));
 
         Button addButton = new Button("Add Variant");
+        titleLabel.getStyleClass().add("section-label");
+        addButton.getStyleClass().add("primary-action");
+        listView.getStyleClass().add("variant-items");
         addButton.setOnAction(event -> createHandler.run());
         listView.setCellFactory(list -> new VariantRowCell());
         listView.setOnKeyPressed(event -> {
@@ -66,7 +71,7 @@ public final class VariantListComponent extends VBox {
                 selectHandler.accept(newValue.intValue());
             }
         });
-        getChildren().addAll(new Label("Variants"), listView, new HBox(6, addButton));
+        getChildren().addAll(titleLabel, listView, new HBox(6, addButton));
     }
 
     /**
@@ -163,6 +168,8 @@ public final class VariantListComponent extends VBox {
         private VariantRowCell() {
             setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             textLabel.setWrapText(true);
+            textLabel.getStyleClass().add("variant-item-text");
+            deleteButton.getStyleClass().add("secondary-action");
             textLabel.maxWidthProperty().bind(listView.widthProperty().subtract(80));
             HBox.setHgrow(textLabel, Priority.ALWAYS);
             deleteButton.setFocusTraversable(false);

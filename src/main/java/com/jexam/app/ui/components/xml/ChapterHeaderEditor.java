@@ -12,6 +12,7 @@ import java.util.function.Consumer;
  * Inline chapter name editor.
  */
 public final class ChapterHeaderEditor extends HBox {
+    private final Label titleLabel = new Label("Chapter");
     private final TextField nameField = new TextField();
     private Consumer<Void> changeHandler = ignored -> { };
     private boolean updating;
@@ -20,9 +21,12 @@ public final class ChapterHeaderEditor extends HBox {
      * Creates the inline chapter name editor.
      */
     public ChapterHeaderEditor() {
+        getStyleClass().add("chapter-header-editor");
         setSpacing(8);
         setPadding(new Insets(8, 0, 8, 0));
-        getChildren().addAll(new Label("Chapter"), nameField);
+        titleLabel.getStyleClass().add("section-label");
+        nameField.getStyleClass().add("editor-input");
+        getChildren().addAll(titleLabel, nameField);
         HBox.setHgrow(nameField, Priority.ALWAYS);
         nameField.setAccessibleText("Chapter name field");
         nameField.textProperty().addListener((observable, oldValue, newValue) -> {
