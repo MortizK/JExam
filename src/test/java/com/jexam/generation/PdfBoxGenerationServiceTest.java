@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PdfBoxGenerationServiceTest {
@@ -86,6 +87,65 @@ class PdfBoxGenerationServiceTest {
         );
 
         assertTrue(longBox > shortBox);
+    }
+
+    @Test
+    void shouldRejectNullExam() {
+        PdfGenerationService service = new PdfBoxGenerationService();
+
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> service.generate(null, GenerationMode.EXAM, tempDir.resolve("null.pdf"))
+        );
+
+        assertEquals("Exam must not be null.", exception.getMessage());
+    }
+
+    @Test
+    void shouldGenerateCoverOnlyPdfForEmptyExam() throws Exception {
+        PdfGenerationService service = new PdfBoxGenerationService();
+        Path out = tempDir.resolve("empty.pdf");
+
+        service.generate(new Exam("Empty", List.of()), GenerationMode.EXAM, out);
+
+        try (PDDocument document = Loader.loadPDF(out.toFile())) {
+            assertEquals(1, document.getNumberOfPages());
+        }
+
+        String text = readPdfText(out);
+        assertTrue(text.contains("Exam: Empty"));
+        assertTrue(!text.contains("Chapter:"));
+    }
+
+    @Test
+    void shouldWrapLongUnbrokenWordsInSolutionPdf() throws Exception {
+        PdfGenerationService service = new PdfBoxGenerationService();
+        Path out = tempDir.resolve("long-word.pdf");
+        String longToken = "SupercalifragilisticexpialidociousSupercalifragilisticexpialidocious";
+
+        Exam exam = new Exam(
+            "Long Text",
+            List.of(
+                new Chapter(
+                    "Long Chapter",
+                    List.of(
+                        new Task(
+                            "Long Task",
+                            2.0,
+                            Difficulty.MEDIUM,
+                            Scope.EXAM,
+                            List.of(new Variant(longToken, longToken))
+                        )
+                    )
+                )
+            )
+        );
+
+        service.generate(exam, GenerationMode.SOLUTION, out);
+
+        assertTrue(Files.exists(out));
+        assertTrue(Files.size(out) > 0);
+        assertTrue(readPdfText(out).contains("Long Task"));
     }
 
     private String readPdfText(Path path) throws Exception {

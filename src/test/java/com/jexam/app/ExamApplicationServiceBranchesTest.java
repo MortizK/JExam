@@ -102,4 +102,25 @@ class ExamApplicationServiceBranchesTest {
         service.removeChapter(1);
         assertEquals(1, service.generationChapterOrder().size());
     }
+
+    @Test
+    void resetGenerationGoalsShouldUseAllTaskPointsWhenChapterHasNoExamScopeTasks() {
+        ExamApplicationService service = new ExamApplicationService();
+
+        service.addChapter("Mock only");
+        service.updateTaskDetails(1, 0, "Mock task", 2.5, Difficulty.EASY, Scope.MOCK_EXAM);
+        service.resetGenerationChapterSelection();
+
+        assertEquals(2.5, service.generationChapterGoalPoints().get(1));
+    }
+
+    @Test
+    void mockModeGenerationShouldNotCollectDifficultyWarnings() {
+        ExamApplicationService service = new ExamApplicationService();
+
+        service.updateTaskDetails(0, 0, "Mock task", 1.0, Difficulty.EASY, Scope.MOCK_EXAM);
+        service.generatePdf(GenerationMode.MOCK_EXAM, tempDir.resolve("mock.pdf"));
+
+        assertTrue(service.getLastGenerationWarnings().isEmpty());
+    }
 }

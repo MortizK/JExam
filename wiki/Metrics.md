@@ -6,11 +6,11 @@ This page records the current build metrics from the latest generated reports in
 
 | Metric | Value |
 | --- | --- |
-| Instructions covered | 3,821 of 14,755 |
+| Instructions covered | 3,850 of 14,755 |
 | Instruction coverage | 26% |
-| Branches covered | 311 of 1,156 |
+| Branches covered | 317 of 1,156 |
 | Branch coverage | 27% |
-| Lines covered | 848 of 3,314 |
+| Lines covered | 854 of 3,314 |
 | Line coverage | 26% |
 | Methods covered | 196 of 712 |
 | Method coverage | 28% |
@@ -27,8 +27,8 @@ This page records the current build metrics from the latest generated reports in
 | `com.jexam.model` | 97% | 63% |
 | `com.jexam.io` | 99% | 93% |
 | `com.jexam.validation` | 95% | 91% |
-| `com.jexam.generation` | 84% | 58% |
-| `com.jexam.app` | 23% | 32% |
+| `com.jexam.generation` | 85% | 60% |
+| `com.jexam.app` | 24% | 33% |
 
 ### Weakest Areas
 
@@ -45,7 +45,7 @@ This page records the current build metrics from the latest generated reports in
 
 | Metric | Value |
 | --- | --- |
-| Tests | 55 |
+| Tests | 60 |
 | Errors | 0 |
 | Failures | 0 |
 | Skipped | 0 |
