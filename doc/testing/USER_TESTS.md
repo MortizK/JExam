@@ -1,5 +1,37 @@
 # User Tests
 
+## Implementation Status (2026-04-13)
+
+Legend: [x] done, [~] partial, [ ] open
+
+### Overall
+
+- [x] New button now gives feedback (status message after creating a new exam).
+- [~] Enter/new-line behavior in text fields: no multiline editor-specific refinement was implemented yet.
+- [x] Points input and validation hardened to 0.5 increments; invalid text/values are rejected.
+- [x] Unsaved edits are no longer silently lost when opening/creating another exam; guarded auto-save is used.
+- [~] Back navigation: Esc now navigates one level up in XML tab; mouse back behavior is still open.
+
+### XML Tab
+
+- [x] TreeView and breadcrumbs now update while editing exam/chapter/task/variant labels.
+- [x] Create buttons visibility on all screen sizes fixed: right side uses full height and child lists scroll internally while add buttons stay visible.
+- [x] Long tree names are shortened using max-length + nearest-whitespace truncation.
+- [x] After delete child action, selection now navigates to parent level.
+- [x] Deleting last variant now shows only the constraint warning (no second confirmation popup).
+
+### PDF Tab
+
+- [x] Excluded-chapter selection/include behavior fixed (deterministic selection by chapter identity).
+- [x] Chapter reorder now keeps the moved chapter selected.
+- [x] Variant selection is random per task during generation (with optional deterministic seed support).
+- [x] Technical popup was removed; generation feedback is shown in-tab via status text.
+- [x] Generation now indicates produced files in status text, including paired outputs.
+- [x] Default chapter goal points now prefer difficulty-balanced subsets (near one-third easy/medium/hard).
+- [x] Busy feedback improved: wait cursor and temporary control disable during preview/export generation.
+- [~] PDF structure metadata improved: document metadata added and bookmarks for chapters + tasks are now present in PDF viewers.
+- [ ] Final exam PDF visual polish still open: task non-splitting per page, refined title page layout (date + matrikelnummer + points breakdown typography).
+
 ## User 1
 
 Pesistent Data was reset beforhand

@@ -38,9 +38,15 @@ public final class VariantListComponent extends VBox {
         setPadding(new Insets(0, 0, 0, 0));
 
         Button addButton = new Button("Add Variant");
+        HBox actions = new HBox(6, addButton);
         titleLabel.getStyleClass().add("section-label");
         addButton.getStyleClass().add("primary-action");
         listView.getStyleClass().add("variant-items");
+        setFillWidth(true);
+        setMinHeight(0);
+        listView.setMinHeight(0);
+        listView.setMaxHeight(Double.MAX_VALUE);
+        VBox.setVgrow(listView, Priority.ALWAYS);
         addButton.setOnAction(event -> createHandler.run());
         listView.setCellFactory(list -> new VariantRowCell());
         listView.setOnKeyPressed(event -> {
@@ -71,7 +77,7 @@ public final class VariantListComponent extends VBox {
                 selectHandler.accept(newValue.intValue());
             }
         });
-        getChildren().addAll(titleLabel, listView, new HBox(6, addButton));
+        getChildren().addAll(titleLabel, listView, actions);
     }
 
     /**

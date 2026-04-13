@@ -20,7 +20,6 @@ import com.jexam.model.enums.Difficulty;
 import com.jexam.model.enums.Scope;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.BorderPane;
@@ -74,8 +73,7 @@ public final class XmlTabContainer extends BorderPane {
         taskTable,
         variantList
     );
-    private final ScrollPane rightScrollPane = new ScrollPane(rightColumn);
-    private final SplitPane contentSplit = new SplitPane(leftColumn, rightScrollPane);
+    private final SplitPane contentSplit = new SplitPane(leftColumn, rightColumn);
     private final StackPane centerStack = new StackPane();
 
     private Consumer<Boolean> dirtyStateChangedHandler = value -> { };
@@ -122,12 +120,14 @@ public final class XmlTabContainer extends BorderPane {
         });
         VBox.setVgrow(navigationTree, Priority.ALWAYS);
         VBox.setVgrow(leftColumn, Priority.ALWAYS);
+        VBox.setVgrow(chapterTable, Priority.ALWAYS);
+        VBox.setVgrow(taskTable, Priority.ALWAYS);
+        VBox.setVgrow(variantList, Priority.ALWAYS);
+        rightColumn.setFillWidth(true);
         rightColumn.setPadding(new Insets(4, 6, 4, 6));
-        rightScrollPane.setFitToWidth(true);
-        rightScrollPane.setPannable(true);
-        rightScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         leftColumn.setPrefWidth(320);
         rightColumn.setPrefWidth(760);
+        rightColumn.setMinHeight(0);
         contentSplit.setDividerPositions(0.28);
         centerStack.getChildren().addAll(contentSplit, loadingState);
 

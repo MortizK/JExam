@@ -8,6 +8,8 @@ import com.jexam.model.enums.Difficulty;
 import com.jexam.model.enums.Scope;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -17,6 +19,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -146,6 +149,53 @@ class PdfBoxGenerationServiceTest {
         assertTrue(Files.exists(out));
         assertTrue(Files.size(out) > 0);
         assertTrue(readPdfText(out).contains("Long Task"));
+    }
+
+    @Test
+    void shouldWritePdfMetadata() throws Exception {
+        PdfGenerationService service = new PdfBoxGenerationService();
+        Path out = tempDir.resolve("metadata.pdf");
+
+        service.generate(twoChapterExam(), GenerationMode.EXAM, out);
+
+        try (PDDocument document = Loader.loadPDF(out.toFile())) {
+            assertEquals("Two Chapters", document.getDocumentInformation().getTitle());
+            assertEquals("Exam PDF - EXAM", document.getDocumentInformation().getSubject());
+            assertEquals("JExam", document.getDocumentInformation().getCreator());
+        }
+    }
+
+    @Test
+    void shouldCreateOutlineWithChaptersAndTasks() throws Exception {
+        PdfGenerationService service = new PdfBoxGenerationService();
+        Path out = tempDir.resolve("outline.pdf");
+
+        service.generate(twoChapterExam(), GenerationMode.EXAM, out);
+
+        try (PDDocument document = Loader.loadPDF(out.toFile())) {
+            PDDocumentOutline outline = document.getDocumentCatalog().getDocumentOutline();
+            assertNotNull(outline);
+
+            PDOutlineItem coverItem = outline.getFirstChild();
+            assertNotNull(coverItem);
+            assertEquals("Cover", coverItem.getTitle());
+
+            PDOutlineItem firstChapter = coverItem.getNextSibling();
+            assertNotNull(firstChapter);
+            assertEquals("Chapter 1: First Chapter", firstChapter.getTitle());
+
+            PDOutlineItem firstTask = firstChapter.getFirstChild();
+            assertNotNull(firstTask);
+            assertEquals("Task 1: First Task", firstTask.getTitle());
+
+            PDOutlineItem secondChapter = firstChapter.getNextSibling();
+            assertNotNull(secondChapter);
+            assertEquals("Chapter 2: Second Chapter", secondChapter.getTitle());
+
+            PDOutlineItem secondTask = secondChapter.getFirstChild();
+            assertNotNull(secondTask);
+            assertEquals("Task 1: Second Task", secondTask.getTitle());
+        }
     }
 
     private String readPdfText(Path path) throws Exception {

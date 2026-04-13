@@ -7,11 +7,15 @@ import com.jexam.model.Variant;
 import com.jexam.model.enums.Difficulty;
 import com.jexam.model.enums.Scope;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageXYZDestination;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
 import java.io.IOException;
@@ -70,19 +74,67 @@ public class PdfBoxGenerationService implements PdfGenerationService {
             }
 
             try (PDDocument document = new PDDocument()) {
+                List<ChapterBookmark> chapterBookmarks;
                 try (RenderContext context = new RenderContext(document, mode)) {
                     writeCoverPage(context, exam);
                     if (exam.chapterCount() > 0) {
                         context.startNewPage();
                     }
-                    writeChapters(context, exam);
+                    chapterBookmarks = writeChapters(context, exam);
                 }
+
+                applyMetadata(document, exam, mode);
+                applyOutline(document, chapterBookmarks);
 
                 document.save(outputPath.toFile());
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed to generate PDF.", e);
         }
+    }
+
+    private void applyMetadata(final PDDocument document, final Exam exam, final GenerationMode mode) {
+        PDDocumentInformation information = new PDDocumentInformation();
+        information.setTitle(oneLine(exam.getName()));
+        information.setSubject("Exam PDF - " + mode.name());
+        information.setCreator("JExam");
+        document.setDocumentInformation(information);
+    }
+
+    private void applyOutline(final PDDocument document, final List<ChapterBookmark> chapterBookmarks) {
+        PDDocumentOutline outline = new PDDocumentOutline();
+
+        if (document.getNumberOfPages() > 0) {
+            PDOutlineItem coverItem = new PDOutlineItem();
+            coverItem.setTitle("Cover");
+            coverItem.setDestination(destinationForPage(document.getPage(0)));
+            outline.addLast(coverItem);
+        }
+
+        for (ChapterBookmark chapterBookmark : chapterBookmarks) {
+            PDOutlineItem chapterItem = new PDOutlineItem();
+            chapterItem.setTitle(chapterBookmark.title());
+            chapterItem.setDestination(destinationForPage(chapterBookmark.page()));
+
+            for (TaskBookmark taskBookmark : chapterBookmark.taskBookmarks()) {
+                PDOutlineItem taskItem = new PDOutlineItem();
+                taskItem.setTitle(taskBookmark.title());
+                taskItem.setDestination(destinationForPage(taskBookmark.page()));
+                chapterItem.addLast(taskItem);
+            }
+
+            outline.addLast(chapterItem);
+        }
+
+        outline.openNode();
+        document.getDocumentCatalog().setDocumentOutline(outline);
+    }
+
+    private PDPageXYZDestination destinationForPage(final PDPage page) {
+        PDPageXYZDestination destination = new PDPageXYZDestination();
+        destination.setPage(page);
+        destination.setTop(Math.round(page.getMediaBox().getHeight()));
+        return destination;
     }
 
     private void writeCoverPage(final RenderContext context, final Exam exam)
@@ -114,19 +166,22 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         }
     }
 
-    private void writeChapters(final RenderContext context, final Exam exam)
+    private List<ChapterBookmark> writeChapters(final RenderContext context, final Exam exam)
         throws IOException {
+        List<ChapterBookmark> chapterBookmarks = new ArrayList<>();
         for (int chapterIndex = 0; chapterIndex < exam.chapterCount(); chapterIndex++) {
             if (chapterIndex > 0) {
                 context.startNewPage();
             }
             Chapter chapter = exam.chapterAt(chapterIndex);
-            writeChapter(context, chapterIndex, chapter);
+            chapterBookmarks.add(writeChapter(context, chapterIndex, chapter));
         }
+        return chapterBookmarks;
     }
 
-    private void writeChapter(final RenderContext context, final int chapterIndex, final Chapter chapter)
+    private ChapterBookmark writeChapter(final RenderContext context, final int chapterIndex, final Chapter chapter)
         throws IOException {
+        PDPage chapterPage = context.currentPage;
         context.y = writeSectionTitle(
             context,
             "Chapter: " + oneLine(chapter.getName())
@@ -137,12 +192,14 @@ public class PdfBoxGenerationService implements PdfGenerationService {
             "Tasks: " + includedTasks(chapter, context.mode).size() + " | Points: " + formatPoints(totalPoints(chapter, context.mode))
         );
         context.y -= SECTION_GAP;
-        writeTasks(context, chapter);
+        List<TaskBookmark> taskBookmarks = writeTasks(context, chapter);
+        return new ChapterBookmark("Chapter " + (chapterIndex + 1) + ": " + oneLine(chapter.getName()), chapterPage, taskBookmarks);
     }
 
-    private void writeTasks(final RenderContext context, final Chapter chapter)
+    private List<TaskBookmark> writeTasks(final RenderContext context, final Chapter chapter)
         throws IOException {
         int displayTaskIndex = 0;
+        List<TaskBookmark> taskBookmarks = new ArrayList<>();
         for (int taskIndex = 0; taskIndex < chapter.taskCount(); taskIndex++) {
             Task task = chapter.taskAt(taskIndex);
             if (!shouldIncludeTask(task, context.mode)) {
@@ -152,6 +209,7 @@ public class PdfBoxGenerationService implements PdfGenerationService {
             displayTaskIndex++;
 
             context.y = ensureSpace(context, LINE_HEIGHT * 2.5f);
+            PDPage taskStartPage = context.currentPage;
             context.y = writeLine(
                 context,
                 context.y,
@@ -165,9 +223,11 @@ public class PdfBoxGenerationService implements PdfGenerationService {
                     + task.getDifficulty().toXmlValue()
                     + ")"
             );
+            taskBookmarks.add(new TaskBookmark("Task " + displayTaskIndex + ": " + oneLine(task.getName()), taskStartPage));
             writeVariants(context, task);
             context.y -= SECTION_GAP;
         }
+        return taskBookmarks;
     }
 
     private void writeVariants(final RenderContext context, final Task task)
@@ -454,6 +514,11 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         private int pageNumber;
 
         /**
+         * Current page reference.
+         */
+        private PDPage currentPage;
+
+        /**
          * Current y cursor position.
          */
         private float y;
@@ -473,6 +538,7 @@ public class PdfBoxGenerationService implements PdfGenerationService {
             pageNumber++;
             PDPage page = new PDPage(PDRectangle.A4);
             document.addPage(page);
+            currentPage = page;
             content = new PDPageContentStream(document, page);
             drawFooter(this);
             content.setFont(BODY_FONT, BODY_FONT_SIZE);
@@ -524,5 +590,11 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return "tasks=" + includedTaskCount
             + ", points=" + formatPoints(points)
             + ", difficulty=" + easy + "/" + medium + "/" + hard;
+    }
+
+    private record ChapterBookmark(String title, PDPage page, List<TaskBookmark> taskBookmarks) {
+    }
+
+    private record TaskBookmark(String title, PDPage page) {
     }
 }
