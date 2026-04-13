@@ -39,7 +39,7 @@ public final class ChapterConfigurationComponent extends VBox {
     private static final int POINT_SCALE = 2;
 
     private final ListView<ChapterRow> includedList = new ListView<>();
-    private final ListView<String> excludedList = new ListView<>();
+    private final ListView<ChapterRow> excludedList = new ListView<>();
     private final List<Integer> includedChapterIndices = new ArrayList<>();
     private final List<Integer> excludedChapterIndices = new ArrayList<>();
     private final Map<Integer, Double> chapterGoalPoints = new HashMap<>();
@@ -104,14 +104,21 @@ public final class ChapterConfigurationComponent extends VBox {
         downButton.setOnAction(event -> moveDownHandler.accept(includedList.getSelectionModel().getSelectedIndex()));
         excludeButton.setOnAction(event -> excludeHandler.accept(includedList.getSelectionModel().getSelectedIndex()));
         includeButton.setOnAction(event -> {
-            int excludedRowIndex = excludedList.getSelectionModel().getSelectedIndex();
-            if (excludedRowIndex >= 0 && excludedRowIndex < excludedChapterIndices.size()) {
-                includeHandler.accept(excludedChapterIndices.get(excludedRowIndex));
+            ChapterRow selected = excludedList.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                includeHandler.accept(selected.chapterIndex());
             }
         });
         resetButton.setOnAction(event -> resetHandler.run());
 
         configureIncludedCellFactory();
+        excludedList.setCellFactory(listView -> new ListCell<>() {
+            @Override
+            protected void updateItem(final ChapterRow item, final boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.chapterName());
+            }
+        });
 
         HBox includedActions = new HBox(6, upButton, downButton, excludeButton);
         HBox excludedActions = new HBox(6, includeButton, resetButton);
@@ -173,7 +180,10 @@ public final class ChapterConfigurationComponent extends VBox {
             achievablePointsByChapter.put(chapterIndex, computeAchievablePoints(chapterByIndex.get(chapterIndex)));
         }
 
-        int previousSelection = includedList.getSelectionModel().getSelectedIndex();
+        ChapterRow previousIncludedSelection = includedList.getSelectionModel().getSelectedItem();
+        ChapterRow previousExcludedSelection = excludedList.getSelectionModel().getSelectedItem();
+        int previousIncludedIndex = includedList.getSelectionModel().getSelectedIndex();
+        int previousExcludedIndex = excludedList.getSelectionModel().getSelectedIndex();
         includedChapterIndices.clear();
         includedChapterIndices.addAll(includedOrder);
 
@@ -194,22 +204,94 @@ public final class ChapterConfigurationComponent extends VBox {
             }
         }
 
-        List<String> excludedLabels = new ArrayList<>();
+        List<ChapterRow> excludedRows = new ArrayList<>();
         for (int chapterIndex : excludedChapterIndices) {
             if (chapterIndex >= 0 && chapterIndex < chapterNames.size()) {
-                excludedLabels.add(chapterNames.get(chapterIndex));
+                excludedRows.add(new ChapterRow(chapterIndex, chapterNames.get(chapterIndex)));
             }
         }
 
         includedList.setItems(FXCollections.observableArrayList(includedRows));
-        excludedList.setItems(FXCollections.observableArrayList(excludedLabels));
+        excludedList.setItems(FXCollections.observableArrayList(excludedRows));
 
         if (!includedRows.isEmpty()) {
-            int targetSelection = Math.max(0, Math.min(previousSelection, includedRows.size() - 1));
+            int targetSelection = previousIncludedSelection == null
+                ? Math.max(0, Math.min(previousIncludedIndex, includedRows.size() - 1))
+                : indexOfChapter(includedRows, previousIncludedSelection.chapterIndex());
+            if (targetSelection < 0) {
+                targetSelection = Math.max(0, Math.min(previousIncludedIndex, includedRows.size() - 1));
+            }
             includedList.getSelectionModel().select(targetSelection);
         } else {
             includedList.getSelectionModel().clearSelection();
         }
+
+        if (!excludedRows.isEmpty()) {
+            int targetSelection = previousExcludedSelection == null
+                ? Math.max(0, Math.min(previousExcludedIndex, excludedRows.size() - 1))
+                : indexOfChapter(excludedRows, previousExcludedSelection.chapterIndex());
+            if (targetSelection < 0) {
+                targetSelection = Math.max(0, Math.min(previousExcludedIndex, excludedRows.size() - 1));
+            }
+            excludedList.getSelectionModel().select(targetSelection);
+        } else {
+            excludedList.getSelectionModel().clearSelection();
+        }
+    }
+
+    /**
+     * Returns currently selected included chapter index, or -1 when no selection exists.
+     */
+    public int selectedIncludedChapterIndex() {
+        ChapterRow selected = includedList.getSelectionModel().getSelectedItem();
+        return selected == null ? -1 : selected.chapterIndex();
+    }
+
+    /**
+     * Returns currently selected excluded chapter index, or -1 when no selection exists.
+     */
+    public int selectedExcludedChapterIndex() {
+        ChapterRow selected = excludedList.getSelectionModel().getSelectedItem();
+        return selected == null ? -1 : selected.chapterIndex();
+    }
+
+    /**
+     * Selects an included chapter row by chapter index if present.
+     */
+    public void selectIncludedChapterByChapterIndex(final int chapterIndex) {
+        if (chapterIndex < 0) {
+            includedList.getSelectionModel().clearSelection();
+            return;
+        }
+        int index = indexOfChapter(includedList.getItems(), chapterIndex);
+        if (index >= 0) {
+            includedList.getSelectionModel().select(index);
+            includedList.scrollTo(index);
+        }
+    }
+
+    /**
+     * Selects an excluded chapter row by chapter index if present.
+     */
+    public void selectExcludedChapterByChapterIndex(final int chapterIndex) {
+        if (chapterIndex < 0) {
+            excludedList.getSelectionModel().clearSelection();
+            return;
+        }
+        int index = indexOfChapter(excludedList.getItems(), chapterIndex);
+        if (index >= 0) {
+            excludedList.getSelectionModel().select(index);
+            excludedList.scrollTo(index);
+        }
+    }
+
+    private int indexOfChapter(final List<ChapterRow> rows, final int chapterIndex) {
+        for (int i = 0; i < rows.size(); i++) {
+            if (rows.get(i).chapterIndex() == chapterIndex) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**

@@ -8,7 +8,10 @@ import com.jexam.app.ui.components.pdf.ValidationSummaryComponent;
 import com.jexam.generation.GenerationMode;
 import com.jexam.model.Chapter;
 import com.jexam.validation.ValidationResult;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
+import javafx.scene.Cursor;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -38,7 +41,8 @@ public final class PdfTabContainer extends BorderPane {
     private final ValidationSummaryComponent validationSummary = new ValidationSummaryComponent();
     private final ChapterConfigurationComponent chapterConfiguration = new ChapterConfigurationComponent();
     private final PreviewRegionComponent previewRegion = new PreviewRegionComponent();
-    private final VBox leftColumn = new VBox(10, generationControls, chapterConfiguration);
+    private final Label generationStatusLabel = new Label();
+    private final VBox leftColumn = new VBox(10, generationControls, chapterConfiguration, generationStatusLabel);
     private final SplitPane contentSplit = new SplitPane(leftColumn, previewRegion);
 
     private Consumer<String> issueSelectedHandler = path -> { };
@@ -65,6 +69,9 @@ public final class PdfTabContainer extends BorderPane {
         getStyleClass().add("pdf-tab");
 
         setPadding(new Insets(8));
+        generationStatusLabel.getStyleClass().add("pdf-generation-status");
+        generationStatusLabel.setWrapText(true);
+        generationStatusLabel.setText("");
 
         leftColumn.setPrefWidth(380);
         contentSplit.setDividerPositions(0.34);
@@ -135,17 +142,33 @@ public final class PdfTabContainer extends BorderPane {
      */
     public void generatePreview() {
         previewRegion.setLoading();
-        try {
-            GenerationMode mode = generationControls.getSelectedMode();
-            Path path = appService.generatePreviewPdf(mode);
+        setGenerationBusy(true);
+        final GenerationMode mode = generationControls.getSelectedMode();
+        Task<Path> task = new Task<>() {
+            @Override
+            protected Path call() {
+                return appService.generatePreviewPdf(mode);
+            }
+        };
+
+        task.setOnSucceeded(event -> {
+            Path path = task.getValue();
             previewRegion.setReady(path);
             uiStateManager.clearPreviewStale();
             refreshFromService();
             showGenerationWarnings("Preview generated with warnings");
-        } catch (RuntimeException e) {
-            previewRegion.setError(e.getMessage());
+            setGenerationBusy(false);
+        });
+        task.setOnFailed(event -> {
+            Throwable failure = task.getException();
+            previewRegion.setError(failure == null ? "Unknown error" : failure.getMessage());
             validationSummary.setValidationResult(appService.validateCurrentExam());
-        }
+            setGenerationBusy(false);
+        });
+
+        Thread worker = new Thread(task, "jexam-preview-generation");
+        worker.setDaemon(true);
+        worker.start();
     }
 
     /**
@@ -172,24 +195,31 @@ public final class PdfTabContainer extends BorderPane {
         validationSummary.setOnIssueSelected(path -> issueSelectedHandler.accept(path));
 
         chapterConfiguration.setOnMoveUp(index -> {
+            int chapterIndex = chapterConfiguration.selectedIncludedChapterIndex();
             appService.moveGenerationChapterUp(index);
             uiStateManager.markPreviewStale();
             refreshFromService();
+            chapterConfiguration.selectIncludedChapterByChapterIndex(chapterIndex);
         });
         chapterConfiguration.setOnMoveDown(index -> {
+            int chapterIndex = chapterConfiguration.selectedIncludedChapterIndex();
             appService.moveGenerationChapterDown(index);
             uiStateManager.markPreviewStale();
             refreshFromService();
+            chapterConfiguration.selectIncludedChapterByChapterIndex(chapterIndex);
         });
         chapterConfiguration.setOnExclude(index -> {
+            int chapterIndex = chapterConfiguration.selectedIncludedChapterIndex();
             appService.excludeGenerationChapter(index);
             uiStateManager.markPreviewStale();
             refreshFromService();
+            chapterConfiguration.selectExcludedChapterByChapterIndex(chapterIndex);
         });
         chapterConfiguration.setOnInclude(chapterIndex -> {
             appService.includeGenerationChapter(chapterIndex);
             uiStateManager.markPreviewStale();
             refreshFromService();
+            chapterConfiguration.selectIncludedChapterByChapterIndex(chapterIndex);
         });
         chapterConfiguration.setOnGoalChanged((chapterIndex, points) -> {
             try {
@@ -206,6 +236,7 @@ public final class PdfTabContainer extends BorderPane {
             refreshFromService();
         });
         chapterConfiguration.setOnReorder((fromIndex, toIndex) -> {
+            int chapterIndex = chapterConfiguration.selectedIncludedChapterIndex();
             if (fromIndex < toIndex) {
                 for (int index = fromIndex; index < toIndex; index++) {
                     appService.moveGenerationChapterDown(index);
@@ -217,6 +248,7 @@ public final class PdfTabContainer extends BorderPane {
             }
             uiStateManager.markPreviewStale();
             refreshFromService();
+            chapterConfiguration.selectIncludedChapterByChapterIndex(chapterIndex);
         });
 
         previewRegion.setOnRefresh(this::generatePreview);
@@ -243,26 +275,41 @@ public final class PdfTabContainer extends BorderPane {
         preferencesStore.saveLastPdfDirectory(parent);
         ui.setLastPdfDirectory(parent);
 
-        try {
-            final boolean canReusePreview = previewRegion.getPreviewPath() != null && !uiStateManager.isPreviewStale();
-            final List<Path> generatedFiles = canReusePreview
-                ? appService.generatePdfPairFromLastPreview(mode, output.toPath())
-                : appService.generatePdfPair(mode, output.toPath());
-            List<String> warnings = appService.getLastGenerationWarnings();
-            String fileList = generatedFiles.stream()
-                .map(Path::toString)
-                .collect(java.util.stream.Collectors.joining("\n- ", "- ", ""));
-            if (warnings.isEmpty()) {
-                ui.showInfo("PDF files generated", "Generated " + mode + " files:\n" + fileList);
-            } else {
-                ui.showInfo(
-                    "PDF files generated with warnings",
-                    "Generated " + mode + " files:\n" + fileList + "\n\nWarnings:\n- " + String.join("\n- ", warnings)
-                );
+        setGenerationBusy(true);
+        final Path outputPath = output.toPath();
+        final boolean canReusePreview = previewRegion.getPreviewPath() != null && !uiStateManager.isPreviewStale();
+
+        Task<ExportResult> task = new Task<>() {
+            @Override
+            protected ExportResult call() {
+                List<Path> generatedFiles = canReusePreview
+                    ? appService.generatePdfPairFromLastPreview(mode, outputPath)
+                    : appService.generatePdfPair(mode, outputPath);
+                return new ExportResult(generatedFiles, List.copyOf(appService.getLastGenerationWarnings()));
             }
-        } catch (RuntimeException e) {
-            ui.showError("PDF generation failed", e.getMessage());
-        }
+        };
+
+        task.setOnSucceeded(event -> {
+            ExportResult result = task.getValue();
+            String fileList = result.generatedFiles().stream()
+                .map(path -> path.getFileName().toString())
+                .collect(java.util.stream.Collectors.joining(", "));
+            if (result.warnings().isEmpty()) {
+                setGenerationStatus("Generated " + mode + " files: " + fileList);
+            } else {
+                setGenerationStatus("Generated " + mode + " files with warnings: " + String.join(" | ", result.warnings()));
+            }
+            setGenerationBusy(false);
+        });
+        task.setOnFailed(event -> {
+            Throwable failure = task.getException();
+            setGenerationStatus("PDF generation failed: " + (failure == null ? "Unknown error" : failure.getMessage()));
+            setGenerationBusy(false);
+        });
+
+        Thread worker = new Thread(task, "jexam-export-generation");
+        worker.setDaemon(true);
+        worker.start();
     }
 
     /**
@@ -293,7 +340,27 @@ public final class PdfTabContainer extends BorderPane {
     private void showGenerationWarnings(final String title) {
         List<String> warnings = appService.getLastGenerationWarnings();
         if (!warnings.isEmpty()) {
-            ui.showInfo(title, "Warnings:\n- " + String.join("\n- ", warnings));
+            setGenerationStatus(title + ": " + String.join(" | ", warnings));
         }
+    }
+
+    private void setGenerationStatus(final String message) {
+        generationStatusLabel.setText(message == null ? "" : message);
+    }
+
+    private void setGenerationBusy(final boolean busy) {
+        if (stage.getScene() == null) {
+            return;
+        }
+        stage.getScene().setCursor(busy ? Cursor.WAIT : Cursor.DEFAULT);
+        generationControls.setDisable(busy);
+        chapterConfiguration.setDisable(busy);
+        validationSummary.setDisable(busy);
+        previewRegion.setDisable(busy);
+        leftColumn.setDisable(busy);
+        contentSplit.setDisable(busy);
+    }
+
+    private record ExportResult(List<Path> generatedFiles, List<String> warnings) {
     }
 }
