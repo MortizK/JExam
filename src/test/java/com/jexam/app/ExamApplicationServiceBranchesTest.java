@@ -116,6 +116,23 @@ class ExamApplicationServiceBranchesTest {
     }
 
     @Test
+    void resetGenerationGoalsShouldPreferDifficultyBalancedDefault() {
+        ExamApplicationService service = new ExamApplicationService();
+
+        service.updateTaskDetails(0, 0, "Easy A", 1.0, Difficulty.EASY, Scope.EXAM);
+        service.addTask(0, "Easy B");
+        service.updateTaskDetails(0, 1, "Easy B", 1.0, Difficulty.EASY, Scope.EXAM);
+        service.addTask(0, "Medium");
+        service.updateTaskDetails(0, 2, "Medium", 1.0, Difficulty.MEDIUM, Scope.EXAM);
+        service.addTask(0, "Hard");
+        service.updateTaskDetails(0, 3, "Hard", 1.0, Difficulty.HARD, Scope.EXAM);
+
+        service.resetGenerationChapterSelection();
+
+        assertEquals(3.0, service.generationChapterGoalPoints().get(0));
+    }
+
+    @Test
     void mockModeGenerationShouldNotCollectDifficultyWarnings() {
         ExamApplicationService service = new ExamApplicationService();
 

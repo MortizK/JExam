@@ -729,15 +729,89 @@ public class ExamApplicationService {
         generationChapterGoalPoints.clear();
         for (int chapterIndex = 0; chapterIndex < currentExam.chapterCount(); chapterIndex++) {
             Chapter chapter = currentExam.chapterAt(chapterIndex);
-            double examScopeTotal = 0d;
+            List<Task> examScopeTasks = new ArrayList<>();
+            List<Task> allTasks = new ArrayList<>();
             for (Task task : chapter.getTasks()) {
+                allTasks.add(task);
                 if (task.getScope() == Scope.EXAM) {
-                    examScopeTotal += task.getPoints();
+                    examScopeTasks.add(task);
                 }
             }
-            double chapterTotal = examScopeTotal > 0d ? examScopeTotal : totalPoints(chapter.getTasks());
-            generationChapterGoalPoints.put(chapterIndex, Math.max(0.5d, normalizeHalfPoint(chapterTotal)));
+            double defaultPoints = !examScopeTasks.isEmpty()
+                ? balancedDefaultGoalPoints(examScopeTasks)
+                : balancedDefaultGoalPoints(allTasks);
+            generationChapterGoalPoints.put(chapterIndex, Math.max(0.5d, normalizeHalfPoint(defaultPoints)));
         }
+    }
+
+    private double balancedDefaultGoalPoints(final List<Task> tasks) {
+        if (tasks == null || tasks.isEmpty()) {
+            return 0.5d;
+        }
+
+        if (tasks.size() > 20) {
+            return Math.max(0.5d, normalizeHalfPoint(totalPoints(tasks)));
+        }
+
+        final int taskCount = tasks.size();
+        final int subsetLimit = 1 << taskCount;
+
+        double bestScore = Double.MAX_VALUE;
+        int bestPointsUnits = 0;
+
+        for (int mask = 1; mask < subsetLimit; mask++) {
+            int easy = 0;
+            int medium = 0;
+            int hard = 0;
+            int selected = 0;
+            int pointsUnits = 0;
+
+            for (int i = 0; i < taskCount; i++) {
+                if ((mask & (1 << i)) == 0) {
+                    continue;
+                }
+
+                Task task = tasks.get(i);
+                selected++;
+                pointsUnits += toPointUnits(task.getPoints());
+
+                Difficulty difficulty = task.getDifficulty();
+                if (difficulty == Difficulty.EASY) {
+                    easy++;
+                } else if (difficulty == Difficulty.MEDIUM) {
+                    medium++;
+                } else if (difficulty == Difficulty.HARD) {
+                    hard++;
+                }
+            }
+
+            if (selected == 0 || pointsUnits <= 0) {
+                continue;
+            }
+
+            double score = difficultyImbalanceScore(easy, medium, hard, selected);
+            if (score < bestScore || (Math.abs(score - bestScore) < 1e-9 && pointsUnits > bestPointsUnits)) {
+                bestScore = score;
+                bestPointsUnits = pointsUnits;
+            }
+        }
+
+        if (bestPointsUnits <= 0) {
+            return Math.max(0.5d, normalizeHalfPoint(totalPoints(tasks)));
+        }
+        return bestPointsUnits / (double) POINT_SCALE;
+    }
+
+    private double difficultyImbalanceScore(final int easy, final int medium, final int hard, final int total) {
+        if (total <= 0) {
+            return Double.MAX_VALUE;
+        }
+        double easyRatio = easy / (double) total;
+        double mediumRatio = medium / (double) total;
+        double hardRatio = hard / (double) total;
+        return Math.abs(easyRatio - DIFFICULTY_TARGET_RATIO)
+            + Math.abs(mediumRatio - DIFFICULTY_TARGET_RATIO)
+            + Math.abs(hardRatio - DIFFICULTY_TARGET_RATIO);
     }
 
     private double totalPoints(final List<Task> tasks) {
