@@ -405,7 +405,7 @@
     </task>
   </chapter>
   <chapter name="Baeume und Heaps">
-    <task difficulty="easy" name="Task 41: Binaerer Suchbaum" points="1.0" scope="exam">
+    <task difficulty="easy" name="Task 41: Binärer Suchbaum" points="1.0" scope="exam">
       <variant>
         <question>Aufgabe 41 im MINT Module: Datenstrukturen und Algorithmen: Bitte erklaeren Sie den Begriff binaerer Suchbaum anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von binaerer Suchbaum, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
