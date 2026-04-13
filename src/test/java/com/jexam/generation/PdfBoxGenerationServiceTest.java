@@ -77,8 +77,8 @@ class PdfBoxGenerationServiceTest {
 
         String text = readPdfText(out);
         assertTrue(text.contains("Deckblatt"));
-        assertTrue(text.contains("Chapter 1: First Chapter"));
-        assertTrue(text.contains("Chapter 2: Second Chapter"));
+        assertTrue(text.contains("Aufgabe 1: First Chapter (2.0 Punkte)"));
+        assertTrue(text.contains("Aufgabe 2: Second Chapter (3.0 Punkte)"));
     }
 
     @Test
@@ -116,8 +116,9 @@ class PdfBoxGenerationServiceTest {
         }
 
         String text = readPdfText(out);
-        assertTrue(text.contains("Exam: Empty"));
-        assertTrue(!text.contains("Chapter:"));
+        assertTrue(text.contains("Empty"));
+        assertTrue(text.contains("Datum:"));
+        assertTrue(!text.contains("Aufgabe 1:"));
     }
 
     @Test
@@ -182,19 +183,19 @@ class PdfBoxGenerationServiceTest {
 
             PDOutlineItem firstChapter = coverItem.getNextSibling();
             assertNotNull(firstChapter);
-            assertEquals("Chapter 1: First Chapter", firstChapter.getTitle());
+            assertEquals("Aufgabe 1: First Chapter (2.0 Punkte)", firstChapter.getTitle());
 
             PDOutlineItem firstTask = firstChapter.getFirstChild();
             assertNotNull(firstTask);
-            assertEquals("Task 1: First Task", firstTask.getTitle());
+            assertEquals("First Task (2.0 Punkte)", firstTask.getTitle());
 
             PDOutlineItem secondChapter = firstChapter.getNextSibling();
             assertNotNull(secondChapter);
-            assertEquals("Chapter 2: Second Chapter", secondChapter.getTitle());
+            assertEquals("Aufgabe 2: Second Chapter (3.0 Punkte)", secondChapter.getTitle());
 
             PDOutlineItem secondTask = secondChapter.getFirstChild();
             assertNotNull(secondTask);
-            assertEquals("Task 1: Second Task", secondTask.getTitle());
+            assertEquals("Second Task (3.0 Punkte)", secondTask.getTitle());
         }
     }
 

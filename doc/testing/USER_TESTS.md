@@ -29,8 +29,8 @@ Legend: [x] done, [~] partial, [ ] open
 - [x] Generation now indicates produced files in status text, including paired outputs.
 - [x] Default chapter goal points now prefer difficulty-balanced subsets (near one-third easy/medium/hard).
 - [x] Busy feedback improved: wait cursor and temporary control disable during preview/export generation.
-- [~] PDF structure metadata improved: document metadata added and bookmarks for chapters + tasks are now present in PDF viewers.
-- [ ] Final exam PDF visual polish still open: task non-splitting per page, refined title page layout (date + matrikelnummer + points breakdown typography).
+- [x] PDF structure metadata improved: document metadata added and bookmarks for chapters + tasks are present in PDF viewers.
+- [~] Final exam PDF visual polish implemented in core behavior: task non-splitting when fit, oversized-task split fallback, refined cover with date + matrikelnummer + points breakdown, and chapter/task enumeration rules. Final visual fine-tuning against reference PDFs remains.
 
 ## User 1
 

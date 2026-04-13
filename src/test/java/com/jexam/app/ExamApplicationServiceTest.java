@@ -90,7 +90,7 @@ class ExamApplicationServiceTest {
 
         String text = assertDoesNotThrow(() -> readPdfText(output));
         assertTrue(text.contains("Tasks: 1 | Points: 2.0"));
-        assertTrue(text.contains("Task 1: B"));
+        assertTrue(text.contains("B (2.0 Punkte)"));
     }
 
     @Test
@@ -108,8 +108,8 @@ class ExamApplicationServiceTest {
 
         String text = readPdfText(output);
         assertTrue(text.contains("Tasks: 2 | Points: 3.0"));
-        assertTrue(text.contains("Task 1: A") || text.contains("Task 2: A"));
-        assertTrue(text.contains("Task 1: B") || text.contains("Task 2: B"));
+        assertTrue(text.contains("A (1.0 Punkte)"));
+        assertTrue(text.contains("B (2.0 Punkte)"));
     }
 
     @Test
@@ -196,13 +196,13 @@ class ExamApplicationServiceTest {
         service.generatePdf(GenerationMode.MOCK_EXAM, output);
 
         String text = readPdfText(output);
-        int gammaIndex = text.indexOf("Chapter: Gamma");
-        int alphaIndex = text.indexOf("Chapter: Alpha");
+        int gammaIndex = text.indexOf("Aufgabe 1: Gamma (1.0 Punkte)");
+        int alphaIndex = text.indexOf("Aufgabe 2: Alpha (1.0 Punkte)");
 
         assertTrue(gammaIndex >= 0);
         assertTrue(alphaIndex >= 0);
         assertTrue(gammaIndex < alphaIndex);
-        assertFalse(text.contains("Chapter: Beta"));
+        assertFalse(text.contains("Beta (1.0 Punkte)"));
     }
 
     @Test

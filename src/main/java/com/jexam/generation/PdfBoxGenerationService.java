@@ -37,6 +37,7 @@ public class PdfBoxGenerationService implements PdfGenerationService {
     private static final float TOP_MARGIN = 56;
     private static final float BOTTOM_MARGIN = 56;
     private static final float CONTENT_WIDTH = PAGE_WIDTH - LEFT_MARGIN - RIGHT_MARGIN;
+    private static final float CONTENT_HEIGHT = PAGE_HEIGHT - TOP_MARGIN - BOTTOM_MARGIN;
     private static final float BODY_FONT_SIZE = 12;
     private static final float TITLE_FONT_SIZE = 24;
     private static final float SUBTITLE_FONT_SIZE = 14;
@@ -75,7 +76,7 @@ public class PdfBoxGenerationService implements PdfGenerationService {
 
             try (PDDocument document = new PDDocument()) {
                 List<ChapterBookmark> chapterBookmarks;
-                try (RenderContext context = new RenderContext(document, mode)) {
+                try (RenderContext context = new RenderContext(document, mode, exam)) {
                     writeCoverPage(context, exam);
                     if (exam.chapterCount() > 0) {
                         context.startNewPage();
@@ -144,24 +145,32 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         context.y -= SECTION_GAP;
 
         context.content.setFont(BODY_FONT, SUBTITLE_FONT_SIZE);
-        context.y = writeCenteredLine(context, context.y, "Exam: " + oneLine(exam.getName()), BODY_FONT, SUBTITLE_FONT_SIZE);
-        context.y = writeCenteredLine(context, context.y, "Mode: " + context.mode, BODY_FONT, SUBTITLE_FONT_SIZE);
+        context.y = writeCenteredLine(context, context.y, oneLine(exam.getName()), BODY_FONT, SUBTITLE_FONT_SIZE);
         context.y -= CHAPTER_GAP;
 
-        context.y = writeSectionTitle(context, "Overview");
-        context.y = writeLine(context, context.y, "Chapters: " + exam.chapterCount());
-        context.y = writeLine(context, context.y, "Total points: " + formatPoints(totalPoints(exam, context.mode)));
+        context.y = writeLine(context, context.y, "Datum: ________________________________");
+        context.y = writeLine(context, context.y, "Matrikelnummer: _______________________");
         context.y -= SECTION_GAP;
 
+        context.y = writeSectionTitle(context, "Punkteuebersicht");
+        context.y = writeLine(context, context.y, "Gesamtpunkte: " + formatPoints(totalPoints(exam, context.mode)));
+        context.y -= SECTION_GAP;
+
+        context.y = writeLine(context, context.y, "Aufgabe                              Teilaufgaben   Punkte");
+        context.y = writeLine(context, context.y, "---------------------------------------------------------");
+
+        final int chapterCount = exam.chapterCount();
         for (int index = 0; index < exam.chapterCount(); index++) {
             Chapter chapter = exam.chapterAt(index);
             context.y = ensureSpace(context, LINE_HEIGHT * 2.5f);
+            String chapterLabel = chapterHeading(index, chapterCount, chapter.getName(), totalPoints(chapter, context.mode));
             context.y = writeLine(
                 context,
                 context.y,
-                "Chapter " + (index + 1) + ": " + oneLine(chapter.getName())
-                    + " | tasks: " + includedTasks(chapter, context.mode).size()
-                    + " | points: " + formatPoints(totalPoints(chapter, context.mode))
+                padRight(chapterLabel, 36)
+                    + padLeft(Integer.toString(includedTasks(chapter, context.mode).size()), 4)
+                    + "           "
+                    + padLeft(formatPoints(totalPoints(chapter, context.mode)), 6)
             );
         }
     }
@@ -182,9 +191,11 @@ public class PdfBoxGenerationService implements PdfGenerationService {
     private ChapterBookmark writeChapter(final RenderContext context, final int chapterIndex, final Chapter chapter)
         throws IOException {
         PDPage chapterPage = context.currentPage;
+        final int chapterCount = context.exam.chapterCount();
+        final String heading = chapterHeading(chapterIndex, chapterCount, chapter.getName(), totalPoints(chapter, context.mode));
         context.y = writeSectionTitle(
             context,
-            "Chapter: " + oneLine(chapter.getName())
+            heading
         );
         context.y = writeLine(
             context,
@@ -193,37 +204,38 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         );
         context.y -= SECTION_GAP;
         List<TaskBookmark> taskBookmarks = writeTasks(context, chapter);
-        return new ChapterBookmark("Chapter " + (chapterIndex + 1) + ": " + oneLine(chapter.getName()), chapterPage, taskBookmarks);
+        return new ChapterBookmark(heading, chapterPage, taskBookmarks);
     }
 
     private List<TaskBookmark> writeTasks(final RenderContext context, final Chapter chapter)
         throws IOException {
+        List<Task> tasks = includedTasks(chapter, context.mode);
+        boolean enumerateTasks = tasks.size() > 1;
         int displayTaskIndex = 0;
         List<TaskBookmark> taskBookmarks = new ArrayList<>();
-        for (int taskIndex = 0; taskIndex < chapter.taskCount(); taskIndex++) {
-            Task task = chapter.taskAt(taskIndex);
-            if (!shouldIncludeTask(task, context.mode)) {
-                continue;
-            }
+        for (Task task : tasks) {
 
             displayTaskIndex++;
 
-            context.y = ensureSpace(context, LINE_HEIGHT * 2.5f);
+            float taskHeight = estimateTaskBlockHeight(task, context.mode);
+            if (taskHeight <= CONTENT_HEIGHT) {
+                context.y = ensureSpace(context, taskHeight);
+            } else {
+                context.y = ensureSpace(context, LINE_HEIGHT * 2.5f);
+            }
             PDPage taskStartPage = context.currentPage;
+            String taskLabelPrefix = enumerateTasks ? taskOrdinal(displayTaskIndex - 1) + " " : "";
+            String taskTitle = taskLabelPrefix
+                + oneLine(task.getName())
+                + " ("
+                + formatPoints(task.getPoints())
+                + " Punkte)";
             context.y = writeLine(
                 context,
                 context.y,
-                "Task "
-                    + displayTaskIndex
-                    + ": "
-                    + oneLine(task.getName())
-                    + " ("
-                    + formatPoints(task.getPoints())
-                    + " pts, "
-                    + task.getDifficulty().toXmlValue()
-                    + ")"
+                taskTitle
             );
-            taskBookmarks.add(new TaskBookmark("Task " + displayTaskIndex + ": " + oneLine(task.getName()), taskStartPage));
+            taskBookmarks.add(new TaskBookmark(taskTitle, taskStartPage));
             writeVariants(context, task);
             context.y -= SECTION_GAP;
         }
@@ -388,6 +400,52 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return String.format(java.util.Locale.ROOT, "%.1f", points);
     }
 
+    private String chapterHeading(
+        final int chapterIndex,
+        final int chapterCount,
+        final String chapterName,
+        final float points
+    ) {
+        if (chapterCount <= 1) {
+            return "Aufgabe: " + oneLine(chapterName) + " (" + formatPoints(points) + " Punkte)";
+        }
+        return "Aufgabe " + (chapterIndex + 1) + ": " + oneLine(chapterName) + " (" + formatPoints(points) + " Punkte)";
+    }
+
+    private String taskOrdinal(final int index) {
+        int value = index + 1;
+        StringBuilder builder = new StringBuilder();
+        while (value > 0) {
+            value--;
+            builder.insert(0, (char) ('a' + (value % 26)));
+            value /= 26;
+        }
+        return builder + ")";
+    }
+
+    private String padRight(final String value, final int width) {
+        if (value.length() >= width) {
+            return value.substring(0, width);
+        }
+        return value + " ".repeat(width - value.length());
+    }
+
+    private String padLeft(final String value, final int width) {
+        if (value.length() >= width) {
+            return value;
+        }
+        return " ".repeat(width - value.length()) + value;
+    }
+
+    private float estimateTaskBlockHeight(final Task task, final GenerationMode mode) throws IOException {
+        float totalHeight = LINE_HEIGHT + SECTION_GAP;
+        for (Variant variant : task.getVariants()) {
+            totalHeight += estimateVariantBlockHeight(task, variant, mode);
+            totalHeight += SECTION_GAP;
+        }
+        return totalHeight;
+    }
+
     private float estimateVariantBlockHeight(final Task task, final Variant variant, final GenerationMode mode)
         throws IOException {
         float questionHeight = wrapText(variant.getQuestion(), BODY_FONT, BODY_FONT_SIZE, CONTENT_WIDTH - 20).size() * LINE_HEIGHT;
@@ -504,6 +562,11 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         private final GenerationMode mode;
 
         /**
+         * Exam currently rendered.
+         */
+        private final Exam exam;
+
+        /**
          * Active PDF content stream.
          */
         private PDPageContentStream content;
@@ -523,9 +586,10 @@ public class PdfBoxGenerationService implements PdfGenerationService {
          */
         private float y;
 
-        private RenderContext(final PDDocument document, final GenerationMode currentMode) throws IOException {
+        private RenderContext(final PDDocument document, final GenerationMode currentMode, final Exam currentExam) throws IOException {
             this.document = document;
             this.mode = currentMode;
+            this.exam = currentExam;
             this.pageNumber = 0;
             startNewPage();
         }
