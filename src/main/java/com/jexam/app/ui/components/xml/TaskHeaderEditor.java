@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -62,6 +63,14 @@ public final class TaskHeaderEditor extends GridPane {
         pointsField.setAccessibleText("Task points field");
         difficultyBox.setAccessibleText("Task difficulty selector");
         scopeBox.setAccessibleText("Task scope selector");
+
+        pointsField.setTextFormatter(new TextFormatter<>(change -> {
+            String next = change.getControlNewText();
+            if (next == null || next.isEmpty() || next.matches("\\d*(?:\\.\\d?)?")) {
+                return change;
+            }
+            return null;
+        }));
 
         nameField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!updating) {

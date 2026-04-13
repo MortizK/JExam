@@ -386,7 +386,7 @@ public final class XmlTabContainer extends BorderPane {
             if (selectedChapterIndex >= 0 && selectedTaskIndex >= 0) {
                 try {
                     double points = Double.parseDouble(taskHeaderEditor.getPointsText().trim());
-                    if (points <= 0) {
+                    if (points <= 0 || !isHalfStep(points)) {
                         return;
                     }
                     appService.updateTaskDetails(
@@ -600,6 +600,11 @@ public final class XmlTabContainer extends BorderPane {
         uiStateManager.markDirty();
         uiStateManager.markPreviewStale();
         dirtyStateChangedHandler.accept(true);
+    }
+
+    private boolean isHalfStep(final double points) {
+        final double scaled = points * 2.0;
+        return Math.abs(scaled - Math.rint(scaled)) < 1e-9;
     }
 
     /**

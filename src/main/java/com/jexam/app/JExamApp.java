@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,6 +45,8 @@ public class JExamApp extends Application {
     private PdfTabContainer pdfTabContainer;
     private TabPane tabPane;
     private UiTheme activeTheme;
+    private Path currentXmlPath;
+    private final Path autoSavePath = Paths.get(System.getProperty("java.io.tmpdir"), "jexam-autosave.xml");
 
     @Override
     public void start(final Stage stage) {
@@ -52,11 +55,13 @@ public class JExamApp extends Application {
         ui.setLanguage(initialLanguage);
         ui.setLastXmlDirectory(preferencesStore.loadLastXmlDirectory());
         ui.setLastPdfDirectory(preferencesStore.loadLastPdfDirectory());
+        currentXmlPath = null;
 
         Path lastXmlFile = preferencesStore.loadLastXmlFile();
         if (lastXmlFile != null) {
             try {
                 appService.openExam(lastXmlFile);
+                currentXmlPath = lastXmlFile;
             } catch (ExamXmlException ignored) {
                 // Fallback to current in-memory state when last file cannot be loaded.
             }
@@ -180,7 +185,11 @@ public class JExamApp extends Application {
     }
 
     private void createNewExam() {
+        if (!ensureSwitchSafe("create a new exam")) {
+            return;
+        }
         appService.newExam();
+        currentXmlPath = null;
         selectionModel.setExam(appService.getCurrentExam());
         xmlTabContainer.refreshFromService();
         pdfTabContainer.refreshFromService();
@@ -190,6 +199,10 @@ public class JExamApp extends Application {
     }
 
     private void openExam(final Stage stage) {
+        if (!ensureSwitchSafe("open another exam")) {
+            return;
+        }
+
         FileChooser fileChooser = ui.xmlFileChooser();
         File file = fileChooser.showOpenDialog(stage);
         if (file == null) {
@@ -199,6 +212,7 @@ public class JExamApp extends Application {
         try {
             Path path = file.toPath();
             appService.openExam(path);
+            currentXmlPath = path;
             Path parent = path.getParent();
             preferencesStore.saveLastXmlDirectory(parent);
             ui.setLastXmlDirectory(parent);
@@ -215,16 +229,20 @@ public class JExamApp extends Application {
     }
 
     private void saveExam(final Stage stage) {
-        FileChooser fileChooser = ui.xmlFileChooser();
-        File file = fileChooser.showSaveDialog(stage);
-        if (file == null) {
-            return;
+        Path path = currentXmlPath;
+        if (path == null) {
+            FileChooser fileChooser = ui.xmlFileChooser();
+            File file = fileChooser.showSaveDialog(stage);
+            if (file == null) {
+                return;
+            }
+            path = file.toPath();
         }
 
         try {
-            Path path = file.toPath();
             Path parent = path.getParent();
             appService.saveExam(path);
+            currentXmlPath = path;
             preferencesStore.saveLastXmlDirectory(parent);
             ui.setLastXmlDirectory(parent);
             preferencesStore.saveLastXmlFile(path);
@@ -232,6 +250,30 @@ public class JExamApp extends Application {
             ui.showInfo("Save successful", "Saved exam to: " + path);
         } catch (ExamXmlException e) {
             ui.showError("Save failed", e.getMessage());
+        }
+    }
+
+    private boolean ensureSwitchSafe(final String actionDescription) {
+        if (!uiStateManager.isDirty()) {
+            return true;
+        }
+
+        Path targetPath = currentXmlPath == null ? autoSavePath : currentXmlPath;
+        try {
+            appService.saveExam(targetPath);
+            currentXmlPath = targetPath;
+            Path parent = targetPath.getParent();
+            preferencesStore.saveLastXmlDirectory(parent);
+            ui.setLastXmlDirectory(parent);
+            preferencesStore.saveLastXmlFile(targetPath);
+            uiStateManager.markSaved();
+            return true;
+        } catch (ExamXmlException e) {
+            ui.showError(
+                "Action blocked",
+                "Cannot " + actionDescription + " while current exam is invalid: " + e.getMessage()
+            );
+            return false;
         }
     }
 
