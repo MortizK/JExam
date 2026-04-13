@@ -41,6 +41,8 @@ import java.util.function.Consumer;
  * XML tab shell that wires the existing app service to chapter/task/variant editors.
  */
 public final class XmlTabContainer extends BorderPane {
+    private static final int MAX_TREE_LABEL_LENGTH = 42;
+
     private final ExamApplicationService appService;
     private final JExamUiSupport ui;
     private final JExamSelectionModel selectionModel;
@@ -291,6 +293,22 @@ public final class XmlTabContainer extends BorderPane {
     }
 
     /**
+     * Navigates one hierarchy level up within the XML tab selection.
+     */
+    public void navigateOneLevelUp() {
+        if (selectedVariantIndex >= 0) {
+            selectedVariantIndex = -1;
+        } else if (selectedTaskIndex >= 0) {
+            selectedTaskIndex = -1;
+        } else if (selectedChapterIndex >= 0) {
+            selectedChapterIndex = -1;
+        } else {
+            return;
+        }
+        refreshFromService();
+    }
+
+    /**
      * Binds breadcrumb and navigation-tree selection handlers.
      */
     private void configureNavigation() {
@@ -371,6 +389,8 @@ public final class XmlTabContainer extends BorderPane {
         examHeaderEditor.setOnChange(() -> {
             appService.getCurrentExam().setName(examHeaderEditor.getExamName());
             examNameChangedHandler.accept(examHeaderEditor.getExamName());
+            refreshNavigationTree();
+            refreshBreadcrumb();
             markDirty();
         });
 
@@ -378,6 +398,8 @@ public final class XmlTabContainer extends BorderPane {
             if (selectedChapterIndex >= 0) {
                 appService.getCurrentExam().chapterAt(selectedChapterIndex).setName(chapterHeaderEditor.getChapterName());
                 chapterTable.setItems(appService.getCurrentExam().getChapters().stream().map(this::chapterRowLabel).toList());
+                refreshNavigationTree();
+                refreshBreadcrumb();
                 markDirty();
             }
         });
@@ -386,7 +408,7 @@ public final class XmlTabContainer extends BorderPane {
             if (selectedChapterIndex >= 0 && selectedTaskIndex >= 0) {
                 try {
                     double points = Double.parseDouble(taskHeaderEditor.getPointsText().trim());
-                    if (points <= 0) {
+                    if (points <= 0 || !isHalfStep(points)) {
                         return;
                     }
                     appService.updateTaskDetails(
@@ -398,6 +420,8 @@ public final class XmlTabContainer extends BorderPane {
                         taskHeaderEditor.getScope()
                     );
                     refreshTaskSelection();
+                    refreshNavigationTree();
+                    refreshBreadcrumb();
                     markDirty();
                 } catch (NumberFormatException ignored) {
                     // keep invalid draft visible; save-on-change waits for valid input
@@ -415,6 +439,7 @@ public final class XmlTabContainer extends BorderPane {
                     variantEditor.getAnswerText()
                 );
                 refreshVariantSelection();
+                refreshBreadcrumb();
                 markDirty();
             }
         });
@@ -446,7 +471,9 @@ public final class XmlTabContainer extends BorderPane {
             }
             if (DeleteConfirmationDialog.confirm(null, "Remove chapter", "Remove selected chapter?", "This will remove all tasks in the chapter.")) {
                 appService.removeChapter(index);
-                selectedChapterIndex = Math.min(index, appService.getCurrentExam().chapterCount() - 1);
+                selectedChapterIndex = -1;
+                selectedTaskIndex = -1;
+                selectedVariantIndex = -1;
                 refreshFromService();
                 markDirty();
             }
@@ -480,7 +507,8 @@ public final class XmlTabContainer extends BorderPane {
             }
             if (DeleteConfirmationDialog.confirm(null, "Remove task", "Remove selected task?", "This will remove all variants in the task.")) {
                 appService.removeTask(selectedChapterIndex, index);
-                selectedTaskIndex = Math.min(index, appService.getCurrentExam().chapterAt(selectedChapterIndex).taskCount() - 1);
+                selectedTaskIndex = -1;
+                selectedVariantIndex = -1;
                 refreshFromService();
                 markDirty();
             }
@@ -510,7 +538,15 @@ public final class XmlTabContainer extends BorderPane {
             }
             if (appService.getCurrentExam().taskAt(selectedChapterIndex, selectedTaskIndex).variantCount() <= 1) {
                 ui.showError("Cannot remove variant", "Each task must have at least one variant.");
+                return;
             }
+            if (DeleteConfirmationDialog.confirm(null, "Remove variant", "Remove selected variant?", "This will remove the variant text immediately.")) {
+                appService.removeVariant(selectedChapterIndex, selectedTaskIndex, index);
+                selectedVariantIndex = -1;
+                refreshFromService();
+                markDirty();
+            }
+        });
 
         chapterTable.setOnEnter(this::focusActiveContent);
         chapterTable.setOnTabNavigation(this::focusActiveContent, this::focusNavigationTree);
@@ -518,13 +554,6 @@ public final class XmlTabContainer extends BorderPane {
         taskTable.setOnTabNavigation(this::focusActiveContent, chapterTable::requestTableFocus);
         variantList.setOnEnter(this::focusActiveContent);
         variantList.setOnTabNavigation(this::focusActiveContent, taskTable::requestTableFocus);
-            if (DeleteConfirmationDialog.confirm(null, "Remove variant", "Remove selected variant?", "This will remove the variant text immediately.")) {
-                appService.removeVariant(selectedChapterIndex, selectedTaskIndex, index);
-                selectedVariantIndex = Math.min(index, appService.getCurrentExam().taskAt(selectedChapterIndex, selectedTaskIndex).variantCount() - 1);
-                refreshFromService();
-                markDirty();
-            }
-        });
     }
 
     /**
@@ -602,6 +631,11 @@ public final class XmlTabContainer extends BorderPane {
         dirtyStateChangedHandler.accept(true);
     }
 
+    private boolean isHalfStep(final double points) {
+        final double scaled = points * 2.0;
+        return Math.abs(scaled - Math.rint(scaled)) < 1e-9;
+    }
+
     /**
      * Rebuilds the navigation tree from the current exam hierarchy.
      */
@@ -612,16 +646,20 @@ public final class XmlTabContainer extends BorderPane {
             return;
         }
 
-        TreeItem<NavigationNode> root = new TreeItem<>(NavigationNode.exam(exam.getName()));
+        TreeItem<NavigationNode> root = new TreeItem<>(NavigationNode.exam(shortenTreeLabel(exam.getName())));
         root.setExpanded(true);
 
         for (int chapterIndex = 0; chapterIndex < exam.chapterCount(); chapterIndex++) {
             Chapter chapter = exam.chapterAt(chapterIndex);
-            TreeItem<NavigationNode> chapterNode = new TreeItem<>(NavigationNode.chapter(chapterIndex, chapter.getName()));
+            TreeItem<NavigationNode> chapterNode = new TreeItem<>(
+                NavigationNode.chapter(chapterIndex, shortenTreeLabel(chapter.getName()))
+            );
             chapterNode.setExpanded(true);
             for (int taskIndex = 0; taskIndex < chapter.taskCount(); taskIndex++) {
                 Task task = chapter.taskAt(taskIndex);
-                chapterNode.getChildren().add(new TreeItem<>(NavigationNode.task(chapterIndex, taskIndex, task.getName())));
+                chapterNode.getChildren().add(
+                    new TreeItem<>(NavigationNode.task(chapterIndex, taskIndex, shortenTreeLabel(task.getName())))
+                );
             }
             root.getChildren().add(chapterNode);
         }
@@ -814,6 +852,35 @@ public final class XmlTabContainer extends BorderPane {
     private String formatScopeDistribution(final Map<Scope, Integer> scopes) {
         return Scope.EXAM.toXmlValue() + " " + scopes.getOrDefault(Scope.EXAM, 0)
             + "/" + Scope.MOCK_EXAM.toXmlValue() + " " + scopes.getOrDefault(Scope.MOCK_EXAM, 0);
+    }
+
+    private String shortenTreeLabel(final String label) {
+        if (label == null) {
+            return "";
+        }
+        String normalized = label.trim();
+        if (normalized.length() <= MAX_TREE_LABEL_LENGTH) {
+            return normalized;
+        }
+
+        String candidate = normalized.substring(0, MAX_TREE_LABEL_LENGTH).trim();
+        int lastWhitespace = lastWhitespaceIndex(candidate);
+        if (lastWhitespace > 0) {
+            candidate = candidate.substring(0, lastWhitespace).trim();
+        }
+        if (candidate.isEmpty()) {
+            candidate = normalized.substring(0, MAX_TREE_LABEL_LENGTH).trim();
+        }
+        return candidate + "...";
+    }
+
+    private int lastWhitespaceIndex(final String value) {
+        for (int i = value.length() - 1; i >= 0; i--) {
+            if (Character.isWhitespace(value.charAt(i))) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private enum NavigationType {

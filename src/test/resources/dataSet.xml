@@ -1,7 +1,7 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <exam name="MINT Module: Datenstrukturen und Algorithmen Dataset">
-  <chapter name="Grundlagen und Komplexitaet">
-    <task name="Task 1: Asymptotische Laufzeit" points="1.0" difficulty="easy" scope="exam">
+  <chapter name="Grundlagen und Komplexität">
+    <task difficulty="easy" name="Task 1: Asymptotische Laufzeit" points="1.0" scope="exam">
       <variant>
         <question>Aufgabe 1 im MINT Module: Datenstrukturen und Algorithmen: Bitte erklaeren Sie den Begriff asymptotische Laufzeit anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von asymptotische Laufzeit, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -11,7 +11,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei asymptotische Laufzeit, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 2: Big O Notation" points="1.5" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 2: Big O Notation" points="1.5" scope="exam">
       <variant>
         <question>Aufgabe 2 im MINT Module: Datenstrukturen und Algorithmen: Bitte analysieren Sie den Begriff Big O Notation anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Big O Notation, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -21,7 +21,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Big O Notation, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 3: Speicherkomplexitaet" points="2.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 3: Speicherkomplexitaet" points="2.0" scope="exam">
       <variant>
         <question>Aufgabe 3 im MINT Module: Datenstrukturen und Algorithmen: Bitte begruenden Sie den Begriff Speicherkomplexitaet anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Speicherkomplexitaet, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -31,7 +31,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Speicherkomplexitaet, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 4: Amortisierte Analyse" points="2.5" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 4: Amortisierte Analyse" points="2.5" scope="exam">
       <variant>
         <question>Aufgabe 4 im MINT Module: Datenstrukturen und Algorithmen: Bitte konstruieren Sie den Begriff amortisierte Analyse anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von amortisierte Analyse, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -41,7 +41,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei amortisierte Analyse, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 5: Best Case und Worst Case" points="3.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 5: Best Case und Worst Case" points="3.0" scope="exam">
       <variant>
         <question>Aufgabe 5 im MINT Module: Datenstrukturen und Algorithmen: Bitte vergleichen Sie den Begriff Best Case und Worst Case anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Best Case und Worst Case, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -51,7 +51,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Best Case und Worst Case, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 6: Messmethodik fuer Algorithmen" points="1.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 6: Messmethodik fuer Algorithmen" points="1.0" scope="exam">
       <variant>
         <question>Aufgabe 6 im MINT Module: Datenstrukturen und Algorithmen: Bitte optimieren Sie den Begriff Messmethodik fuer Algorithmen anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Messmethodik fuer Algorithmen, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -61,7 +61,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Messmethodik fuer Algorithmen, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 7: Rekursive Laufzeitgleichungen" points="1.5" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 7: Rekursive Laufzeitgleichungen" points="1.5" scope="exam">
       <variant>
         <question>Aufgabe 7 im MINT Module: Datenstrukturen und Algorithmen: Bitte validieren Sie den Begriff rekursive Laufzeitgleichungen anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von rekursive Laufzeitgleichungen, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -71,7 +71,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei rekursive Laufzeitgleichungen, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 8: Master Theorem" points="2.0" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 8: Master Theorem" points="2.0" scope="exam">
       <variant>
         <question>Aufgabe 8 im MINT Module: Datenstrukturen und Algorithmen: Bitte interpretieren Sie den Begriff Master Theorem anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Master Theorem, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -81,7 +81,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Master Theorem, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 9: Invariante und Terminierung" points="2.5" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 9: Invariante und Terminierung" points="2.5" scope="exam">
       <variant>
         <question>Aufgabe 9 im MINT Module: Datenstrukturen und Algorithmen: Bitte entwerfen Sie den Begriff Invariante und Terminierung anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Invariante und Terminierung, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -91,7 +91,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Invariante und Terminierung, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 10: Benchmark Fallstricke" points="3.0" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 10: Benchmark Fallstricke" points="3.0" scope="exam">
       <variant>
         <question>Aufgabe 10 im MINT Module: Datenstrukturen und Algorithmen: Bitte bewerten Sie den Begriff Benchmark Fallstricke anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Benchmark Fallstricke, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -101,7 +101,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Benchmark Fallstricke, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 11: Asymptotische Laufzeit" points="1.0" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 11: Asymptotische Laufzeit" points="1.0" scope="exam">
       <variant>
         <question>Aufgabe 11 im MINT Module: Datenstrukturen und Algorithmen: Bitte erklaeren Sie den Begriff asymptotische Laufzeit anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von asymptotische Laufzeit, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -111,7 +111,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei asymptotische Laufzeit, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 12: Big O Notation" points="1.5" difficulty="hard" scope="exam">
+    <task difficulty="hard" name="Task 12: Big O Notation" points="1.5" scope="exam">
       <variant>
         <question>Aufgabe 12 im MINT Module: Datenstrukturen und Algorithmen: Bitte analysieren Sie den Begriff Big O Notation anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Big O Notation, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -121,7 +121,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Big O Notation, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 13: Speicherkomplexitaet" points="2.0" difficulty="hard" scope="exam">
+    <task difficulty="hard" name="Task 13: Speicherkomplexitaet" points="2.0" scope="exam">
       <variant>
         <question>Aufgabe 13 im MINT Module: Datenstrukturen und Algorithmen: Bitte begruenden Sie den Begriff Speicherkomplexitaet anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Speicherkomplexitaet, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -131,7 +131,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Speicherkomplexitaet, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 14: Amortisierte Analyse" points="2.5" difficulty="hard" scope="exam">
+    <task difficulty="hard" name="Task 14: Amortisierte Analyse" points="2.5" scope="exam">
       <variant>
         <question>Aufgabe 14 im MINT Module: Datenstrukturen und Algorithmen: Bitte konstruieren Sie den Begriff amortisierte Analyse anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von amortisierte Analyse, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -141,7 +141,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei amortisierte Analyse, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 15: Best Case und Worst Case" points="3.0" difficulty="easy" scope="mock-exam">
+    <task difficulty="easy" name="Task 15: Best Case und Worst Case" points="3.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 15 im MINT Module: Datenstrukturen und Algorithmen: Bitte vergleichen Sie den Begriff Best Case und Worst Case anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Best Case und Worst Case, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -151,7 +151,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Best Case und Worst Case, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 16: Messmethodik fuer Algorithmen" points="1.0" difficulty="easy" scope="mock-exam">
+    <task difficulty="easy" name="Task 16: Messmethodik fuer Algorithmen" points="1.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 16 im MINT Module: Datenstrukturen und Algorithmen: Bitte optimieren Sie den Begriff Messmethodik fuer Algorithmen anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Messmethodik fuer Algorithmen, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -161,7 +161,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Messmethodik fuer Algorithmen, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 17: Rekursive Laufzeitgleichungen" points="1.5" difficulty="easy" scope="mock-exam">
+    <task difficulty="easy" name="Task 17: Rekursive Laufzeitgleichungen" points="1.5" scope="mock-exam">
       <variant>
         <question>Aufgabe 17 im MINT Module: Datenstrukturen und Algorithmen: Bitte validieren Sie den Begriff rekursive Laufzeitgleichungen anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von rekursive Laufzeitgleichungen, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -171,7 +171,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei rekursive Laufzeitgleichungen, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 18: Master Theorem" points="2.0" difficulty="medium" scope="mock-exam">
+    <task difficulty="medium" name="Task 18: Master Theorem" points="2.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 18 im MINT Module: Datenstrukturen und Algorithmen: Bitte interpretieren Sie den Begriff Master Theorem anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Master Theorem, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -181,7 +181,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Master Theorem, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 19: Invariante und Terminierung" points="2.5" difficulty="medium" scope="mock-exam">
+    <task difficulty="medium" name="Task 19: Invariante und Terminierung" points="2.5" scope="mock-exam">
       <variant>
         <question>Aufgabe 19 im MINT Module: Datenstrukturen und Algorithmen: Bitte entwerfen Sie den Begriff Invariante und Terminierung anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Invariante und Terminierung, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -191,7 +191,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Invariante und Terminierung, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 20: Benchmark Fallstricke" points="3.0" difficulty="hard" scope="mock-exam">
+    <task difficulty="hard" name="Task 20: Benchmark Fallstricke" points="3.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 20 im MINT Module: Datenstrukturen und Algorithmen: Bitte bewerten Sie den Begriff Benchmark Fallstricke anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Benchmark Fallstricke, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -203,7 +203,7 @@
     </task>
   </chapter>
   <chapter name="Lineare Datenstrukturen">
-    <task name="Task 21: Array und dynamisches Array" points="1.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 21: Array und dynamisches Array" points="1.0" scope="exam">
       <variant>
         <question>Aufgabe 21 im MINT Module: Datenstrukturen und Algorithmen: Bitte erklaeren Sie den Begriff Array und dynamisches Array anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Array und dynamisches Array, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -213,7 +213,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Array und dynamisches Array, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 22: Einfach verkettete Liste" points="1.5" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 22: Einfach verkettete Liste" points="1.5" scope="exam">
       <variant>
         <question>Aufgabe 22 im MINT Module: Datenstrukturen und Algorithmen: Bitte analysieren Sie den Begriff einfach verkettete Liste anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von einfach verkettete Liste, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -223,7 +223,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei einfach verkettete Liste, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 23: Doppelt verkettete Liste" points="2.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 23: Doppelt verkettete Liste" points="2.0" scope="exam">
       <variant>
         <question>Aufgabe 23 im MINT Module: Datenstrukturen und Algorithmen: Bitte begruenden Sie den Begriff doppelt verkettete Liste anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von doppelt verkettete Liste, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -233,7 +233,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei doppelt verkettete Liste, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 24: Stack Operationen" points="2.5" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 24: Stack Operationen" points="2.5" scope="exam">
       <variant>
         <question>Aufgabe 24 im MINT Module: Datenstrukturen und Algorithmen: Bitte konstruieren Sie den Begriff Stack Operationen anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Stack Operationen, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -243,7 +243,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Stack Operationen, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 25: Queue Operationen" points="3.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 25: Queue Operationen" points="3.0" scope="exam">
       <variant>
         <question>Aufgabe 25 im MINT Module: Datenstrukturen und Algorithmen: Bitte vergleichen Sie den Begriff Queue Operationen anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Queue Operationen, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -253,7 +253,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Queue Operationen, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 26: Deque Einsatz" points="1.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 26: Deque Einsatz" points="1.0" scope="exam">
       <variant>
         <question>Aufgabe 26 im MINT Module: Datenstrukturen und Algorithmen: Bitte optimieren Sie den Begriff Deque Einsatz anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Deque Einsatz, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -263,7 +263,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Deque Einsatz, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 27: Ringpuffer" points="1.5" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 27: Ringpuffer" points="1.5" scope="exam">
       <variant>
         <question>Aufgabe 27 im MINT Module: Datenstrukturen und Algorithmen: Bitte validieren Sie den Begriff Ringpuffer anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Ringpuffer, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -273,7 +273,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Ringpuffer, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 28: Iterator Muster" points="2.0" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 28: Iterator Muster" points="2.0" scope="exam">
       <variant>
         <question>Aufgabe 28 im MINT Module: Datenstrukturen und Algorithmen: Bitte interpretieren Sie den Begriff Iterator Muster anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Iterator Muster, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -283,7 +283,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Iterator Muster, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 29: Fehler bei Indizes" points="2.5" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 29: Fehler bei Indizes" points="2.5" scope="exam">
       <variant>
         <question>Aufgabe 29 im MINT Module: Datenstrukturen und Algorithmen: Bitte entwerfen Sie den Begriff Fehler bei Indizes anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Fehler bei Indizes, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -293,7 +293,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Fehler bei Indizes, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 30: Speicherlokalitaet" points="3.0" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 30: Speicherlokalitaet" points="3.0" scope="exam">
       <variant>
         <question>Aufgabe 30 im MINT Module: Datenstrukturen und Algorithmen: Bitte bewerten Sie den Begriff Speicherlokalitaet anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Speicherlokalitaet, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -303,7 +303,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Speicherlokalitaet, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 31: Array und dynamisches Array" points="1.0" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 31: Array und dynamisches Array" points="1.0" scope="exam">
       <variant>
         <question>Aufgabe 31 im MINT Module: Datenstrukturen und Algorithmen: Bitte erklaeren Sie den Begriff Array und dynamisches Array anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Array und dynamisches Array, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -313,7 +313,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Array und dynamisches Array, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 32: Einfach verkettete Liste" points="1.5" difficulty="hard" scope="exam">
+    <task difficulty="hard" name="Task 32: Einfach verkettete Liste" points="1.5" scope="exam">
       <variant>
         <question>Aufgabe 32 im MINT Module: Datenstrukturen und Algorithmen: Bitte analysieren Sie den Begriff einfach verkettete Liste anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von einfach verkettete Liste, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -323,7 +323,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei einfach verkettete Liste, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 33: Doppelt verkettete Liste" points="2.0" difficulty="hard" scope="exam">
+    <task difficulty="hard" name="Task 33: Doppelt verkettete Liste" points="2.0" scope="exam">
       <variant>
         <question>Aufgabe 33 im MINT Module: Datenstrukturen und Algorithmen: Bitte begruenden Sie den Begriff doppelt verkettete Liste anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von doppelt verkettete Liste, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -333,7 +333,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei doppelt verkettete Liste, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 34: Stack Operationen" points="2.5" difficulty="hard" scope="exam">
+    <task difficulty="hard" name="Task 34: Stack Operationen" points="2.5" scope="exam">
       <variant>
         <question>Aufgabe 34 im MINT Module: Datenstrukturen und Algorithmen: Bitte konstruieren Sie den Begriff Stack Operationen anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Stack Operationen, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -343,7 +343,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Stack Operationen, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 35: Queue Operationen" points="3.0" difficulty="easy" scope="mock-exam">
+    <task difficulty="easy" name="Task 35: Queue Operationen" points="3.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 35 im MINT Module: Datenstrukturen und Algorithmen: Bitte vergleichen Sie den Begriff Queue Operationen anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Queue Operationen, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -353,7 +353,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Queue Operationen, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 36: Deque Einsatz" points="1.0" difficulty="easy" scope="mock-exam">
+    <task difficulty="easy" name="Task 36: Deque Einsatz" points="1.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 36 im MINT Module: Datenstrukturen und Algorithmen: Bitte optimieren Sie den Begriff Deque Einsatz anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Deque Einsatz, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -363,7 +363,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Deque Einsatz, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 37: Ringpuffer" points="1.5" difficulty="easy" scope="mock-exam">
+    <task difficulty="easy" name="Task 37: Ringpuffer" points="1.5" scope="mock-exam">
       <variant>
         <question>Aufgabe 37 im MINT Module: Datenstrukturen und Algorithmen: Bitte validieren Sie den Begriff Ringpuffer anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Ringpuffer, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -373,7 +373,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Ringpuffer, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 38: Iterator Muster" points="2.0" difficulty="medium" scope="mock-exam">
+    <task difficulty="medium" name="Task 38: Iterator Muster" points="2.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 38 im MINT Module: Datenstrukturen und Algorithmen: Bitte interpretieren Sie den Begriff Iterator Muster anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Iterator Muster, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -383,7 +383,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Iterator Muster, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 39: Fehler bei Indizes" points="2.5" difficulty="medium" scope="mock-exam">
+    <task difficulty="medium" name="Task 39: Fehler bei Indizes" points="2.5" scope="mock-exam">
       <variant>
         <question>Aufgabe 39 im MINT Module: Datenstrukturen und Algorithmen: Bitte entwerfen Sie den Begriff Fehler bei Indizes anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Fehler bei Indizes, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -393,7 +393,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Fehler bei Indizes, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 40: Speicherlokalitaet" points="3.0" difficulty="hard" scope="mock-exam">
+    <task difficulty="hard" name="Task 40: Speicherlokalitaet" points="3.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 40 im MINT Module: Datenstrukturen und Algorithmen: Bitte bewerten Sie den Begriff Speicherlokalitaet anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Speicherlokalitaet, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -405,7 +405,7 @@
     </task>
   </chapter>
   <chapter name="Baeume und Heaps">
-    <task name="Task 41: Binaerer Suchbaum" points="1.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 41: Binaerer Suchbaum" points="1.0" scope="exam">
       <variant>
         <question>Aufgabe 41 im MINT Module: Datenstrukturen und Algorithmen: Bitte erklaeren Sie den Begriff binaerer Suchbaum anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von binaerer Suchbaum, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -415,7 +415,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei binaerer Suchbaum, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 42: AVL Rotation" points="1.5" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 42: AVL Rotation" points="1.5" scope="exam">
       <variant>
         <question>Aufgabe 42 im MINT Module: Datenstrukturen und Algorithmen: Bitte analysieren Sie den Begriff AVL Rotation anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von AVL Rotation, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -425,7 +425,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei AVL Rotation, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 43: Heap Eigenschaft" points="2.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 43: Heap Eigenschaft" points="2.0" scope="exam">
       <variant>
         <question>Aufgabe 43 im MINT Module: Datenstrukturen und Algorithmen: Bitte begruenden Sie den Begriff Heap Eigenschaft anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Heap Eigenschaft, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -435,7 +435,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Heap Eigenschaft, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 44: Priority Queue" points="2.5" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 44: Priority Queue" points="2.5" scope="exam">
       <variant>
         <question>Aufgabe 44 im MINT Module: Datenstrukturen und Algorithmen: Bitte konstruieren Sie den Begriff Priority Queue anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Priority Queue, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -445,7 +445,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Priority Queue, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 45: Baumtraversierung" points="3.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 45: Baumtraversierung" points="3.0" scope="exam">
       <variant>
         <question>Aufgabe 45 im MINT Module: Datenstrukturen und Algorithmen: Bitte vergleichen Sie den Begriff Baumtraversierung anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Baumtraversierung, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -455,7 +455,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Baumtraversierung, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 46: Rekonstruktion von Baeumen" points="1.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 46: Rekonstruktion von Baeumen" points="1.0" scope="exam">
       <variant>
         <question>Aufgabe 46 im MINT Module: Datenstrukturen und Algorithmen: Bitte optimieren Sie den Begriff Rekonstruktion von Baeumen anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Rekonstruktion von Baeumen, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -465,7 +465,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Rekonstruktion von Baeumen, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 47: Balancierte Hoehe" points="1.5" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 47: Balancierte Hoehe" points="1.5" scope="exam">
       <variant>
         <question>Aufgabe 47 im MINT Module: Datenstrukturen und Algorithmen: Bitte validieren Sie den Begriff balancierte Hoehe anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von balancierte Hoehe, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -475,7 +475,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei balancierte Hoehe, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 48: Delete im Suchbaum" points="2.0" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 48: Delete im Suchbaum" points="2.0" scope="exam">
       <variant>
         <question>Aufgabe 48 im MINT Module: Datenstrukturen und Algorithmen: Bitte interpretieren Sie den Begriff Delete im Suchbaum anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Delete im Suchbaum, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -485,7 +485,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Delete im Suchbaum, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 49: Heapify Schritt" points="2.5" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 49: Heapify Schritt" points="2.5" scope="exam">
       <variant>
         <question>Aufgabe 49 im MINT Module: Datenstrukturen und Algorithmen: Bitte entwerfen Sie den Begriff Heapify Schritt anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Heapify Schritt, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -495,7 +495,7 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Heapify Schritt, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 50: Schluesselvergleich" points="3.0" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 50: Schluesselvergleich" points="3.0" scope="exam">
       <variant>
         <question>Aufgabe 50 im MINT Module: Datenstrukturen und Algorithmen: Bitte bewerten Sie den Begriff Schluesselvergleich anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Schluesselvergleich, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -505,61 +505,61 @@
         <answer>Eine tragfaehige Antwort benennt den typischen Fehler bei Schluesselvergleich, erklaert die Auswirkungen auf Korrektheit oder Laufzeit und nennt mindestens zwei Gegenmassnahmen, zum Beispiel Tests mit Randfaellen, Invariantenpruefung oder schrittweise Komplexitaetskontrolle.</answer>
       </variant>
     </task>
-    <task name="Task 51: Binaerer Suchbaum" points="1.0" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 51: Binaerer Suchbaum" points="1.0" scope="exam">
       <variant>
         <question>Aufgabe 51 im MINT Module: Datenstrukturen und Algorithmen: Bitte erklaeren Sie den Begriff binaerer Suchbaum anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von binaerer Suchbaum, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 52: AVL Rotation" points="1.5" difficulty="hard" scope="exam">
+    <task difficulty="hard" name="Task 52: AVL Rotation" points="1.5" scope="exam">
       <variant>
         <question>Aufgabe 52 im MINT Module: Datenstrukturen und Algorithmen: Bitte analysieren Sie den Begriff AVL Rotation anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von AVL Rotation, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 53: Heap Eigenschaft" points="2.0" difficulty="hard" scope="exam">
+    <task difficulty="hard" name="Task 53: Heap Eigenschaft" points="2.0" scope="exam">
       <variant>
         <question>Aufgabe 53 im MINT Module: Datenstrukturen und Algorithmen: Bitte begruenden Sie den Begriff Heap Eigenschaft anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Heap Eigenschaft, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 54: Priority Queue" points="2.5" difficulty="hard" scope="exam">
+    <task difficulty="hard" name="Task 54: Priority Queue" points="2.5" scope="exam">
       <variant>
         <question>Aufgabe 54 im MINT Module: Datenstrukturen und Algorithmen: Bitte konstruieren Sie den Begriff Priority Queue anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Priority Queue, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 55: Baumtraversierung" points="3.0" difficulty="easy" scope="mock-exam">
+    <task difficulty="easy" name="Task 55: Baumtraversierung" points="3.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 55 im MINT Module: Datenstrukturen und Algorithmen: Bitte vergleichen Sie den Begriff Baumtraversierung anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Baumtraversierung, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 56: Rekonstruktion von Baeumen" points="1.0" difficulty="easy" scope="mock-exam">
+    <task difficulty="easy" name="Task 56: Rekonstruktion von Baeumen" points="1.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 56 im MINT Module: Datenstrukturen und Algorithmen: Bitte optimieren Sie den Begriff Rekonstruktion von Baeumen anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Rekonstruktion von Baeumen, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 57: Balancierte Hoehe" points="1.5" difficulty="easy" scope="mock-exam">
+    <task difficulty="easy" name="Task 57: Balancierte Hoehe" points="1.5" scope="mock-exam">
       <variant>
         <question>Aufgabe 57 im MINT Module: Datenstrukturen und Algorithmen: Bitte validieren Sie den Begriff balancierte Hoehe anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von balancierte Hoehe, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 58: Delete im Suchbaum" points="2.0" difficulty="medium" scope="mock-exam">
+    <task difficulty="medium" name="Task 58: Delete im Suchbaum" points="2.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 58 im MINT Module: Datenstrukturen und Algorithmen: Bitte interpretieren Sie den Begriff Delete im Suchbaum anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Delete im Suchbaum, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 59: Heapify Schritt" points="2.5" difficulty="medium" scope="mock-exam">
+    <task difficulty="medium" name="Task 59: Heapify Schritt" points="2.5" scope="mock-exam">
       <variant>
         <question>Aufgabe 59 im MINT Module: Datenstrukturen und Algorithmen: Bitte entwerfen Sie den Begriff Heapify Schritt anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Heapify Schritt, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 60: Schluesselvergleich" points="3.0" difficulty="hard" scope="mock-exam">
+    <task difficulty="hard" name="Task 60: Schluesselvergleich" points="3.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 60 im MINT Module: Datenstrukturen und Algorithmen: Bitte bewerten Sie den Begriff Schluesselvergleich anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Schluesselvergleich, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -567,121 +567,121 @@
     </task>
   </chapter>
   <chapter name="Graphen und Wege">
-    <task name="Task 61: Adjazenzliste und matrix" points="1.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 61: Adjazenzliste und matrix" points="1.0" scope="exam">
       <variant>
         <question>Aufgabe 61 im MINT Module: Datenstrukturen und Algorithmen: Bitte erklaeren Sie den Begriff adjazenzliste und matrix anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von adjazenzliste und matrix, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 62: Breitensuche BFS" points="1.5" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 62: Breitensuche BFS" points="1.5" scope="exam">
       <variant>
         <question>Aufgabe 62 im MINT Module: Datenstrukturen und Algorithmen: Bitte analysieren Sie den Begriff Breitensuche BFS anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Breitensuche BFS, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 63: Tiefensuche DFS" points="2.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 63: Tiefensuche DFS" points="2.0" scope="exam">
       <variant>
         <question>Aufgabe 63 im MINT Module: Datenstrukturen und Algorithmen: Bitte begruenden Sie den Begriff Tiefensuche DFS anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Tiefensuche DFS, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 64: Kuerzeste Wege mit Dijkstra" points="2.5" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 64: Kuerzeste Wege mit Dijkstra" points="2.5" scope="exam">
       <variant>
         <question>Aufgabe 64 im MINT Module: Datenstrukturen und Algorithmen: Bitte konstruieren Sie den Begriff kuerzeste Wege mit Dijkstra anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von kuerzeste Wege mit Dijkstra, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 65: Topologische Sortierung" points="3.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 65: Topologische Sortierung" points="3.0" scope="exam">
       <variant>
         <question>Aufgabe 65 im MINT Module: Datenstrukturen und Algorithmen: Bitte vergleichen Sie den Begriff Topologische Sortierung anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Topologische Sortierung, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 66: Zyklenerkennung" points="1.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 66: Zyklenerkennung" points="1.0" scope="exam">
       <variant>
         <question>Aufgabe 66 im MINT Module: Datenstrukturen und Algorithmen: Bitte optimieren Sie den Begriff Zyklenerkennung anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Zyklenerkennung, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 67: Starke Zusammenhangskomponenten" points="1.5" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 67: Starke Zusammenhangskomponenten" points="1.5" scope="exam">
       <variant>
         <question>Aufgabe 67 im MINT Module: Datenstrukturen und Algorithmen: Bitte validieren Sie den Begriff starke Zusammenhangskomponenten anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von starke Zusammenhangskomponenten, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 68: MST mit Kruskal" points="2.0" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 68: MST mit Kruskal" points="2.0" scope="exam">
       <variant>
         <question>Aufgabe 68 im MINT Module: Datenstrukturen und Algorithmen: Bitte interpretieren Sie den Begriff MST mit Kruskal anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von MST mit Kruskal, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 69: MST mit Prim" points="2.5" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 69: MST mit Prim" points="2.5" scope="exam">
       <variant>
         <question>Aufgabe 69 im MINT Module: Datenstrukturen und Algorithmen: Bitte entwerfen Sie den Begriff MST mit Prim anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von MST mit Prim, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 70: Knotenfaerbung Heuristik" points="3.0" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 70: Knotenfaerbung Heuristik" points="3.0" scope="exam">
       <variant>
         <question>Aufgabe 70 im MINT Module: Datenstrukturen und Algorithmen: Bitte bewerten Sie den Begriff Knotenfaerbung Heuristik anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Knotenfaerbung Heuristik, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 71: Adjazenzliste und matrix" points="1.0" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 71: Adjazenzliste und matrix" points="1.0" scope="exam">
       <variant>
         <question>Aufgabe 71 im MINT Module: Datenstrukturen und Algorithmen: Bitte erklaeren Sie den Begriff adjazenzliste und matrix anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von adjazenzliste und matrix, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 72: Breitensuche BFS" points="1.5" difficulty="hard" scope="exam">
+    <task difficulty="hard" name="Task 72: Breitensuche BFS" points="1.5" scope="exam">
       <variant>
         <question>Aufgabe 72 im MINT Module: Datenstrukturen und Algorithmen: Bitte analysieren Sie den Begriff Breitensuche BFS anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Breitensuche BFS, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 73: Tiefensuche DFS" points="2.0" difficulty="hard" scope="exam">
+    <task difficulty="hard" name="Task 73: Tiefensuche DFS" points="2.0" scope="exam">
       <variant>
         <question>Aufgabe 73 im MINT Module: Datenstrukturen und Algorithmen: Bitte begruenden Sie den Begriff Tiefensuche DFS anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Tiefensuche DFS, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 74: Kuerzeste Wege mit Dijkstra" points="2.5" difficulty="hard" scope="exam">
+    <task difficulty="hard" name="Task 74: Kuerzeste Wege mit Dijkstra" points="2.5" scope="exam">
       <variant>
         <question>Aufgabe 74 im MINT Module: Datenstrukturen und Algorithmen: Bitte konstruieren Sie den Begriff kuerzeste Wege mit Dijkstra anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von kuerzeste Wege mit Dijkstra, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 75: Topologische Sortierung" points="3.0" difficulty="easy" scope="mock-exam">
+    <task difficulty="easy" name="Task 75: Topologische Sortierung" points="3.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 75 im MINT Module: Datenstrukturen und Algorithmen: Bitte vergleichen Sie den Begriff Topologische Sortierung anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Topologische Sortierung, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 76: Zyklenerkennung" points="1.0" difficulty="easy" scope="mock-exam">
+    <task difficulty="easy" name="Task 76: Zyklenerkennung" points="1.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 76 im MINT Module: Datenstrukturen und Algorithmen: Bitte optimieren Sie den Begriff Zyklenerkennung anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Zyklenerkennung, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 77: Starke Zusammenhangskomponenten" points="1.5" difficulty="easy" scope="mock-exam">
+    <task difficulty="easy" name="Task 77: Starke Zusammenhangskomponenten" points="1.5" scope="mock-exam">
       <variant>
         <question>Aufgabe 77 im MINT Module: Datenstrukturen und Algorithmen: Bitte validieren Sie den Begriff starke Zusammenhangskomponenten anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von starke Zusammenhangskomponenten, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 78: MST mit Kruskal" points="2.0" difficulty="medium" scope="mock-exam">
+    <task difficulty="medium" name="Task 78: MST mit Kruskal" points="2.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 78 im MINT Module: Datenstrukturen und Algorithmen: Bitte interpretieren Sie den Begriff MST mit Kruskal anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von MST mit Kruskal, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 79: MST mit Prim" points="2.5" difficulty="medium" scope="mock-exam">
+    <task difficulty="medium" name="Task 79: MST mit Prim" points="2.5" scope="mock-exam">
       <variant>
         <question>Aufgabe 79 im MINT Module: Datenstrukturen und Algorithmen: Bitte entwerfen Sie den Begriff MST mit Prim anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von MST mit Prim, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 80: Knotenfaerbung Heuristik" points="3.0" difficulty="hard" scope="mock-exam">
+    <task difficulty="hard" name="Task 80: Knotenfaerbung Heuristik" points="3.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 80 im MINT Module: Datenstrukturen und Algorithmen: Bitte bewerten Sie den Begriff Knotenfaerbung Heuristik anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Knotenfaerbung Heuristik, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
@@ -689,121 +689,121 @@
     </task>
   </chapter>
   <chapter name="Algorithmenentwurf und Analyse">
-    <task name="Task 81: Greedy Strategie" points="1.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 81: Greedy Strategie" points="1.0" scope="exam">
       <variant>
         <question>Aufgabe 81 im MINT Module: Datenstrukturen und Algorithmen: Bitte erklaeren Sie den Begriff Greedy Strategie anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Greedy Strategie, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 82: Dynamische Programmierung" points="1.5" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 82: Dynamische Programmierung" points="1.5" scope="exam">
       <variant>
         <question>Aufgabe 82 im MINT Module: Datenstrukturen und Algorithmen: Bitte analysieren Sie den Begriff Dynamische Programmierung anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Dynamische Programmierung, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 83: Backtracking" points="2.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 83: Backtracking" points="2.0" scope="exam">
       <variant>
         <question>Aufgabe 83 im MINT Module: Datenstrukturen und Algorithmen: Bitte begruenden Sie den Begriff Backtracking anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Backtracking, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 84: Divide and Conquer" points="2.5" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 84: Divide and Conquer" points="2.5" scope="exam">
       <variant>
         <question>Aufgabe 84 im MINT Module: Datenstrukturen und Algorithmen: Bitte konstruieren Sie den Begriff Divide and Conquer anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Divide and Conquer, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 85: Memoization" points="3.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 85: Memoization" points="3.0" scope="exam">
       <variant>
         <question>Aufgabe 85 im MINT Module: Datenstrukturen und Algorithmen: Bitte vergleichen Sie den Begriff Memoization anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Memoization, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 86: Korrektheitsbeweis" points="1.0" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 86: Korrektheitsbeweis" points="1.0" scope="exam">
       <variant>
         <question>Aufgabe 86 im MINT Module: Datenstrukturen und Algorithmen: Bitte optimieren Sie den Begriff Korrektheitsbeweis anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Korrektheitsbeweis, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 87: Gegenbeispiel finden" points="1.5" difficulty="easy" scope="exam">
+    <task difficulty="easy" name="Task 87: Gegenbeispiel finden" points="1.5" scope="exam">
       <variant>
         <question>Aufgabe 87 im MINT Module: Datenstrukturen und Algorithmen: Bitte validieren Sie den Begriff Gegenbeispiel finden anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Gegenbeispiel finden, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 88: Approximation" points="2.0" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 88: Approximation" points="2.0" scope="exam">
       <variant>
         <question>Aufgabe 88 im MINT Module: Datenstrukturen und Algorithmen: Bitte interpretieren Sie den Begriff Approximation anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Approximation, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 89: Laufzeitoptimierung" points="2.5" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 89: Laufzeitoptimierung" points="2.5" scope="exam">
       <variant>
         <question>Aufgabe 89 im MINT Module: Datenstrukturen und Algorithmen: Bitte entwerfen Sie den Begriff Laufzeitoptimierung anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Laufzeitoptimierung, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 90: Trade off zwischen Zeit und Speicher" points="3.0" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 90: Trade off zwischen Zeit und Speicher" points="3.0" scope="exam">
       <variant>
         <question>Aufgabe 90 im MINT Module: Datenstrukturen und Algorithmen: Bitte bewerten Sie den Begriff Trade off zwischen Zeit und Speicher anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Trade off zwischen Zeit und Speicher, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 91: Greedy Strategie" points="1.0" difficulty="medium" scope="exam">
+    <task difficulty="medium" name="Task 91: Greedy Strategie" points="1.0" scope="exam">
       <variant>
         <question>Aufgabe 91 im MINT Module: Datenstrukturen und Algorithmen: Bitte erklaeren Sie den Begriff Greedy Strategie anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Greedy Strategie, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 92: Dynamische Programmierung" points="1.5" difficulty="hard" scope="exam">
+    <task difficulty="hard" name="Task 92: Dynamische Programmierung" points="1.5" scope="exam">
       <variant>
         <question>Aufgabe 92 im MINT Module: Datenstrukturen und Algorithmen: Bitte analysieren Sie den Begriff Dynamische Programmierung anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Dynamische Programmierung, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 93: Backtracking" points="2.0" difficulty="hard" scope="exam">
+    <task difficulty="hard" name="Task 93: Backtracking" points="2.0" scope="exam">
       <variant>
         <question>Aufgabe 93 im MINT Module: Datenstrukturen und Algorithmen: Bitte begruenden Sie den Begriff Backtracking anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Backtracking, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 94: Divide and Conquer" points="2.5" difficulty="hard" scope="exam">
+    <task difficulty="hard" name="Task 94: Divide and Conquer" points="2.5" scope="exam">
       <variant>
         <question>Aufgabe 94 im MINT Module: Datenstrukturen und Algorithmen: Bitte konstruieren Sie den Begriff Divide and Conquer anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Divide and Conquer, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 95: Memoization" points="3.0" difficulty="easy" scope="mock-exam">
+    <task difficulty="easy" name="Task 95: Memoization" points="3.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 95 im MINT Module: Datenstrukturen und Algorithmen: Bitte vergleichen Sie den Begriff Memoization anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Memoization, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 96: Korrektheitsbeweis" points="1.0" difficulty="easy" scope="mock-exam">
+    <task difficulty="easy" name="Task 96: Korrektheitsbeweis" points="1.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 96 im MINT Module: Datenstrukturen und Algorithmen: Bitte optimieren Sie den Begriff Korrektheitsbeweis anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Korrektheitsbeweis, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 97: Gegenbeispiel finden" points="1.5" difficulty="easy" scope="mock-exam">
+    <task difficulty="easy" name="Task 97: Gegenbeispiel finden" points="1.5" scope="mock-exam">
       <variant>
         <question>Aufgabe 97 im MINT Module: Datenstrukturen und Algorithmen: Bitte validieren Sie den Begriff Gegenbeispiel finden anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Gegenbeispiel finden, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 98: Approximation" points="2.0" difficulty="medium" scope="mock-exam">
+    <task difficulty="medium" name="Task 98: Approximation" points="2.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 98 im MINT Module: Datenstrukturen und Algorithmen: Bitte interpretieren Sie den Begriff Approximation anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Approximation, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 99: Laufzeitoptimierung" points="2.5" difficulty="medium" scope="mock-exam">
+    <task difficulty="medium" name="Task 99: Laufzeitoptimierung" points="2.5" scope="mock-exam">
       <variant>
         <question>Aufgabe 99 im MINT Module: Datenstrukturen und Algorithmen: Bitte entwerfen Sie den Begriff Laufzeitoptimierung anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Laufzeitoptimierung, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
       </variant>
     </task>
-    <task name="Task 100: Trade off zwischen Zeit und Speicher" points="3.0" difficulty="hard" scope="mock-exam">
+    <task difficulty="hard" name="Task 100: Trade off zwischen Zeit und Speicher" points="3.0" scope="mock-exam">
       <variant>
         <question>Aufgabe 100 im MINT Module: Datenstrukturen und Algorithmen: Bitte bewerten Sie den Begriff Trade off zwischen Zeit und Speicher anhand eines praxisnahen Beispiels aus einer Lernsoftware.</question>
         <answer>Eine gute Antwort beschreibt zuerst die Definition von Trade off zwischen Zeit und Speicher, nennt die zentralen Annahmen und zeigt dann einen kurzen Ablauf mit Eingabe, Verarbeitung und Ergebnis. Wichtig sind korrekte Fachbegriffe, eine klare Argumentation und ein plausibles Beispiel aus dem Modulkontext.</answer>
