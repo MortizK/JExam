@@ -120,6 +120,22 @@ class ExamXmlLoaderWriterTest {
         assertEquals("What?", loaded.variantAt(0, 0, 0).getQuestion().trim());
     }
 
+      @Test
+      void writerShouldHandleRelativePathWithoutParent() throws Exception {
+        ExamXmlWriter writer = new ExamXmlWriter();
+        ExamXmlLoader loader = new ExamXmlLoader();
+        Path path = Path.of("target", "tmp", "writer-no-parent.xml").getFileName();
+
+        try {
+          writer.write(sampleExam(), path);
+
+          assertTrue(Files.exists(path));
+          assertEquals(sampleExam(), loader.load(path));
+        } finally {
+          Files.deleteIfExists(path);
+        }
+      }
+
     private Exam sampleExam() {
         Variant variant = new Variant("What is XML?", "Structured text");
         Task task = new Task(

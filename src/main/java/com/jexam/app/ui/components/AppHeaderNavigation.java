@@ -90,7 +90,6 @@ public final class AppHeaderNavigation extends HBox {
      * @param newText label for the create action
      * @param openText label for the open action
      * @param saveText label for the save action
-     * @param validateText label for the validate action
      */
     public void setButtonText(
         final String newText,

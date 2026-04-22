@@ -184,4 +184,54 @@ class ExamApplicationServiceBranchesTest {
         assertTrue(Files.exists(generated.get(0)));
         assertTrue(Files.exists(generated.get(1)));
     }
+
+    @Test
+    void pairGenerationShouldSupportOutputWithoutParentPath() throws Exception {
+        ExamApplicationService service = new ExamApplicationService();
+        Path output = Path.of("pair-no-parent.pdf");
+
+        try {
+            List<Path> generated = service.generatePdfPair(GenerationMode.EXAM, output);
+
+            assertEquals(2, generated.size());
+            assertEquals("pair-no-parent.pdf", generated.get(0).toString());
+            assertEquals("pair-no-parent_solutions.pdf", generated.get(1).toString());
+            assertTrue(Files.exists(generated.get(0)));
+            assertTrue(Files.exists(generated.get(1)));
+        } finally {
+            Files.deleteIfExists(Path.of("pair-no-parent.pdf"));
+            Files.deleteIfExists(Path.of("pair-no-parent_solutions.pdf"));
+        }
+    }
+
+    @Test
+    void lowerFallbackShouldUseHigherSumWhenNoLowerSumExists() throws Exception {
+        ExamApplicationService service = new ExamApplicationService();
+        service.updateTaskDetails(0, 0, "Only", 1.0, Difficulty.EASY, Scope.EXAM);
+        service.addTask(0, "Second");
+        service.updateTaskDetails(0, 1, "Second", 2.0, Difficulty.MEDIUM, Scope.EXAM);
+
+        service.setGoalPointFallbackPreference(ExamApplicationService.GoalPointFallbackPreference.LOWER);
+        service.setGenerationChapterGoalPoints(0, 0.5);
+
+        Path output = tempDir.resolve("lower-fallback-no-lower.pdf");
+        service.generatePdf(GenerationMode.EXAM, output);
+
+        assertTrue(Files.exists(output));
+        assertTrue(Files.size(output) > 0);
+    }
+
+    @Test
+    void generationShouldRejectChapterWithOnlyZeroPointTasks() {
+        ExamApplicationService service = new ExamApplicationService();
+        service.updateTaskDetails(0, 0, "Zero", 0.0, Difficulty.EASY, Scope.EXAM);
+        service.setGenerationChapterGoalPoints(0, 0.5);
+
+        IllegalStateException exception = assertThrows(
+            IllegalStateException.class,
+            () -> service.generatePdf(GenerationMode.EXAM, tempDir.resolve("zero-point.pdf"))
+        );
+
+        assertTrue(exception.getMessage().contains("has no achievable positive point total"));
+    }
 }

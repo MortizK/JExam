@@ -58,6 +58,73 @@ After each refactoring batch:
 2. Run `mvn pmd:pmd`
 3. Compare violations in `target/pmd.xml` against this baseline.
 
+## Coverage Targets (Line Count Priority)
+
+Date: 2026-04-22
+
+Primary objective for this phase:
+
+- Raise overall JaCoCo line coverage to `50%`.
+- Prioritize high-yield line gains in application/service paths before deep edge-case expansion.
+
+Per-package target policy:
+
+- `com.jexam.model`, `com.jexam.model.enums`, `com.jexam.validation`, `com.jexam.io`: maintain `>=95%`.
+- `com.jexam.generation`: raise and maintain `>=93%`.
+- `com.jexam.app`: primary growth target, move toward `>=50%` by expanding service-layer tests and extracting testable logic from UI-coupled flow where required.
+- `com.jexam.app.ui.*`: currently manual-test-oriented; do not block the 50% target on direct UI automation in this phase.
+
+Ratcheting policy:
+
+1. Immediate gate: no coverage regression from the latest accepted baseline.
+2. Milestone ratchet: increase required overall line coverage by `+2` to `+3` points per checkpoint until `50%` is reached.
+3. Keep PMD/Checkstyle/SpotBugs reports in each checkpoint summary so line gains do not hide maintainability regressions.
+
+Verification commands for each checkpoint:
+
+- `mvn clean verify`
+- `mvn -DskipTests javadoc:javadoc`
+
+Primary reports:
+
+- `target/site/jacoco/index.html`
+- `target/site/jacoco/jacoco.xml`
+- `target/site/pmd.html`
+- `target/checkstyle-result.xml`
+- `target/spotbugsXml.xml`
+- `target/reports/apidocs/index.html`
+
+## Phase Kickoff Checkpoint (Coverage + Javadocs)
+
+Date: 2026-04-22
+
+Executed:
+
+- `mvn -Dtest=ExamApplicationServiceTest,ExamApplicationServiceBranchesTest,ExamValidatorTest,ExamXmlLoaderWriterTest,PdfBoxGenerationServiceTest test` (53 tests passed)
+- `mvn clean verify` (build success)
+- `mvn -DskipTests javadoc:javadoc` (build success, warnings only)
+
+Observed delta:
+
+1. `ExamValidator` line coverage reached `100%` (56/56 lines).
+2. `ExamApplicationService` line coverage improved from `316` covered lines to `320` covered lines.
+3. `com.jexam.generation` package line coverage increased to `92.28%`.
+4. `com.jexam.io` package line coverage remains high at `98.57%`.
+5. Javadoc generation is now integrated via Maven plugin and produces `-javadoc.jar` during package.
+
+Current package line coverage snapshot:
+
+- `com.jexam.app`: `28.11%`
+- `com.jexam.validation`: `100.00%`
+- `com.jexam.io`: `98.57%`
+- `com.jexam.generation`: `92.28%`
+- Overall line coverage: `28.73%`
+
+Interpretation:
+
+- The line-count-first strategy is yielding measurable gains in covered service and validator paths while preserving full build stability.
+- The remaining path to `50%` depends primarily on increasing coverage in `com.jexam.app` and selectively extracting UI-coupled logic into testable service methods.
+
 ## Post-Refactoring Checkpoint (Phase Continuation)
 
 Date: 2026-04-01

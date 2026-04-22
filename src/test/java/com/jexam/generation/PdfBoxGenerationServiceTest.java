@@ -199,6 +199,50 @@ class PdfBoxGenerationServiceTest {
         }
     }
 
+    @Test
+    void shouldGeneratePdfToRelativePathWithoutParentDirectory() throws Exception {
+        PdfGenerationService service = new PdfBoxGenerationService();
+        Path out = Path.of("target", "tmp", "generation-no-parent.pdf").getFileName();
+
+        try {
+            service.generate(sampleExam(), GenerationMode.EXAM, out);
+
+            assertTrue(Files.exists(out));
+            assertTrue(Files.size(out) > 0);
+        } finally {
+            Files.deleteIfExists(out);
+        }
+    }
+
+    @Test
+    void shouldRenderNullTextValuesAsEmptyStrings() throws Exception {
+        PdfGenerationService service = new PdfBoxGenerationService();
+        Path out = tempDir.resolve("null-text-values.pdf");
+
+        Exam exam = new Exam(
+            null,
+            List.of(
+                new Chapter(
+                    null,
+                    List.of(
+                        new Task(
+                            null,
+                            1.0,
+                            Difficulty.EASY,
+                            Scope.EXAM,
+                            List.of(new Variant(null, null))
+                        )
+                    )
+                )
+            )
+        );
+
+        service.generate(exam, GenerationMode.SOLUTION, out);
+
+        assertTrue(Files.exists(out));
+        assertTrue(Files.size(out) > 0);
+    }
+
     private String readPdfText(Path path) throws Exception {
         try (PDDocument document = Loader.loadPDF(path.toFile())) {
             return new PDFTextStripper().getText(document);

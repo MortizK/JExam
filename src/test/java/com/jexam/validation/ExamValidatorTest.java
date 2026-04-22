@@ -20,6 +20,15 @@ class ExamValidatorTest {
     private final ExamValidator validator = new ExamValidator();
 
     @Test
+    void nullExamShouldFail() {
+        ValidationResult result = validator.validate(null);
+
+        assertFalse(result.isValid());
+        assertEquals(1, result.getErrors().size());
+        assertEquals("exam", result.getErrors().get(0).getPath());
+    }
+
+    @Test
     void validExamShouldPass() {
         ValidationResult result = validator.validate(TestFixtures.validExam());
         assertTrue(result.isValid());
@@ -89,5 +98,25 @@ class ExamValidatorTest {
         assertTrue(result.getErrors().stream().anyMatch(error -> "exam.chapters[0].tasks[0].difficulty".equals(error.getPath())));
         assertTrue(result.getErrors().stream().anyMatch(error -> "exam.chapters[0].tasks[0].scope".equals(error.getPath())));
         assertTrue(result.getErrors().stream().anyMatch(error -> "exam.chapters[0].tasks[0].variants[0]".equals(error.getPath())));
+    }
+
+    @Test
+    void nullChapterAndNullTaskShouldBeReported() {
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(null);
+        List<Chapter> chapters = new ArrayList<>();
+        chapters.add(null);
+        chapters.add(new Chapter("Second", tasks));
+
+        Exam exam = new Exam(
+            "Demo",
+            chapters
+        );
+
+        ValidationResult result = validator.validate(exam);
+
+        assertFalse(result.isValid());
+        assertTrue(result.getErrors().stream().anyMatch(error -> "exam.chapters[0]".equals(error.getPath())));
+        assertTrue(result.getErrors().stream().anyMatch(error -> "exam.chapters[1].tasks[0]".equals(error.getPath())));
     }
 }
