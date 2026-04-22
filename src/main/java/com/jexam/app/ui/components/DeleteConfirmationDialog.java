@@ -9,6 +9,8 @@ import java.util.Optional;
 
 /**
  * Reusable delete confirmation dialog for destructive actions.
+ *
+ * @author Moritz
  */
 public final class DeleteConfirmationDialog {
     /**

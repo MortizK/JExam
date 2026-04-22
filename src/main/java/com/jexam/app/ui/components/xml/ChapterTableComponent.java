@@ -18,6 +18,8 @@ import java.util.function.Consumer;
 
 /**
  * Chapter navigation table with inline add/delete actions.
+ *
+ * @author Moritz
  */
 public final class ChapterTableComponent extends VBox {
     private final ListView<String> listView = new ListView<>();

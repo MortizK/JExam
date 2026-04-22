@@ -35,6 +35,8 @@ import java.util.function.Consumer;
 
 /**
  * Included/excluded chapter configuration with reorder actions.
+ *
+ * @author Moritz
  */
 public final class ChapterConfigurationComponent extends VBox {
     private static final int POINT_SCALE = 2;
@@ -143,6 +145,7 @@ public final class ChapterConfigurationComponent extends VBox {
 
     /**
      * Sets chapter data with default excluded chapters list.
+     *
      * @param chapterNames names of all chapters
      * @param includedOrder indices of chapters to include in order
      * @param configuredGoals map of chapter index to goal points
@@ -157,6 +160,7 @@ public final class ChapterConfigurationComponent extends VBox {
 
     /**
      * Sets complete chapter data including chapters for point calculation.
+     *
      * @param chapterNames names of all chapters
      * @param includedOrder indices of chapters to include in order
      * @param configuredGoals map of chapter index to goal points
@@ -269,6 +273,8 @@ public final class ChapterConfigurationComponent extends VBox {
 
     /**
      * Returns currently selected included chapter index, or -1 when no selection exists.
+     *
+     * @return a int
      */
     public int selectedIncludedChapterIndex() {
         ChapterRow selected = includedList.getSelectionModel().getSelectedItem();
@@ -277,6 +283,8 @@ public final class ChapterConfigurationComponent extends VBox {
 
     /**
      * Returns currently selected excluded chapter index, or -1 when no selection exists.
+     *
+     * @return a int
      */
     public int selectedExcludedChapterIndex() {
         ChapterRow selected = excludedList.getSelectionModel().getSelectedItem();
@@ -285,6 +293,8 @@ public final class ChapterConfigurationComponent extends VBox {
 
     /**
      * Selects an included chapter row by chapter index if present.
+     *
+     * @param chapterIndex a int
      */
     public void selectIncludedChapterByChapterIndex(final int chapterIndex) {
         if (chapterIndex < 0) {
@@ -300,6 +310,8 @@ public final class ChapterConfigurationComponent extends VBox {
 
     /**
      * Selects an excluded chapter row by chapter index if present.
+     *
+     * @param chapterIndex a int
      */
     public void selectExcludedChapterByChapterIndex(final int chapterIndex) {
         if (chapterIndex < 0) {
@@ -324,6 +336,7 @@ public final class ChapterConfigurationComponent extends VBox {
 
     /**
      * Sets callback handler when user requests moving selected chapter up in included list.
+     *
      * @param handler consumer accepting the chapter index to move up; null clears the handler
      */
     public void setOnMoveUp(final Consumer<Integer> handler) {
@@ -332,6 +345,7 @@ public final class ChapterConfigurationComponent extends VBox {
 
     /**
      * Sets callback handler when user requests moving selected chapter down in included list.
+     *
      * @param handler consumer accepting the chapter index to move down; null clears the handler
      */
     public void setOnMoveDown(final Consumer<Integer> handler) {
@@ -340,6 +354,7 @@ public final class ChapterConfigurationComponent extends VBox {
 
     /**
      * Sets callback handler when user excludes a chapter from generation.
+     *
      * @param handler consumer accepting the chapter index to exclude; null clears the handler
      */
     public void setOnExclude(final Consumer<Integer> handler) {
@@ -348,6 +363,7 @@ public final class ChapterConfigurationComponent extends VBox {
 
     /**
      * Sets callback handler when user includes an excluded chapter in generation.
+     *
      * @param handler consumer accepting the chapter index to include; null clears the handler
      */
     public void setOnInclude(final Consumer<Integer> handler) {
@@ -356,6 +372,7 @@ public final class ChapterConfigurationComponent extends VBox {
 
     /**
      * Sets callback handler when user changes goal points for a chapter.
+     *
      * @param handler bi-consumer accepting (chapter index, goal points); null clears the handler
      */
     public void setOnGoalChanged(final BiConsumer<Integer, Double> handler) {
@@ -364,6 +381,7 @@ public final class ChapterConfigurationComponent extends VBox {
 
     /**
      * Sets callback handler when user requests reset of chapter selection to all chapters.
+     *
      * @param handler runnable to execute on reset request; null clears the handler
      */
     public void setOnReset(final Runnable handler) {
@@ -372,6 +390,7 @@ public final class ChapterConfigurationComponent extends VBox {
 
     /**
      * Sets callback handler when user reorders chapters in the included list via drag-drop.
+     *
      * @param handler bi-consumer accepting (from index, to index); null clears the handler
      */
     public void setOnReorder(final BiConsumer<Integer, Integer> handler) {

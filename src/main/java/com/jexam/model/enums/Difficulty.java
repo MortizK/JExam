@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 /**
  * Difficulty levels for a task.
+ *
+ * @author Moritz
  */
 public enum Difficulty {
     /**

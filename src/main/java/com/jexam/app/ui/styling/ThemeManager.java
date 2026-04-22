@@ -7,6 +7,8 @@ import java.util.Objects;
 
 /**
  * Applies and switches JavaFX themes using classpath CSS resources.
+ *
+ * @author Moritz
  */
 public final class ThemeManager {
     private static final String BASE_STYLESHEET = "/styles/base.css";

@@ -10,6 +10,8 @@ import java.util.function.Consumer;
 
 /**
  * Inline chapter name editor.
+ *
+ * @author Moritz
  */
 public final class ChapterHeaderEditor extends HBox {
     private final Label titleLabel = new Label("Chapter");

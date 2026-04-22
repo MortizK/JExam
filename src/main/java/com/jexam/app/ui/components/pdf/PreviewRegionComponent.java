@@ -19,6 +19,8 @@ import java.util.List;
 
 /**
  * Right-hand preview region with lifecycle states.
+ *
+ * @author Moritz
  */
 public final class PreviewRegionComponent extends VBox {
     private static final String STATE_IDLE = "preview-idle";

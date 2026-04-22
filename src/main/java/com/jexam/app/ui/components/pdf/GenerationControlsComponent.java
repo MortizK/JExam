@@ -14,6 +14,8 @@ import java.util.function.Consumer;
 
 /**
  * Top-left generation mode and actions section.
+ *
+ * @author Moritz
  */
 public final class GenerationControlsComponent extends VBox {
     private final Label modeLabel = new Label("Generation Mode");

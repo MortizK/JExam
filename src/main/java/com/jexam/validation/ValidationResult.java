@@ -6,6 +6,8 @@ import java.util.List;
 
 /**
  * Aggregates validation errors produced by validation routines.
+ *
+ * @author Moritz
  */
 public final class ValidationResult {
     /**

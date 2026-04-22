@@ -28,6 +28,8 @@ import java.util.function.Consumer;
 
 /**
  * PDF tab shell with generation controls, chapter configuration, validation, and preview.
+ *
+ * @author Moritz
  */
 public final class PdfTabContainer extends BorderPane {
     private record PreviewRenderResult(Path previewPath, List<Path> imagePaths) {

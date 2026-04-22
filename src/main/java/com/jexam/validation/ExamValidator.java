@@ -7,8 +7,16 @@ import com.jexam.model.Variant;
 
 /**
  * Validates exam model instances and collects all detected violations.
+ *
+ * @author Moritz
  */
 public final class ExamValidator {
+    /**
+     * Creates a validator instance.
+     */
+    public ExamValidator() {
+    }
+
     /**
      * Validates the provided exam and returns all errors.
      *

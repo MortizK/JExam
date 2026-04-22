@@ -10,6 +10,8 @@ import java.util.function.Consumer;
 
 /**
  * Empty state shown when no XML has been loaded yet.
+ *
+ * @author Moritz
  */
 public final class XmlLoadingState extends VBox {
     private final Label titleLabel = new Label("No XML loaded");

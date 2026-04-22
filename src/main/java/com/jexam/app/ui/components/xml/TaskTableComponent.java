@@ -18,6 +18,8 @@ import java.util.function.Consumer;
 
 /**
  * Task navigation table with inline add/delete actions.
+ *
+ * @author Moritz
  */
 public final class TaskTableComponent extends VBox {
     private final ListView<String> listView = new ListView<>();

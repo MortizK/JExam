@@ -14,6 +14,8 @@ import java.util.function.Consumer;
 
 /**
  * Displays validation issues grouped by top-level path segment.
+ *
+ * @author Moritz
  */
 public final class ValidationSummaryComponent extends VBox {
     private static final String CLASS_STATE_SUCCESS = "validation-success";

@@ -9,6 +9,8 @@ import java.util.function.Consumer;
 
 /**
  * Inline variant editor for question and answer text.
+ *
+ * @author Moritz
  */
 public final class VariantEditorComponent extends VBox {
     private final Label questionLabel = new Label("Question");

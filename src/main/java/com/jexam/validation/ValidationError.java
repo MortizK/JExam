@@ -4,6 +4,8 @@ import java.util.Objects;
 
 /**
  * Immutable validation error entry.
+ *
+ * @author Moritz
  */
 public final class ValidationError {
     /**
@@ -45,6 +47,7 @@ public final class ValidationError {
         return message;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -57,11 +60,13 @@ public final class ValidationError {
             && Objects.equals(message, that.message);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return Objects.hash(path, message);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return path + ": " + message;

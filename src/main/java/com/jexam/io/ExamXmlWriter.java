@@ -22,15 +22,23 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Writes {@link Exam} instances to the JExam XML format.
+ * Writes {@link com.jexam.model.Exam} instances to the JExam XML format.
+ *
+ * @author Moritz
  */
 public class ExamXmlWriter {
+    /**
+     * Creates an XML writer instance.
+     */
+    public ExamXmlWriter() {
+    }
+
     /**
      * Writes an exam as XML to the provided file path.
      *
      * @param exam exam model to serialize
      * @param path output XML path
-     * @throws ExamXmlException if XML creation or file writing fails
+     * @throws com.jexam.io.ExamXmlException if XML creation or file writing fails
      */
     public void write(final Exam exam, final Path path) throws ExamXmlException {
         try {

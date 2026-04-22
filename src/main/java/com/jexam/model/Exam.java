@@ -7,6 +7,8 @@ import java.util.Objects;
 
 /**
  * Root exam aggregate containing chapters.
+ *
+ * @author Moritz
  */
 public final class Exam {
     /**
@@ -121,6 +123,7 @@ public final class Exam {
         return taskAt(chapterIndex, taskIndex).variantAt(variantIndex);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -133,6 +136,7 @@ public final class Exam {
             && Objects.equals(chapters, exam.chapters);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return Objects.hash(name, chapters);

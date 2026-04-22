@@ -6,6 +6,8 @@ import java.nio.file.Path;
 
 /**
  * Contract for exam PDF generation.
+ *
+ * @author Moritz
  */
 public interface PdfGenerationService {
     /**

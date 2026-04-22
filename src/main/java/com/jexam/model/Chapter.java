@@ -7,6 +7,8 @@ import java.util.Objects;
 
 /**
  * Chapter containing a set of tasks.
+ *
+ * @author Moritz
  */
 public final class Chapter {
     /**
@@ -105,6 +107,7 @@ public final class Chapter {
         return taskAt(taskIndex).variantAt(variantIndex);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -117,6 +120,7 @@ public final class Chapter {
             && Objects.equals(tasks, chapter.tasks);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return Objects.hash(name, tasks);

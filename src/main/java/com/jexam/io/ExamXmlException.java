@@ -2,6 +2,8 @@ package com.jexam.io;
 
 /**
  * Exception thrown when exam XML loading, validation, or writing fails.
+ *
+ * @author Moritz
  */
 public class ExamXmlException extends Exception {
     /**

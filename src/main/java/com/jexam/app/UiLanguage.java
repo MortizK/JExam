@@ -2,6 +2,8 @@ package com.jexam.app;
 
 /**
  * Supported UI languages.
+ *
+ * @author Moritz
  */
 public enum UiLanguage {
     ENGLISH("English"),
@@ -13,6 +15,7 @@ public enum UiLanguage {
         this.label = displayLabel;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return label;

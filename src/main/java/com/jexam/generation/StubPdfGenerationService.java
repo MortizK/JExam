@@ -6,14 +6,14 @@ import java.nio.file.Path;
 
 /**
  * Stub generator used where no real PDF implementation should run.
+ *
+ * @author Moritz
  */
 public final class StubPdfGenerationService implements PdfGenerationService {
     /**
-     * Always throws because this is intentionally a stub.
+     * {@inheritDoc}
      *
-     * @param exam exam model
-     * @param mode generation mode
-     * @param outputPath output path
+     * Always throws because this is intentionally a stub.
      */
     @Override
     public void generate(

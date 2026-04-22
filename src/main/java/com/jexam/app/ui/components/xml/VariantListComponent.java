@@ -17,6 +17,8 @@ import java.util.function.Consumer;
 
 /**
  * Variant list with add/delete actions.
+ *
+ * @author Moritz
  */
 public final class VariantListComponent extends VBox {
     private final ListView<String> listView = new ListView<>();

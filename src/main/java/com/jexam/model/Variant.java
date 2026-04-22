@@ -4,6 +4,8 @@ import java.util.Objects;
 
 /**
  * Question-answer pair used inside a task.
+ *
+ * @author Moritz
  */
 public final class Variant {
     /**
@@ -63,6 +65,7 @@ public final class Variant {
         this.answer = answerText;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -75,6 +78,7 @@ public final class Variant {
             && Objects.equals(answer, variant.answer);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return Objects.hash(question, answer);

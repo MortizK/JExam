@@ -125,6 +125,37 @@ Interpretation:
 - The line-count-first strategy is yielding measurable gains in covered service and validator paths while preserving full build stability.
 - The remaining path to `50%` depends primarily on increasing coverage in `com.jexam.app` and selectively extracting UI-coupled logic into testable service methods.
 
+## Phase Continuation Checkpoint (App Coverage + Javadoc Reduction)
+
+Date: 2026-04-22
+
+Executed:
+
+- `mvn -Dtest=UserPreferencesStoreTest,ExamApplicationServiceBranchesTest,ExamApplicationServiceTest test` (33 tests passed)
+- `mvn clean verify` (110 tests passed)
+- `mvn -DskipTests javadoc:javadoc` (build success)
+
+Observed delta:
+
+1. Overall line coverage increased from `28.73%` to `30.24%`.
+2. `com.jexam.app` package line coverage increased from `28.11%` to `31.12%`.
+3. `UserPreferencesStore` improved to `48` covered lines (`6` missed).
+4. `ExamApplicationService` remains at `320` covered lines with improved branch-path test resilience.
+5. Javadoc warnings reduced to `11` after enum and constructor documentation updates.
+
+Current package line coverage snapshot:
+
+- `com.jexam.app`: `31.12%`
+- `com.jexam.validation`: `100.00%`
+- `com.jexam.io`: `98.59%`
+- `com.jexam.generation`: `92.28%`
+- Overall line coverage: `30.24%`
+
+Interpretation:
+
+- Adding deterministic tests for low-coverage app infrastructure (`UserPreferencesStore`) gives better line-yield than incremental micro-branches alone.
+- The next high-impact path remains the untested UI-facing app classes (`XmlTabContainer`, `PdfTabContainer`, `JExamApp`) via further extraction and service-level tests.
+
 ## Post-Refactoring Checkpoint (Phase Continuation)
 
 Date: 2026-04-01

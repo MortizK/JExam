@@ -23,6 +23,7 @@ import java.util.function.Function;
  * Tree navigation with text filtering and selection forwarding.
  *
  * @param <T> hierarchy item type
+ * @author Moritz
  */
 public final class TreeViewWithFilter<T> extends BorderPane {
     private final TextField filterField = new TextField();

@@ -12,6 +12,8 @@ import java.util.function.IntConsumer;
 
 /**
  * Displays the current hierarchy path and allows navigation to ancestors.
+ *
+ * @author Moritz
  */
 public final class BreadcrumbNavigation extends HBox {
     private static final int MAX_SEGMENT_LENGTH = 30;

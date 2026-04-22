@@ -16,6 +16,8 @@ import java.util.function.Consumer;
 
 /**
  * Top-level app header with tab switching, global actions, language selection, and dirty state.
+ *
+ * @author Moritz
  */
 public final class AppHeaderNavigation extends HBox {
     private final Label dirtyIndicator = new Label();

@@ -2,6 +2,8 @@ package com.jexam.app.ui.styling;
 
 /**
  * Supported UI themes with stylesheet resource paths.
+ *
+ * @author Moritz
  */
 public enum UiTheme {
     LIGHT("/styles/theme-light.css"),

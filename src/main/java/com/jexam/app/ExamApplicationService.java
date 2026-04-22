@@ -31,6 +31,8 @@ import java.nio.file.Files;
  *
  * <p>This class acts as the controller-side boundary between the JavaFX view
  * and domain/services. It keeps JExamApp focused on presentation concerns.</p>
+ *
+ * @author Moritz
  */
 public class ExamApplicationService {
     private static final double DIFFICULTY_TARGET_RATIO = 1d / 3d;
@@ -54,10 +56,20 @@ public class ExamApplicationService {
      * Preference for resolving infeasible chapter goal points.
      */
     public enum GoalPointFallbackPreference {
+        /**
+         * Prefer the nearest lower achievable point sum.
+         */
         LOWER,
+
+        /**
+         * Prefer the nearest higher achievable point sum.
+         */
         HIGHER
     }
 
+    /**
+     * <p>Constructor for ExamApplicationService.</p>
+     */
     public ExamApplicationService() {
         this.validator = new ExamValidator();
         this.pdfGenerationService = new PdfBoxGenerationService();
@@ -98,7 +110,7 @@ public class ExamApplicationService {
      * Loads and validates an exam from disk.
      *
      * @param path XML input path
-     * @throws ExamXmlException if loading or validation fails
+     * @throws com.jexam.io.ExamXmlException if loading or validation fails
      */
     public void openExam(Path path) throws ExamXmlException {
         currentExam = persistenceService.loadValidated(path);
@@ -109,7 +121,7 @@ public class ExamApplicationService {
      * Validates and saves the current exam to disk.
      *
      * @param path XML output path
-     * @throws ExamXmlException if validation or writing fails
+     * @throws com.jexam.io.ExamXmlException if validation or writing fails
      */
     public void saveExam(Path path) throws ExamXmlException {
         persistenceService.saveValidated(currentExam, path);

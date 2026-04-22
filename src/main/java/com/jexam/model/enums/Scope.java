@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 /**
  * Scope of a task in generated outputs.
+ *
+ * @author Moritz
  */
 public enum Scope {
     /**

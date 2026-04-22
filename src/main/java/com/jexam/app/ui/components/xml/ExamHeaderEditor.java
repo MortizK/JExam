@@ -10,6 +10,8 @@ import java.util.function.Consumer;
 
 /**
  * Inline exam name editor.
+ *
+ * @author Moritz
  */
 public final class ExamHeaderEditor extends HBox {
     private final Label titleLabel = new Label("Exam");

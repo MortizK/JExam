@@ -27,6 +27,8 @@ import java.util.regex.Pattern;
 
 /**
  * JavaFX entry point for JExam.
+ *
+ * @author Moritz
  */
 public class JExamApp extends Application {
     private static final Pattern ISSUE_PATH_PATTERN = Pattern.compile(
@@ -47,6 +49,7 @@ public class JExamApp extends Application {
     private Path currentXmlPath;
     private final Path autoSavePath = Paths.get(System.getProperty("java.io.tmpdir"), "jexam-autosave.xml");
 
+    /** {@inheritDoc} */
     @Override
     public void start(final Stage stage) {
         UiLanguage initialLanguage = preferencesStore.loadLanguage();
@@ -122,6 +125,11 @@ public class JExamApp extends Application {
         stage.show();
     }
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects
+     */
     public static void main(final String[] args) {
         launch(args);
     }

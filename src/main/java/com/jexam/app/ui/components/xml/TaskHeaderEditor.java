@@ -16,6 +16,8 @@ import java.util.function.Consumer;
 
 /**
  * Inline task metadata editor.
+ *
+ * @author Moritz
  */
 public final class TaskHeaderEditor extends GridPane {
     private final TextField nameField = new TextField();

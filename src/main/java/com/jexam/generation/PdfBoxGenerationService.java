@@ -25,6 +25,8 @@ import java.util.List;
 
 /**
  * PDF generation service backed by Apache PDFBox.
+ *
+ * @author Moritz
  */
 public class PdfBoxGenerationService implements PdfGenerationService {
     private static final PDType1Font BODY_FONT = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
@@ -51,11 +53,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
     private static final float ANSWER_LINE_HEIGHT = 14;
 
     /**
-     * Generates a PDF for the given exam and output mode.
+     * {@inheritDoc}
      *
-     * @param exam exam model to render
-     * @param mode generation mode controlling included content
-     * @param outputPath destination file path
+     * Generates a PDF for the given exam and output mode.
      */
     @Override
     public void generate(

@@ -37,6 +37,8 @@ import java.util.function.Consumer;
 
 /**
  * XML tab shell that wires the existing app service to chapter/task/variant editors.
+ *
+ * @author Moritz
  */
 public final class XmlTabContainer extends BorderPane {
     private static final int MAX_TREE_LABEL_LENGTH = 42;

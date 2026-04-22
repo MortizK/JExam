@@ -10,6 +10,8 @@ import java.util.Objects;
 
 /**
  * Task entity with metadata and variants.
+ *
+ * @author Moritz
  */
 public final class Task {
     /**
@@ -178,6 +180,7 @@ public final class Task {
         return variants.get(variantIndex);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -193,6 +196,7 @@ public final class Task {
             && Objects.equals(variants, task.variants);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return Objects.hash(name, points, difficulty, scope, variants);

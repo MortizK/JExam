@@ -8,6 +8,8 @@ import java.nio.file.Path;
 
 /**
  * High-level persistence service combining XML I/O and validation policy.
+ *
+ * @author Moritz
  */
 public class ExamPersistenceService {
     /**
@@ -47,7 +49,7 @@ public class ExamPersistenceService {
      *
      * @param path XML path
      * @return validated exam
-     * @throws ExamXmlException when loading or validation fails
+     * @throws com.jexam.io.ExamXmlException when loading or validation fails
      */
     public Exam loadValidated(final Path path) throws ExamXmlException {
         final Exam exam = loader.load(path);
@@ -65,7 +67,7 @@ public class ExamPersistenceService {
      *
      * @param exam exam instance
      * @param path output path
-     * @throws ExamXmlException when validation or writing fails
+     * @throws com.jexam.io.ExamXmlException when validation or writing fails
      */
     public void saveValidated(final Exam exam, final Path path)
         throws ExamXmlException {

@@ -21,15 +21,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Loads {@link Exam} instances from the JExam XML format.
+ * Loads {@link com.jexam.model.Exam} instances from the JExam XML format.
+ *
+ * @author Moritz
  */
 public class ExamXmlLoader {
     /**
-     * Parses an exam XML file into an {@link Exam} object graph.
+     * Creates an XML loader instance.
+     */
+    public ExamXmlLoader() {
+    }
+
+    /**
+     * Parses an exam XML file into an {@link com.jexam.model.Exam} object graph.
      *
      * @param path path to the XML file
      * @return parsed exam instance
-     * @throws ExamXmlException if parsing fails or XML values are invalid
+     * @throws com.jexam.io.ExamXmlException if parsing fails or XML values are invalid
      */
     public Exam load(final Path path) throws ExamXmlException {
         try {
