@@ -4,7 +4,6 @@ import com.jexam.model.Chapter;
 import com.jexam.model.Exam;
 import com.jexam.model.Task;
 import com.jexam.model.Variant;
-import com.jexam.model.enums.Difficulty;
 import com.jexam.model.enums.Scope;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
@@ -43,7 +42,6 @@ public class PdfBoxGenerationService implements PdfGenerationService {
     private static final float SUBTITLE_FONT_SIZE = 14;
     private static final float SMALL_FONT_SIZE = 10;
     private static final float LINE_HEIGHT = 16;
-    private static final float SMALL_LINE_HEIGHT = 12;
     private static final float SECTION_GAP = 10;
     private static final float CHAPTER_GAP = 18;
     private static final float QUESTION_GAP = 6;
@@ -628,32 +626,6 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         context.content.newLineAtOffset(PAGE_WIDTH - RIGHT_MARGIN - 60, 24);
         context.content.showText("Page " + context.pageNumber);
         context.content.endText();
-    }
-
-    private String chapterSummary(final Chapter chapter) {
-        int includedTaskCount = 0;
-        float points = 0f;
-        int easy = 0;
-        int medium = 0;
-        int hard = 0;
-        for (Task task : chapter.getTasks()) {
-            if (!shouldIncludeTask(task, GenerationMode.EXAM) && !shouldIncludeTask(task, GenerationMode.SOLUTION) && !shouldIncludeTask(task, GenerationMode.MOCK_EXAM)) {
-                continue;
-            }
-            includedTaskCount++;
-            points += (float) task.getPoints();
-            if (task.getDifficulty() == Difficulty.EASY) {
-                easy++;
-            } else if (task.getDifficulty() == Difficulty.MEDIUM) {
-                medium++;
-            } else if (task.getDifficulty() == Difficulty.HARD) {
-                hard++;
-            }
-        }
-
-        return "tasks=" + includedTaskCount
-            + ", points=" + formatPoints(points)
-            + ", difficulty=" + easy + "/" + medium + "/" + hard;
     }
 
     private record ChapterBookmark(String title, PDPage page, List<TaskBookmark> taskBookmarks) {

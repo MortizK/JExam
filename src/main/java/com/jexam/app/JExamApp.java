@@ -5,7 +5,6 @@ import com.jexam.app.ui.styling.ThemeManager;
 import com.jexam.app.ui.styling.UiTheme;
 import com.jexam.app.ui.components.AppHeaderNavigation;
 import com.jexam.io.ExamXmlException;
-import com.jexam.validation.ValidationResult;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -287,15 +286,6 @@ public class JExamApp extends Application {
             );
             return false;
         }
-    }
-
-    private void validateCurrentExam() {
-        ValidationResult result = appService.validateCurrentExam();
-        if (result.isValid()) {
-            ui.showInfo("Validation successful", "No validation errors found.");
-            return;
-        }
-        ui.showError("Validation failed", result.getErrors().toString());
     }
 
     private void previewPdf() {

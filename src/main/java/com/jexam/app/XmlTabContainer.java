@@ -19,7 +19,6 @@ import com.jexam.model.Variant;
 import com.jexam.model.enums.Difficulty;
 import com.jexam.model.enums.Scope;
 import javafx.geometry.Insets;
-import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.BorderPane;
@@ -58,9 +57,6 @@ public final class XmlTabContainer extends BorderPane {
     private final VariantListComponent variantList = new VariantListComponent();
     private final VariantEditorComponent variantEditor = new VariantEditorComponent();
 
-    private final VBox chapterEditorPane = new VBox(8);
-    private final VBox taskEditorPane = new VBox(8);
-    private final VBox variantEditorPane = new VBox(8);
     private final VBox leftColumn = new VBox(8, navigationTree);
     private final VBox rightColumn = new VBox(
         10,
