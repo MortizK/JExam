@@ -227,6 +227,7 @@
 .task-items .list-cell:selected,
 .variant-items .list-cell:selected,
 .included-chapter-list .list-cell:selected,
+.excluded-chapter-list .list-cell:selected,
 .validation-tree .tree-cell:selected,
 .tree-view .tree-cell:selected {
     -fx-background-color: -jexam-primary;

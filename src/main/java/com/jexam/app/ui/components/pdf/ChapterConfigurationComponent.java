@@ -17,6 +17,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
@@ -46,6 +47,9 @@ public final class ChapterConfigurationComponent extends VBox {
     private final Map<Integer, Chapter> chapterByIndex = new HashMap<>();
     private final Map<Integer, List<Double>> achievablePointsByChapter = new HashMap<>();
     private final Map<Integer, GoalPointField> goalFieldByChapter = new HashMap<>();
+    private final Label includedLabel = new Label("Included Chapters");
+    private final Label excludedLabel = new Label("Excluded Chapters");
+    private final HBox excludedActions;
 
     private Consumer<Integer> moveUpHandler = index -> { };
     private Consumer<Integer> moveDownHandler = index -> { };
@@ -74,13 +78,14 @@ public final class ChapterConfigurationComponent extends VBox {
         setSpacing(8);
         setPadding(new Insets(8));
 
+        includedList.setFixedCellSize(36);
+        excludedList.setFixedCellSize(36);
+
         Button upButton = new Button("Up");
         Button downButton = new Button("Down");
         Button excludeButton = new Button("Exclude");
         Button includeButton = new Button("Include");
         Button resetButton = new Button("Reset");
-        Label includedLabel = new Label("Included Chapters");
-        Label excludedLabel = new Label("Excluded Chapters");
 
         includedLabel.getStyleClass().add("section-label");
         excludedLabel.getStyleClass().add("section-label");
@@ -121,9 +126,10 @@ public final class ChapterConfigurationComponent extends VBox {
         });
 
         HBox includedActions = new HBox(6, upButton, downButton, excludeButton);
-        HBox excludedActions = new HBox(6, includeButton, resetButton);
+        excludedActions = new HBox(6, includeButton, resetButton);
         includedActions.getStyleClass().add("list-actions");
         excludedActions.getStyleClass().add("list-actions");
+        setExcludedSectionVisible(false);
 
         getChildren().addAll(
             includedLabel,
@@ -213,6 +219,9 @@ public final class ChapterConfigurationComponent extends VBox {
 
         includedList.setItems(FXCollections.observableArrayList(includedRows));
         excludedList.setItems(FXCollections.observableArrayList(excludedRows));
+        setListHeight(includedList, includedRows.size());
+        setListHeight(excludedList, excludedRows.size());
+        setExcludedSectionVisible(!excludedRows.isEmpty());
 
         if (!includedRows.isEmpty()) {
             int targetSelection = previousIncludedSelection == null
@@ -237,6 +246,25 @@ public final class ChapterConfigurationComponent extends VBox {
         } else {
             excludedList.getSelectionModel().clearSelection();
         }
+    }
+
+    private void setExcludedSectionVisible(final boolean visible) {
+        excludedLabel.setManaged(visible);
+        excludedLabel.setVisible(visible);
+        excludedList.setManaged(visible);
+        excludedList.setVisible(visible);
+        excludedList.setDisable(!visible);
+        excludedActions.setManaged(visible);
+        excludedActions.setVisible(visible);
+        excludedActions.setDisable(!visible);
+    }
+
+    private static void setListHeight(final ListView<ChapterRow> listView, final int itemCount) {
+        double rowHeight = listView.getFixedCellSize() <= 0 ? 36 : listView.getFixedCellSize();
+        double height = Math.max(rowHeight, itemCount * rowHeight + 2);
+        listView.setMinHeight(Region.USE_PREF_SIZE);
+        listView.setPrefHeight(height);
+        listView.setMaxHeight(height);
     }
 
     /**
