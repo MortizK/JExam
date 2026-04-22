@@ -14,14 +14,13 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Orientation;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +30,9 @@ import java.util.function.Consumer;
  * PDF tab shell with generation controls, chapter configuration, validation, and preview.
  */
 public final class PdfTabContainer extends BorderPane {
+    private record PreviewRenderResult(Path previewPath, List<Path> imagePaths) {
+    }
+
     private final ExamApplicationService appService;
     private final JExamUiSupport ui;
     private final UiStateManager uiStateManager;
@@ -78,6 +80,8 @@ public final class PdfTabContainer extends BorderPane {
         setCenter(contentSplit);
 
         configureHandlers();
+        applyLocalizedTexts();
+        ui.addLanguageChangeListener(this::applyLocalizedTexts);
         refreshFromService();
 
         uiStateManager.previewStaleProperty().addListener((observable, oldValue, newValue) -> {
@@ -126,6 +130,18 @@ public final class PdfTabContainer extends BorderPane {
         }
     }
 
+    private void applyLocalizedTexts() {
+        generationControls.setTooltips(
+            ui.text("tooltip.pdf.mode"),
+            ui.text("tooltip.pdf.export")
+        );
+        previewRegion.setTooltips(
+            ui.text("tooltip.pdf.preview.refresh"),
+            ui.text("tooltip.pdf.preview.export"),
+            ui.text("tooltip.pdf.preview.state")
+        );
+    }
+
     /**
      * Moves focus to the first meaningful control in the PDF tab.
      */
@@ -144,16 +160,18 @@ public final class PdfTabContainer extends BorderPane {
         previewRegion.setLoading();
         setGenerationBusy(true);
         final GenerationMode mode = generationControls.getSelectedMode();
-        Task<Path> task = new Task<>() {
+        Task<PreviewRenderResult> task = new Task<>() {
             @Override
-            protected Path call() {
-                return appService.generatePreviewPdf(mode);
+            protected PreviewRenderResult call() throws IOException {
+                Path previewPath = appService.generatePreviewPdf(mode);
+                List<Path> imagePaths = PdfPreviewRenderer.renderPreviewImages(previewPath);
+                return new PreviewRenderResult(previewPath, imagePaths);
             }
         };
 
         task.setOnSucceeded(event -> {
-            Path path = task.getValue();
-            previewRegion.setReady(path);
+            PreviewRenderResult result = task.getValue();
+            previewRegion.setReady(result.previewPath(), result.imagePaths());
             uiStateManager.clearPreviewStale();
             refreshFromService();
             showGenerationWarnings("Preview generated with warnings");

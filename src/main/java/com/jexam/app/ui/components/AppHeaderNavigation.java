@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 
@@ -27,7 +28,6 @@ public final class AppHeaderNavigation extends HBox {
     private Runnable newHandler = () -> { };
     private Runnable openHandler = () -> { };
     private Runnable saveHandler = () -> { };
-    private Runnable validateHandler = () -> { };
 
     /**
      * Creates the application header with global actions and language selector.
@@ -95,12 +95,34 @@ public final class AppHeaderNavigation extends HBox {
     public void setButtonText(
         final String newText,
         final String openText,
-        final String saveText,
-        final String validateText
+        final String saveText
     ) {
         newButton.setText(newText);
         openButton.setText(openText);
         saveButton.setText(saveText);
+    }
+
+    /**
+     * Applies hover text to the header controls.
+     *
+     * @param newTooltip text for the create action
+     * @param openTooltip text for the open action
+     * @param saveTooltip text for the save action
+     * @param languageTooltip text for the language selector
+     * @param dirtyTooltip text for the unsaved-changes indicator
+     */
+    public void setTooltips(
+        final String newTooltip,
+        final String openTooltip,
+        final String saveTooltip,
+        final String languageTooltip,
+        final String dirtyTooltip
+    ) {
+        setTooltip(newButton, newTooltip);
+        setTooltip(openButton, openTooltip);
+        setTooltip(saveButton, saveTooltip);
+        setTooltip(languageBox, languageTooltip);
+        setTooltip(dirtyIndicator, dirtyTooltip);
     }
 
     /**
@@ -157,12 +179,11 @@ public final class AppHeaderNavigation extends HBox {
         saveHandler = handler == null ? () -> { } : handler;
     }
 
-    /**
-     * Registers the validate action.
-     *
-     * @param handler callback for validation action; {@code null} resets to no-op
-     */
-    public void setOnValidate(final Runnable handler) {
-        validateHandler = handler == null ? () -> { } : handler;
+    private static void setTooltip(final javafx.scene.control.Control control, final String text) {
+        if (text == null || text.isBlank()) {
+            control.setTooltip(null);
+            return;
+        }
+        control.setTooltip(new Tooltip(text));
     }
 }

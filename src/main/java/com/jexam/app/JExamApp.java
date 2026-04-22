@@ -131,8 +131,14 @@ public class JExamApp extends Application {
         headerNavigation.setButtonText(
             ui.text("button.new"),
             ui.text("button.open"),
-            ui.text("button.save"),
-            ui.text("button.validate")
+            ui.text("button.save")
+        );
+        headerNavigation.setTooltips(
+            ui.text("tooltip.header.new"),
+            ui.text("tooltip.header.open"),
+            ui.text("tooltip.header.save"),
+            ui.text("tooltip.header.language"),
+            ui.text("tooltip.header.dirty")
         );
         headerNavigation.setLanguageLabel(ui.text("label.language"));
         headerNavigation.setSelectedLanguage(preferencesStore.loadLanguage());
@@ -142,8 +148,14 @@ public class JExamApp extends Application {
             headerNavigation.setButtonText(
                 ui.text("button.new"),
                 ui.text("button.open"),
-                ui.text("button.save"),
-                ui.text("button.validate")
+                ui.text("button.save")
+            );
+            headerNavigation.setTooltips(
+                ui.text("tooltip.header.new"),
+                ui.text("tooltip.header.open"),
+                ui.text("tooltip.header.save"),
+                ui.text("tooltip.header.language"),
+                ui.text("tooltip.header.dirty")
             );
             headerNavigation.setLanguageLabel(ui.text("label.language"));
             stage.setTitle(ui.text("app.title"));
@@ -151,7 +163,6 @@ public class JExamApp extends Application {
         headerNavigation.setOnNew(this::createNewExam);
         headerNavigation.setOnOpen(() -> openExam(stage));
         headerNavigation.setOnSave(() -> saveExam(stage));
-        headerNavigation.setOnValidate(this::validateCurrentExam);
     }
 
     private void configureCloseHandling(final Stage stage) {

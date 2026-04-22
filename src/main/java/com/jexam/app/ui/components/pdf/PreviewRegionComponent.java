@@ -1,23 +1,19 @@
 package com.jexam.app.ui.components.pdf;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.rendering.ImageType;
-import org.apache.pdfbox.rendering.PDFRenderer;
+import javafx.scene.control.Tooltip;
 
-import javax.imageio.ImageIO;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +26,6 @@ public final class PreviewRegionComponent extends VBox {
     private static final String STATE_READY = "preview-ready";
     private static final String STATE_STALE = "preview-stale";
     private static final String STATE_ERROR = "preview-error";
-
-    private static final float PREVIEW_DPI = 140f;
 
     private final Label stateLabel = new Label("No preview generated yet.");
     private final Button refreshButton = new Button("Refresh Preview");
@@ -101,6 +95,16 @@ public final class PreviewRegionComponent extends VBox {
      * @param path PDF file path, or {@code null} to clear
      */
     public void setReady(final Path path) {
+        setReady(path, List.of());
+    }
+
+    /**
+     * Loads a ready PDF preview from the specified path and rendered page images.
+     *
+     * @param path PDF file path, or {@code null} to clear
+     * @param imagePaths temporary PNGs that already contain rendered preview pages
+     */
+    public void setReady(final Path path, final List<Path> imagePaths) {
         previewPath = path;
         if (path == null || !Files.exists(path)) {
             setPreviewState(STATE_ERROR);
@@ -110,7 +114,24 @@ public final class PreviewRegionComponent extends VBox {
         }
 
         try {
-            renderAllPages(path);
+            deletePreviewImages();
+            pageContainer.getChildren().clear();
+            if (imagePaths == null || imagePaths.isEmpty()) {
+                throw new IOException("PDF preview has no pages.");
+            }
+
+            for (int pageIndex = 0; pageIndex < imagePaths.size(); pageIndex++) {
+                Path imagePath = imagePaths.get(pageIndex);
+                previewImagePaths.add(imagePath);
+
+                ImageView pageImage = new ImageView(new Image(imagePath.toUri().toString()));
+                pageImage.getStyleClass().add("preview-page-image");
+                pageImage.setPreserveRatio(true);
+                pageImage.setSmooth(true);
+                pageImage.setFitWidth(650);
+                pageImage.setAccessibleText("Embedded PDF preview page " + (pageIndex + 1));
+                pageContainer.getChildren().add(pageImage);
+            }
             setPreviewState(STATE_READY);
             stateLabel.setText("Preview ready");
         } catch (IOException e) {
@@ -176,36 +197,16 @@ public final class PreviewRegionComponent extends VBox {
     }
 
     /**
-     * Renders all pages of a PDF file as temporary PNG images and displays them in the preview region.
-     * Images are stored as temporary files and tracked for cleanup.
-     * @param pdfPath path to the PDF file to render
-     * @throws IOException if PDF loading or image rendering fails
+     * Applies hover text to the preview controls.
+     *
+     * @param refreshTooltip text for the refresh action
+     * @param exportTooltip text for the export action
+     * @param stateTooltip text for the preview state label
      */
-    private void renderAllPages(final Path pdfPath) throws IOException {
-        deletePreviewImages();
-        pageContainer.getChildren().clear();
-
-        try (PDDocument document = Loader.loadPDF(pdfPath.toFile())) {
-            if (document.getNumberOfPages() == 0) {
-                throw new IOException("PDF has no pages.");
-            }
-
-            PDFRenderer renderer = new PDFRenderer(document);
-            for (int pageIndex = 0; pageIndex < document.getNumberOfPages(); pageIndex++) {
-                var image = renderer.renderImageWithDPI(pageIndex, PREVIEW_DPI, ImageType.RGB);
-                Path imagePath = Files.createTempFile("jexam-preview-page-", ".png");
-                ImageIO.write(image, "png", imagePath.toFile());
-                previewImagePaths.add(imagePath);
-
-                ImageView pageImage = new ImageView(new Image(imagePath.toUri().toString()));
-                pageImage.getStyleClass().add("preview-page-image");
-                pageImage.setPreserveRatio(true);
-                pageImage.setSmooth(true);
-                pageImage.setFitWidth(650);
-                pageImage.setAccessibleText("Embedded PDF preview page " + (pageIndex + 1));
-                pageContainer.getChildren().add(pageImage);
-            }
-        }
+    public void setTooltips(final String refreshTooltip, final String exportTooltip, final String stateTooltip) {
+        setTooltip(refreshButton, refreshTooltip);
+        setTooltip(exportButton, exportTooltip);
+        setTooltip(stateLabel, stateTooltip);
     }
 
     /**
@@ -221,5 +222,13 @@ public final class PreviewRegionComponent extends VBox {
             }
         }
         previewImagePaths.clear();
+    }
+
+    private static void setTooltip(final javafx.scene.control.Control control, final String text) {
+        if (text == null || text.isBlank()) {
+            control.setTooltip(null);
+            return;
+        }
+        control.setTooltip(new Tooltip(text));
     }
 }

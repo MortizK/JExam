@@ -7,7 +7,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 
 import java.util.function.Consumer;
@@ -23,10 +23,8 @@ public final class GenerationControlsComponent extends VBox {
     ));
     private final Button exportButton = new Button("Export PDF");
 
-    private Runnable previewHandler = () -> { };
     private Runnable exportHandler = () -> { };
     private Consumer<GenerationMode> modeHandler = mode -> { };
-    private Consumer<String> seedHandler = value -> { };
     private boolean updatingControls;
 
     /**
@@ -97,7 +95,7 @@ public final class GenerationControlsComponent extends VBox {
      * @param handler callback receiving raw seed text; {@code null} resets to no-op
      */
     public void setOnSeedChanged(final Consumer<String> handler) {
-        seedHandler = handler == null ? value -> { } : handler;
+        // Seed input is not currently rendered.
     }
 
     /**
@@ -125,7 +123,7 @@ public final class GenerationControlsComponent extends VBox {
      * @param handler preview action callback; {@code null} resets to no-op
      */
     public void setOnPreviewRequested(final Runnable handler) {
-        previewHandler = handler == null ? () -> { } : handler;
+        // Preview action is handled from the preview region controls.
     }
 
     /**
@@ -138,9 +136,28 @@ public final class GenerationControlsComponent extends VBox {
     }
 
     /**
+     * Applies hover text to the generation controls.
+     *
+     * @param modeTooltip text for the generation mode selector
+     * @param exportTooltip text for the export action
+     */
+    public void setTooltips(final String modeTooltip, final String exportTooltip) {
+        setTooltip(modeBox, modeTooltip);
+        setTooltip(exportButton, exportTooltip);
+    }
+
+    /**
      * Requests keyboard focus for the primary control in this component.
      */
     public void requestControlFocus() {
         modeBox.requestFocus();
+    }
+
+    private static void setTooltip(final javafx.scene.control.Control control, final String text) {
+        if (text == null || text.isBlank()) {
+            control.setTooltip(null);
+            return;
+        }
+        control.setTooltip(new Tooltip(text));
     }
 }

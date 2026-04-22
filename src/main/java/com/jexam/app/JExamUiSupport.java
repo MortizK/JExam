@@ -12,17 +12,14 @@ import java.io.IOException;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
  * Encapsulates UI dialogs and file chooser setup used by the JavaFX app.
  */
 class JExamUiSupport {
-    private final Map<String, String> englishText = new HashMap<>();
-    private final Map<String, String> germanText = new HashMap<>();
+    private final UiTextCatalog textCatalog = UiTextCatalog.loadDefault();
     private final List<Runnable> languageChangeListeners = new ArrayList<>();
 
     private UiLanguage language = UiLanguage.ENGLISH;
@@ -30,7 +27,6 @@ class JExamUiSupport {
     private Path lastPdfDirectory;
 
     JExamUiSupport() {
-        initText();
     }
 
     void setLanguage(UiLanguage value) {
@@ -51,10 +47,7 @@ class JExamUiSupport {
     }
 
     String text(String key) {
-        if (language == UiLanguage.GERMAN && germanText.containsKey(key)) {
-            return germanText.get(key);
-        }
-        return englishText.getOrDefault(key, key);
+        return textCatalog.text(language, key);
     }
 
     Optional<String> askForText(String title, String header, String defaultValue) {
@@ -148,59 +141,4 @@ class JExamUiSupport {
         }
     }
 
-    private void initText() {
-        englishText.put("app.subtitle", "Phase 4 MVP: hierarchy editing + validation + PDF export");
-        englishText.put("app.title", "JExam");
-        englishText.put("button.load.xml", "Load XML");
-        englishText.put("button.create.exam", "Create New Exam");
-        englishText.put("button.refresh.preview", "Refresh Preview");
-        englishText.put("button.open.external", "Open External");
-        englishText.put("label.xml.empty.title", "No XML loaded");
-        englishText.put("label.xml.empty.subtitle", "Create a new exam or load an existing XML file to begin.");
-        englishText.put("label.unsaved.close.title", "Unsaved changes");
-        englishText.put("label.unsaved.close.message", "XML auto-saves to a temporary folder, but closing now may still lose progress. Continue?");
-        englishText.put("button.new", "New");
-        englishText.put("button.open", "Open");
-        englishText.put("button.save", "Save");
-        englishText.put("button.validate", "Validate");
-        englishText.put("button.preview", "Preview Exam PDF");
-        englishText.put("button.generate.exam", "Generate Exam PDF");
-        englishText.put("button.generate.solution", "Generate Solution PDF");
-        englishText.put("button.generate.mock", "Generate Mock PDF");
-        englishText.put("label.language", "Language");
-        englishText.put("dialog.value", "Value:");
-        englishText.put("file.xml.title", "JExam XML File");
-        englishText.put("file.pdf.title", "Export PDF");
-        englishText.put("tree.filter.prompt", "Filter...");
-        englishText.put("tree.filter.accessible", "Filter exam chapters and tasks");
-        englishText.put("button.expand.all", "Expand All");
-        englishText.put("button.collapse.all", "Collapse All");
-
-        germanText.put("app.subtitle", "Phase 4 MVP: Hierarchie bearbeiten + Validierung + PDF-Export");
-    germanText.put("app.title", "JExam");
-    germanText.put("button.load.xml", "XML laden");
-    germanText.put("button.create.exam", "Neues Examen erstellen");
-    germanText.put("button.refresh.preview", "Vorschau aktualisieren");
-    germanText.put("button.open.external", "Extern öffnen");
-    germanText.put("label.xml.empty.title", "Kein XML geladen");
-    germanText.put("label.xml.empty.subtitle", "Erstellen Sie ein neues Examen oder laden Sie eine XML-Datei, um zu beginnen.");
-    germanText.put("label.unsaved.close.title", "Ungespeicherte Änderungen");
-    germanText.put("label.unsaved.close.message", "XML wird zwar temporär gespeichert, aber beim Schließen kann dennoch Fortschritt verloren gehen. Fortfahren?");
-        germanText.put("button.new", "Neu");
-        germanText.put("button.open", "Offnen");
-        germanText.put("button.save", "Speichern");
-        germanText.put("button.validate", "Prufen");
-        germanText.put("button.preview", "Klausur-PDF Vorschau");
-        germanText.put("button.generate.exam", "Klausur-PDF erzeugen");
-        germanText.put("button.generate.solution", "Losungs-PDF erzeugen");
-        germanText.put("button.generate.mock", "Probe-PDF erzeugen");
-        germanText.put("label.language", "Sprache");
-        germanText.put("dialog.value", "Wert:");
-        germanText.put("file.xml.title", "JExam XML-Datei");
-        germanText.put("file.pdf.title", "PDF exportieren");
-        germanText.put("tree.filter.prompt", "Filtern...");
-        germanText.put("tree.filter.accessible", "Klausurkapitel und Aufgaben filtern");
-        germanText.put("button.expand.all", "Alle aufklappen");
-        germanText.put("button.collapse.all", "Alle einklappen");
-    }
 }

@@ -1,0 +1,38 @@
+key,ENGLISH,GERMAN
+app.subtitle,v.1.0,v.1.0
+app.title,JExam,JExam
+button.load.xml,Load XML,XML laden
+button.create.exam,Create New Exam,Neues Examen erstellen
+button.refresh.preview,Refresh Preview,Vorschau aktualisieren
+button.open.external,Open External,Extern öffnen
+label.xml.empty.title,No XML loaded,Kein XML geladen
+label.xml.empty.subtitle,Create a new exam or load an existing XML file to begin.,Erstellen Sie ein neue Klausur oder laden Sie eine XML-Datei, um zu beginnen.
+label.unsaved.close.title,Unsaved changes,Ungespeicherte Änderungen
+label.unsaved.close.message,XML auto-saves to a temporary folder, but closing now may still lose progress. Continue?,XML wird zwar temporär gespeichert, aber beim Schließen kann dennoch Fortschritt verloren gehen. Fortfahren?
+button.new,New,Neu
+button.open,Open,Öffnen
+button.save,Save,Speichern
+button.validate,Validieren,
+button.preview,Preview Exam PDF,Klausur-PDF Vorschau
+button.generate.exam,Generate Exam PDF,Klausur-PDF erzeugen
+button.generate.solution,Generate Solution PDF,Lösungs-PDF erzeugen
+button.generate.mock,Generate Mock PDF,Probe-PDF erzeugen
+label.language,Language,Sprache
+dialog.value,Value:,Wert:
+file.xml.title,JExam XML File,JExam XML-Datei
+file.pdf.title,Export PDF,PDF exportieren
+tree.filter.prompt,Filter...,Filtern...
+tree.filter.accessible,Filter exam chapters and tasks,Klausurkapitel und Aufgaben filtern
+button.expand.all,Expand All,Alle aufklappen
+button.collapse.all,Collapse All,Alle einklappen
+tooltip.header.new,Create a new exam in memory,Neues Examen im Speicher erstellen
+tooltip.header.open,Open an existing exam XML file,Eine vorhandene XML-Datei öffnen
+tooltip.header.save,Save the current exam to XML,Die aktuelle Klausur als XML speichern
+tooltip.header.validate,Validate the current exam,Die aktuelle Klausur validieren
+tooltip.header.language,Switch the application language,Die Anwendungssprache wechseln
+tooltip.header.dirty,Unsaved changes in the current exam,Ungespeicherte Änderungen in der aktuellen Klausur
+tooltip.pdf.mode,Select the PDF generation mode,Das PDF-Generierungsformat wählen
+tooltip.pdf.export,Export the selected PDF variant,Die ausgewählte PDF-Variante exportieren
+tooltip.pdf.preview.refresh,Refresh the preview image,Die Vorschau aktualisieren
+tooltip.pdf.preview.export,Export the selected PDF,Das ausgewählte PDF exportieren
+tooltip.pdf.preview.state,Preview state message,Statusmeldung der Vorschau
