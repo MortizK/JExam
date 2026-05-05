@@ -11,6 +11,7 @@ import java.util.prefs.Preferences;
  */
 final class UserPreferencesStore {
     private static final String KEY_LANGUAGE = "ui.language";
+    private static final String KEY_LAST_TAB_INDEX = "ui.lastTabIndex";
     private static final String KEY_LAST_XML_DIR = "path.lastXmlDir";
     private static final String KEY_LAST_XML_FILE = "path.lastXmlFile";
     private static final String KEY_LAST_PDF_DIR = "path.lastPdfDir";
@@ -44,6 +45,20 @@ final class UserPreferencesStore {
     void saveTheme(final UiTheme theme) {
         UiTheme safeTheme = theme == null ? UiTheme.LIGHT : theme;
         preferences.put(KEY_UI_THEME, safeTheme.name());
+    }
+
+    int loadLastTabIndex() {
+        String raw = preferences.get(KEY_LAST_TAB_INDEX, "0");
+        try {
+            int index = Integer.parseInt(raw);
+            return index < 0 ? 0 : index;
+        } catch (NumberFormatException ignored) {
+            return 0;
+        }
+    }
+
+    void saveLastTabIndex(final int tabIndex) {
+        preferences.put(KEY_LAST_TAB_INDEX, Integer.toString(Math.max(tabIndex, 0)));
     }
 
     Path loadLastXmlDirectory() {

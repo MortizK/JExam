@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 class UserPreferencesStoreTest {
     private static final String KEY_LANGUAGE = "ui.language";
+    private static final String KEY_LAST_TAB_INDEX = "ui.lastTabIndex";
     private static final String KEY_LAST_XML_DIR = "path.lastXmlDir";
     private static final String KEY_LAST_XML_FILE = "path.lastXmlFile";
     private static final String KEY_LAST_PDF_DIR = "path.lastPdfDir";
@@ -58,6 +59,22 @@ class UserPreferencesStoreTest {
 
         store.saveTheme(UiTheme.DARK);
         assertEquals(UiTheme.DARK, store.loadTheme());
+    }
+
+    @Test
+    void lastTabIndexShouldPersistAndFallbackToZeroForInvalidValues() {
+        UserPreferencesStore store = new UserPreferencesStore();
+
+        assertEquals(0, store.loadLastTabIndex());
+
+        store.saveLastTabIndex(1);
+        assertEquals(1, store.loadLastTabIndex());
+
+        store.saveLastTabIndex(-3);
+        assertEquals(0, store.loadLastTabIndex());
+
+        preferences.put(KEY_LAST_TAB_INDEX, "not-a-number");
+        assertEquals(0, store.loadLastTabIndex());
     }
 
     @Test
@@ -112,6 +129,7 @@ class UserPreferencesStoreTest {
 
     private void clearPreferenceKeys() {
         preferences.remove(KEY_LANGUAGE);
+        preferences.remove(KEY_LAST_TAB_INDEX);
         preferences.remove(KEY_LAST_XML_DIR);
         preferences.remove(KEY_LAST_XML_FILE);
         preferences.remove(KEY_LAST_PDF_DIR);

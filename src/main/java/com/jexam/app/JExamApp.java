@@ -86,6 +86,12 @@ public class JExamApp extends Application {
         Tab pdfTab = new Tab("PDF", pdfTabContainer);
         pdfTab.setClosable(false);
         tabPane.getTabs().addAll(xmlTab, pdfTab);
+        tabPane.getSelectionModel().select(Math.min(preferencesStore.loadLastTabIndex(), tabPane.getTabs().size() - 1));
+        tabPane.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                preferencesStore.saveLastTabIndex(newValue.intValue());
+            }
+        });
         pdfTab.setOnSelectionChanged(event -> {
             if (pdfTab.isSelected()) {
                 Platform.runLater(() -> {
