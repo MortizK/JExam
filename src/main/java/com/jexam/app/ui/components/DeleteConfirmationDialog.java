@@ -28,6 +28,7 @@ public final class DeleteConfirmationDialog {
      * @param cascadeMessage detail message describing follow-up effects
      * @return {@code true} when user confirms, otherwise {@code false}
      */
+    // ELEGANCE: Empathy - Destructive operation confirmation prevents accidental data loss
     public static boolean confirm(
         final Window owner,
         final String title,

@@ -36,6 +36,7 @@ public final class BreadcrumbNavigation extends HBox {
      *
      * @param pathSegments ordered path segments from root to current item
      */
+    // ELEGANCE: Guidance - Breadcrumb navigation provides spatial context for user location
     public void setPath(final List<String> pathSegments) {
         segments.clear();
         if (pathSegments != null) {

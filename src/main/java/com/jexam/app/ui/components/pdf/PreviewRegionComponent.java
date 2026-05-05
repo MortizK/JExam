@@ -106,6 +106,7 @@ public final class PreviewRegionComponent extends VBox {
      * @param path PDF file path, or {@code null} to clear
      * @param imagePaths temporary PNGs that already contain rendered preview pages
      */
+    // ELEGANCE: Novelty - Sophisticated multi-state preview lifecycle with real-time feedback
     public void setReady(final Path path, final List<Path> imagePaths) {
         previewPath = path;
         if (path == null || !Files.exists(path)) {

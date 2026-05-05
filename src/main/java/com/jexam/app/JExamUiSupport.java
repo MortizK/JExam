@@ -101,6 +101,7 @@ class JExamUiSupport {
         alert.showAndWait();
     }
 
+    // ELEGANCE: Empathy - User-friendly error feedback acknowledges failures clearly
     void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);

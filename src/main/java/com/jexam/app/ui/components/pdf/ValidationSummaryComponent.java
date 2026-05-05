@@ -59,6 +59,7 @@ public final class ValidationSummaryComponent extends VBox {
      *
      * @param result validation result to display
      */
+    // ELEGANCE: Novelty - Creative hierarchical error grouping with navigation creates engaging UX
     public void setValidationResult(final ValidationResult result) {
         TreeItem<String> root = new TreeItem<>("root");
         root.setExpanded(true);

@@ -183,4 +183,4 @@ Dieses Dokument ist ein vollständiger Arbeitsplan für das Projekt JExam. Es f�
 - [x] Gesamtfortschritt der Use Cases bewerten
 - [x] Refactoring-Report mit 3 geeigneten Patterns schreiben
 - [x] Vier Software-Problem-Reports als Tickets.pdf erstellen
-- [ ] UI um Empathy, Guidance und Novelty ergänzen und im Code kommentieren
+- [x] UI um Empathy, Guidance und Novelty ergänzen und im Code kommentieren

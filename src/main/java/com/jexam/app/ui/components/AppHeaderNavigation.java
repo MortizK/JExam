@@ -81,6 +81,7 @@ public final class AppHeaderNavigation extends HBox {
      *
      * @param dirty whether unsaved changes are present
      */
+    // ELEGANCE: Empathy - Proactive unsaved changes indicator prevents data loss
     public void setDirty(final boolean dirty) {
         dirtyIndicator.setText(dirty ? "Unsaved changes" : "");
         dirtyIndicator.setVisible(dirty);

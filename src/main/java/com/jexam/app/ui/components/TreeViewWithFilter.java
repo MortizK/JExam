@@ -54,6 +54,7 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         filterField.setPromptText("Filter...");
         filterField.setAccessibleText("Filter exam chapters and tasks");
         filterField.setFocusTraversable(true);
+        // ELEGANCE: Novelty - Real-time tree filtering enables interactive, responsive navigation
         filterField.textProperty().addListener((observable, oldValue, newValue) -> refreshTree());
 
         expandAllButton.setOnAction(event -> expandAll());
