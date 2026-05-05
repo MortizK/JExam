@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<exam name="Small Dataset Exam">
+  <chapter name="Basics">
+    <task difficulty="easy" name="Task 1: Intro" points="1.0" scope="exam">
+      <variant>
+        <question>What is a chapter?</question>
+        <answer>A chapter groups related tasks.</answer>
+      </variant>
+    </task>
+    <task difficulty="medium" name="Task 2: Details" points="1.5" scope="mock-exam">
+      <variant>
+        <question>What is a variant?</question>
+        <answer>A variant is one alternative wording.</answer>
+      </variant>
+      <variant>
+        <question>Why do variants help?</question>
+        <answer>They support multiple exam versions.</answer>
+      </variant>
+    </task>
+  </chapter>
+</exam>

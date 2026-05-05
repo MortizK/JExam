@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<exam name=" ">
+  <chapter name="Broken Chapter">
+    <task difficulty="easy" name="Invalid Task" points="0.0" scope="exam">
+      <variant>
+        <question>Broken?</question>
+        <answer>Yes.</answer>
+      </variant>
+    </task>
+  </chapter>
+</exam>

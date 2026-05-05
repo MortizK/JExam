@@ -25,6 +25,35 @@ class DatasetWorkflowIntegrationTest {
     Path tempDir;
 
     @Test
+    void smallDatasetShouldRoundTripAndGeneratePdfArtifacts() throws Exception {
+        Path source = copyResourceToTemp("/dataSetSmall.xml", "small-source.xml");
+
+        ExamPersistenceService persistenceService = new ExamPersistenceService(
+            new ExamXmlLoader(),
+            new ExamXmlWriter(),
+            new ExamValidator()
+        );
+        Exam loaded = persistenceService.loadValidated(source);
+
+        assertEquals("Small Dataset Exam", loaded.getName());
+        assertEquals(1, loaded.chapterCount());
+        assertEquals(2, loaded.chapterAt(0).taskCount());
+
+        Path saved = tempDir.resolve("small-roundtrip.xml");
+        persistenceService.saveValidated(loaded, saved);
+        assertTrue(Files.exists(saved));
+
+        PdfGenerationService pdfService = new PdfBoxGenerationService();
+        Path examPdf = tempDir.resolve("small-exam.pdf");
+        Path mockPdf = tempDir.resolve("small-mock.pdf");
+        pdfService.generate(loaded, GenerationMode.EXAM, examPdf);
+        pdfService.generate(loaded, GenerationMode.MOCK_EXAM, mockPdf);
+
+        assertTrue(Files.size(examPdf) > 0);
+        assertTrue(Files.size(mockPdf) > 0);
+    }
+
+    @Test
     void validDatasetShouldRoundTripAndGeneratePdfArtifacts() throws Exception {
         Path source = copyResourceToTemp("/dataSetValid.xml", "valid-source.xml");
 
@@ -50,6 +79,25 @@ class DatasetWorkflowIntegrationTest {
 
         assertTrue(Files.size(examPdf) > 0);
         assertTrue(Files.size(mockPdf) > 0);
+    }
+
+    @Test
+    void invalidDatasetShouldFailValidation() throws Exception {
+        Path source = copyResourceToTemp("/dataSetInvalid.xml", "invalid-source.xml");
+
+        ExamPersistenceService persistenceService = new ExamPersistenceService(
+            new ExamXmlLoader(),
+            new ExamXmlWriter(),
+            new ExamValidator()
+        );
+
+        com.jexam.io.ExamXmlException exception = org.junit.jupiter.api.Assertions.assertThrows(
+            com.jexam.io.ExamXmlException.class,
+            () -> persistenceService.loadValidated(source)
+        );
+
+        assertTrue(exception.getMessage().contains("Loaded XML is invalid"));
+        assertTrue(exception.getMessage().contains("exam.name"));
     }
 
     @Test
