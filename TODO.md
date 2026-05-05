@@ -151,6 +151,8 @@ Schreiben Sie für jede der vier Arten von Wartung einen sinnvollen Software Pro
 
 Nutzen Sie hierfür ein Textverarbeitungsprogramm Ihrer Wahl, exportieren das Dokument als PDF-Datei "Tickets.pdf", legen Sie es in Ihrem Projektordner ab. Geben Sie die Datei am Ende des Semester zusammen mit Ihrem gesamten Projekt mit ab.
 
+(Abgabe: "Tickets.pdf")
+
 ### Aufgabe 22 - Ergänzung der UI
 
 * Bauen Sie zu folgenden drei UI-Prinzipien nach der vorigen Folie (ELEGANCE-Prinzipien) möglichst kreativ je eine Ergänzung in Ihr Programm ein:
