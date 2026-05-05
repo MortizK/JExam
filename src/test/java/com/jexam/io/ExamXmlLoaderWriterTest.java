@@ -120,6 +120,39 @@ class ExamXmlLoaderWriterTest {
         assertEquals("What?", loaded.variantAt(0, 0, 0).getQuestion().trim());
     }
 
+    @Test
+    void loaderShouldIgnoreUnexpectedElementsWhileParsing() throws Exception {
+        Path xml = tempDir.resolve("unexpected-elements.xml");
+        Files.writeString(
+            xml,
+            """
+                <exam name="Unexpected Demo">
+                  <metadata>ignored</metadata>
+                  <chapter name="Chapter">
+                    <note>ignored</note>
+                    <task name="Task" points="1.5" difficulty="medium" scope="exam">
+                      <hint>ignored</hint>
+                      <variant>
+                        <question>Q</question>
+                        <answer>A</answer>
+                        <explanation>ignored</explanation>
+                      </variant>
+                    </task>
+                  </chapter>
+                </exam>
+                """
+        );
+
+        Exam loaded = new ExamXmlLoader().load(xml);
+
+        assertEquals("Unexpected Demo", loaded.getName());
+        assertEquals(1, loaded.chapterCount());
+        assertEquals("Chapter", loaded.chapterAt(0).getName());
+        assertEquals(1, loaded.taskAt(0, 0).getVariants().size());
+        assertEquals("Q", loaded.variantAt(0, 0, 0).getQuestion());
+        assertEquals("A", loaded.variantAt(0, 0, 0).getAnswer());
+    }
+
       @Test
       void writerShouldHandleRelativePathWithoutParent() throws Exception {
         ExamXmlWriter writer = new ExamXmlWriter();
