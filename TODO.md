@@ -166,7 +166,7 @@ Nutzen Sie hierfür ein Textverarbeitungsprogramm Ihrer Wahl, exportieren das Do
 
 Dieses Dokument ist ein vollständiger Arbeitsplan für das Projekt JExam. Es führt die Arbeit von der Vorbereitung über Analyse, Spezifikation und Entwurf bis zu Implementierung, Tests, Metriken, Refactoring, Review und UI-Verbesserungen. Für die Abgabe sind vor allem die Dokumente 01_Analysefragen.pdf, 02_Spezifikation.pdf, 03_Entwurf.pdf, Refactoring_Report.pdf und Tickets.pdf relevant.
 
-## Offene ToDos für die Abgabe
+## To Dos aus den Aufgaben oben
 
 - [x] Analysefragen für das Kundengespräch finalisieren und als 01_Analysefragen.pdf abgeben
 - [x] Kundengespräch führen, Antworten sauber notieren und die Analysenotizen sichern
@@ -186,6 +186,14 @@ Dieses Dokument ist ein vollständiger Arbeitsplan für das Projekt JExam. Es f�
 - [x] Refactoring-Report mit 3 geeigneten Patterns schreiben
 - [x] Vier Software-Problem-Reports als Tickets.pdf erstellen
 - [x] UI um Empathy, Guidance und Novelty ergänzen und im Code kommentieren
+
+## Offene To Dos
+
+- [ ] Alle Texte sollen Deutsch, Englisch Support bekommen.
+- [ ] Remove Custom Keyboard movement
+- [ ] PDF Gen von Aufgaben überarbeiten
+- [ ] PDF Gen von Deckblatt überarbeiten
+- [ ] PDF Gen Secret Zitate für Mock Exams und Exams einfügen
 
 ## To Dos für die Live Demo am 20.05.2026
 
