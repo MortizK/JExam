@@ -6,6 +6,7 @@ import com.jexam.model.Task;
 import com.jexam.model.Variant;
 import com.jexam.model.enums.Difficulty;
 import com.jexam.model.enums.Scope;
+import com.jexam.app.UiLanguage;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
@@ -67,6 +68,9 @@ class PdfBoxGenerationServiceTest {
     @Test
     void shouldAddCoverPageAndStartEachChapterOnItsOwnPage() throws Exception {
         PdfGenerationService service = new PdfBoxGenerationService();
+        if (service instanceof PdfBoxGenerationService) {
+            ((PdfBoxGenerationService) service).setUiLanguage(UiLanguage.GERMAN);
+        }
         Path out = tempDir.resolve("chapter-breaks.pdf");
 
         service.generate(twoChapterExam(), GenerationMode.EXAM, out);
@@ -107,6 +111,9 @@ class PdfBoxGenerationServiceTest {
     @Test
     void shouldGenerateCoverOnlyPdfForEmptyExam() throws Exception {
         PdfGenerationService service = new PdfBoxGenerationService();
+        if (service instanceof PdfBoxGenerationService) {
+            ((PdfBoxGenerationService) service).setUiLanguage(UiLanguage.GERMAN);
+        }
         Path out = tempDir.resolve("empty.pdf");
 
         service.generate(new Exam("Empty", List.of()), GenerationMode.EXAM, out);

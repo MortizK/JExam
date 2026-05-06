@@ -137,6 +137,11 @@ public final class PdfTabContainer extends BorderPane {
             ui.text("tooltip.pdf.mode"),
             ui.text("tooltip.pdf.export")
         );
+        generationControls.setLocalizedTexts(
+            ui.text("label.generation.mode"),
+            ui.text("checkbox.include.cover"),
+            ui.text("button.export.pdf")
+        );
         previewRegion.setTooltips(
             ui.text("tooltip.pdf.preview.refresh"),
             ui.text("tooltip.pdf.preview.export"),
@@ -162,6 +167,7 @@ public final class PdfTabContainer extends BorderPane {
         previewRegion.setLoading();
         setGenerationBusy(true);
         final GenerationMode mode = generationControls.getSelectedMode();
+        appService.setCoverEnabled(generationControls.isCoverIncluded());
         Task<PreviewRenderResult> task = new Task<>() {
             @Override
             protected PreviewRenderResult call() throws IOException {
@@ -297,6 +303,7 @@ public final class PdfTabContainer extends BorderPane {
 
         setGenerationBusy(true);
         final Path outputPath = output.toPath();
+        appService.setCoverEnabled(generationControls.isCoverIncluded());
         final boolean canReusePreview = previewRegion.getPreviewPath() != null && !uiStateManager.isPreviewStale();
 
         Task<ExportResult> task = new Task<>() {

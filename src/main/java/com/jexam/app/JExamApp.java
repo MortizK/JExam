@@ -55,6 +55,7 @@ public class JExamApp extends Application {
         UiLanguage initialLanguage = preferencesStore.loadLanguage();
         activeTheme = preferencesStore.loadTheme();
         ui.setLanguage(initialLanguage);
+        appService.setUiLanguage(initialLanguage);
         ui.setLastXmlDirectory(preferencesStore.loadLastXmlDirectory());
         ui.setLastPdfDirectory(preferencesStore.loadLastPdfDirectory());
         currentXmlPath = null;
@@ -158,6 +159,7 @@ public class JExamApp extends Application {
         headerNavigation.setOnLanguageChanged(value -> {
             ui.setLanguage(value);
             preferencesStore.saveLanguage(value);
+                appService.setUiLanguage(value);
             headerNavigation.setButtonText(
                 ui.text("button.new"),
                 ui.text("button.open"),

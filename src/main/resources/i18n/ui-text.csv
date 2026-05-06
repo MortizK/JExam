@@ -36,3 +36,12 @@ tooltip.pdf.export,Export the selected PDF variant,Die ausgewählte PDF-Variante
 tooltip.pdf.preview.refresh,Refresh the preview image,Die Vorschau aktualisieren
 tooltip.pdf.preview.export,Export the selected PDF,Das ausgewählte PDF exportieren
 tooltip.pdf.preview.state,Preview state message,Statusmeldung der Vorschau
+label.generation.mode,Generation Mode,Generierungsmodus
+checkbox.include.cover,Include cover,Deckblatt einfügen
+button.export.pdf,Export PDF,PDF exportieren
+cover.title,Cover,Deckblatt
+cover.course,Course / Module,Kurs / Modul
+cover.date,Date,Datum
+cover.studentId,Student ID / Matrikelnummer,Matrikelnummer
+cover.pointsTotal,Total points,Gesamtpunkte
+cover.instruction,Instructions: Answer all questions. Kurze Instruktionen: Beantworte alle Aufgaben.

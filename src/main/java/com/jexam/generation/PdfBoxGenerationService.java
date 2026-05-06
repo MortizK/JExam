@@ -22,6 +22,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import com.jexam.app.UiTextCatalog;
+import com.jexam.app.UiLanguage;
 
 /**
  * PDF generation service backed by Apache PDFBox.
@@ -52,6 +54,26 @@ public class PdfBoxGenerationService implements PdfGenerationService {
     private static final float MIN_ANSWER_BOX_HEIGHT = 60;
     private static final float ANSWER_LINE_HEIGHT = 14;
 
+    // Feature flags / options
+    private boolean coverEnabled = true;
+    // Localization
+    private UiTextCatalog uiTextCatalog = UiTextCatalog.loadDefault();
+    private UiLanguage uiLanguage = UiLanguage.ENGLISH;
+
+    /**
+     * Sets UI language to be used for localized cover texts.
+     */
+    public void setUiLanguage(final UiLanguage language) {
+        this.uiLanguage = language == null ? UiLanguage.ENGLISH : language;
+    }
+
+    /**
+     * Enable or disable generation of the cover page. Default: true.
+     */
+    public void setCoverEnabled(final boolean enabled) {
+        this.coverEnabled = enabled;
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -75,9 +97,11 @@ public class PdfBoxGenerationService implements PdfGenerationService {
             try (PDDocument document = new PDDocument()) {
                 List<ChapterBookmark> chapterBookmarks;
                 try (RenderContext context = new RenderContext(document, mode, exam)) {
-                    writeCoverPage(context, exam);
-                    if (exam.chapterCount() > 0) {
-                        context.startNewPage();
+                    if (coverEnabled) {
+                        writeCoverPage(context, exam);
+                        if (exam.chapterCount() > 0) {
+                            context.startNewPage();
+                        }
                     }
                     chapterBookmarks = writeChapters(context, exam);
                 }
@@ -136,26 +160,32 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return destination;
     }
 
+    // TODO: Redo the Cover Page
     private void writeCoverPage(final RenderContext context, final Exam exam)
         throws IOException {
         context.content.setFont(BOLD_FONT, TITLE_FONT_SIZE);
-        context.y = writeCenteredLine(context, context.y, "Deckblatt", BOLD_FONT, TITLE_FONT_SIZE);
+        String coverTitle = uiTextCatalog.text(uiLanguage, "cover.title");
+        context.y = writeCenteredLine(context, context.y, coverTitle, BOLD_FONT, TITLE_FONT_SIZE);
         context.y -= SECTION_GAP;
 
         context.content.setFont(BODY_FONT, SUBTITLE_FONT_SIZE);
         context.y = writeCenteredLine(context, context.y, oneLine(exam.getName()), BODY_FONT, SUBTITLE_FONT_SIZE);
-        context.y -= CHAPTER_GAP;
+        context.y -= 6f;
+        drawHorizontalRule(context, context.y);
+        context.y -= CHAPTER_GAP - 6f;
 
-        context.y = writeLine(context, context.y, "Datum: ________________________________");
-        context.y = writeLine(context, context.y, "Matrikelnummer: _______________________");
+        context.y = writeLine(context, context.y, uiTextCatalog.text(uiLanguage, "cover.date") + ": ________________________________");
+        context.y = writeLine(context, context.y, uiTextCatalog.text(uiLanguage, "cover.studentId") + ": _______________________");
         context.y -= SECTION_GAP;
 
         context.y = writeSectionTitle(context, "Punkteuebersicht");
-        context.y = writeLine(context, context.y, "Gesamtpunkte: " + formatPoints(totalPoints(exam, context.mode)));
+        context.y = writeLine(context, context.y, uiTextCatalog.text(uiLanguage, "cover.pointsTotal") + ": " + formatPoints(totalPoints(exam, context.mode)));
         context.y -= SECTION_GAP;
 
-        context.y = writeLine(context, context.y, "Aufgabe                              Teilaufgaben   Punkte");
-        context.y = writeLine(context, context.y, "---------------------------------------------------------");
+        context.content.setFont(BOLD_FONT, BODY_FONT_SIZE);
+        context.y = writeLine(context, context.y, "Aufgabe" + padLeft("Teilaufgaben", 20) + padLeft("Punkte", 10));
+        drawHorizontalRule(context, context.y + 4f);
+        context.content.setFont(BODY_FONT, BODY_FONT_SIZE);
 
         final int chapterCount = exam.chapterCount();
         for (int index = 0; index < exam.chapterCount(); index++) {
@@ -171,6 +201,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
                     + padLeft(formatPoints(totalPoints(chapter, context.mode)), 6)
             );
         }
+        context.y -= SECTION_GAP;
+        // Instruction
+        context.y = writeLine(context, context.y, uiTextCatalog.text(uiLanguage, "cover.instruction"));
     }
 
     private List<ChapterBookmark> writeChapters(final RenderContext context, final Exam exam)
@@ -194,11 +227,6 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         context.y = writeSectionTitle(
             context,
             heading
-        );
-        context.y = writeLine(
-            context,
-            context.y,
-            "Tasks: " + includedTasks(chapter, context.mode).size() + " | Points: " + formatPoints(totalPoints(chapter, context.mode))
         );
         context.y -= SECTION_GAP;
         List<TaskBookmark> taskBookmarks = writeTasks(context, chapter);
@@ -245,7 +273,6 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         for (int i = 0; i < task.getVariants().size(); i++) {
             Variant variant = task.getVariants().get(i);
             context.y = ensureSpace(context, estimateVariantBlockHeight(task, variant, context.mode));
-            context.y = writeLine(context, context.y, "Variant " + (i + 1));
             List<String> questionLines = wrapText(
                 variant.getQuestion(),
                 BODY_FONT,
@@ -257,7 +284,6 @@ public class PdfBoxGenerationService implements PdfGenerationService {
 
             float boxHeight = estimateAnswerBoxHeight(variant.getAnswer(), task.getPoints());
             context.y = ensureSpace(context, boxHeight + LINE_HEIGHT);
-            context.y = writeLine(context, context.y, "Answer");
             drawAnswerBox(context, variant, boxHeight);
         }
     }
@@ -311,6 +337,13 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         float width = textWidth(font, fontSize, text);
         float x = LEFT_MARGIN + Math.max(0, (CONTENT_WIDTH - width) / 2f);
         return writeText(context, text == null ? "" : text, x, y, font, fontSize);
+    }
+
+    private void drawHorizontalRule(final RenderContext context, final float y) throws IOException {
+        context.content.setLineWidth(0.6f);
+        context.content.moveTo(LEFT_MARGIN, y);
+        context.content.lineTo(LEFT_MARGIN + CONTENT_WIDTH, y);
+        context.content.stroke();
     }
 
     private float writeWrappedLines(

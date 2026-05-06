@@ -190,15 +190,15 @@ Dieses Dokument ist ein vollständiger Arbeitsplan für das Projekt JExam. Es f�
 ## Offene To Dos
 
 - [ ] Alle Texte sollen Deutsch, Englisch Support bekommen.
-- [ ] PDF Gen von Aufgaben überarbeiten
+- [x] PDF Gen von Aufgaben überarbeiten
 - [ ] PDF Gen von Deckblatt überarbeiten
 - [ ] Fix Difficulty Distribution für PDF Gen
   - [ ] Silent Error oder Vereinfachung der Aktuellen Fehlermeldung
   - [ ] Difficulty Distribution soll für die Ganze Klausur gelten, nicht nur pro Chapter
+- [ ] Remove Custom Keyboard movement
 - [ ] Metriken
   - [ ] Nicht nur Volumen Metriken
   - [ ] Noch Kohäsion messen und hinzufügen
-- [ ] Remove Custom Keyboard movement
 - [ ] PDF Gen Secret Zitate für Mock Exams und Exams einfügen
 - [ ] Fix Dark-Theme
 

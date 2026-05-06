@@ -5,6 +5,7 @@ import com.jexam.generation.GenerationMode;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
@@ -18,11 +19,12 @@ import java.util.function.Consumer;
  * @author Moritz
  */
 public final class GenerationControlsComponent extends VBox {
-    private final Label modeLabel = new Label("Generation Mode");
+    private final Label modeLabel = new Label();
     private final ComboBox<GenerationMode> modeBox = new ComboBox<>(FXCollections.observableArrayList(
         GenerationMode.EXAM,
         GenerationMode.MOCK_EXAM
     ));
+    private final CheckBox coverCheckbox = new CheckBox("Include cover");
     private final Button exportButton = new Button("Export PDF");
 
     private Runnable exportHandler = () -> { };
@@ -42,6 +44,9 @@ public final class GenerationControlsComponent extends VBox {
         exportButton.getStyleClass().add("primary-action");
 
         modeBox.setValue(GenerationMode.EXAM);
+        coverCheckbox.setSelected(true);
+        // Default texts are applied by parent via setLocalizedTexts
+        coverCheckbox.getStyleClass().add("cover-checkbox");
         modeBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (updatingControls) {
                 return;
@@ -58,6 +63,7 @@ public final class GenerationControlsComponent extends VBox {
         getChildren().addAll(
             modeLabel,
             modeBox,
+            coverCheckbox,
             exportButton
         );
     }
@@ -69,6 +75,28 @@ public final class GenerationControlsComponent extends VBox {
      */
     public GenerationMode getSelectedMode() {
         return modeBox.getValue();
+    }
+
+    /**
+     * Returns whether the cover page should be included when exporting.
+     */
+    public boolean isCoverIncluded() {
+        return coverCheckbox.isSelected();
+    }
+
+    /**
+     * Applies localized visible texts for this component.
+     */
+    public void setLocalizedTexts(final String modeLabelText, final String coverCheckboxText, final String exportButtonText) {
+        if (modeLabelText != null) {
+            modeLabel.setText(modeLabelText);
+        }
+        if (coverCheckboxText != null) {
+            coverCheckbox.setText(coverCheckboxText);
+        }
+        if (exportButtonText != null) {
+            exportButton.setText(exportButtonText);
+        }
     }
 
     /**

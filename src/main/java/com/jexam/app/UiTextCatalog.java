@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Loads localized UI text from a CSV resource.
  */
-final class UiTextCatalog {
+public final class UiTextCatalog {
     private static final String DEFAULT_RESOURCE = "/i18n/ui-text.csv";
 
     private final Map<UiLanguage, Map<String, String>> textByLanguage;
@@ -25,7 +25,7 @@ final class UiTextCatalog {
         this.textByLanguage = textByLanguage;
     }
 
-    static UiTextCatalog loadDefault() {
+    public static UiTextCatalog loadDefault() {
         return loadFromResource(DEFAULT_RESOURCE);
     }
 
@@ -40,7 +40,7 @@ final class UiTextCatalog {
         }
     }
 
-    String text(final UiLanguage language, final String key) {
+    public String text(final UiLanguage language, final String key) {
         Map<String, String> english = textByLanguage.getOrDefault(UiLanguage.ENGLISH, Map.of());
         Map<String, String> localized = textByLanguage.getOrDefault(language, english);
         String value = localized.get(key);

@@ -154,6 +154,25 @@ public class ExamApplicationService {
     }
 
     /**
+     * Sets whether the PDF generator should include the cover page.
+     * This is a best-effort call and only affects PdfBoxGenerationService instances.
+     */
+    public void setCoverEnabled(final boolean enabled) {
+        if (pdfGenerationService instanceof PdfBoxGenerationService) {
+            ((PdfBoxGenerationService) pdfGenerationService).setCoverEnabled(enabled);
+        }
+    }
+
+    /**
+     * Sets the UI language for any PDF generator that can render localized texts.
+     */
+    public void setUiLanguage(final UiLanguage language) {
+        if (pdfGenerationService instanceof PdfBoxGenerationService) {
+            ((PdfBoxGenerationService) pdfGenerationService).setUiLanguage(language);
+        }
+    }
+
+    /**
      * Generates both primary and solutions PDFs for the selected mode.
      *
      * @param mode generation mode (EXAM or MOCK_EXAM)
