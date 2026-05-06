@@ -190,10 +190,14 @@ Dieses Dokument ist ein vollst채ndiger Arbeitsplan f체r das Projekt JExam. Es f�
 ## Offene To Dos
 
 - [ ] Alle Texte sollen Deutsch, Englisch Support bekommen.
-- [ ] Remove Custom Keyboard movement
 - [ ] PDF Gen von Aufgaben 체berarbeiten
 - [ ] PDF Gen von Deckblatt 체berarbeiten
+- [ ] Fix Difficulty Distribution f체r PDF Gen
+  - [ ] Silent Error oder Vereinfachung der Aktuellen Fehlermeldung
+  - [ ] Difficulty Distribution soll f체r die Ganze Klausur gelten, nicht nur pro Chapter
+- [ ] Remove Custom Keyboard movement
 - [ ] PDF Gen Secret Zitate f체r Mock Exams und Exams einf체gen
+- [ ] Fix Dark-Theme
 
 ## To Dos f체r die Live Demo am 20.05.2026
 
@@ -207,3 +211,12 @@ Dieses Dokument ist ein vollst채ndiger Arbeitsplan f체r das Projekt JExam. Es f�
   - [ ] Ablauf durchf체hren
   - [ ] Ablauf verbessern
   - [ ] Ablauf Pr체fen
+
+## To Dos f체r V.2
+
+- [ ] PDF Gen soll einstellungen haben
+  - [ ] Mit Ohne Deckblatt
+  - [ ] Fu횩zeile Auswahl (Seitenzahl mit/ ohne, Start mit ...)
+- [ ] Einstellungen f체r Standard Out von PDFs
+- [ ] Dark/ Light Mode in die Einstellungen
+- [ ] Show Keyboard shortcuts where applicable (Strg + S f체r Save/ Speichern)
