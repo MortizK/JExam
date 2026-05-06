@@ -186,3 +186,16 @@ Dieses Dokument ist ein vollst채ndiger Arbeitsplan f체r das Projekt JExam. Es f�
 - [x] Refactoring-Report mit 3 geeigneten Patterns schreiben
 - [x] Vier Software-Problem-Reports als Tickets.pdf erstellen
 - [x] UI um Empathy, Guidance und Novelty erg채nzen und im Code kommentieren
+
+## To Dos f체r die Live Demo am 20.05.2026
+
+- [ ] Auszug der Testf채lle
+- [ ] Quellcode zeigen
+- [ ] Use Cases zeigen
+- [ ] Javadoc-Seiten in HTML
+- [ ] Besonderheiten zeigen
+- [ ] Live Demo Vorbereiten
+  - [ ] Ablauf aufschreiben
+  - [ ] Ablauf durchf체hren
+  - [ ] Ablauf verbessern
+  - [ ] Ablauf Pr체fen
