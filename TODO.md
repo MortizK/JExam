@@ -195,6 +195,9 @@ Dieses Dokument ist ein vollst채ndiger Arbeitsplan f체r das Projekt JExam. Es f�
 - [ ] Fix Difficulty Distribution f체r PDF Gen
   - [ ] Silent Error oder Vereinfachung der Aktuellen Fehlermeldung
   - [ ] Difficulty Distribution soll f체r die Ganze Klausur gelten, nicht nur pro Chapter
+- [ ] Metriken
+  - [ ] Nicht nur Volumen Metriken
+  - [ ] Noch Koh채sion messen und hinzuf체gen
 - [ ] Remove Custom Keyboard movement
 - [ ] PDF Gen Secret Zitate f체r Mock Exams und Exams einf체gen
 - [ ] Fix Dark-Theme
