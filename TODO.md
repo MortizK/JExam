@@ -178,10 +178,10 @@ Dieses Dokument ist ein vollständiger Arbeitsplan für das Projekt JExam. Es f�
 - [x] Implementierung des Grundgerüsts und aller wesentlichen Ansichten abschließen
 - [x] Prüfling als einzelne PDF-Datei erzeugen
 - [x] Vorbereitung und Durchführung des technischen Reviews erledigen
-- [ ] JUnit-Testfälle für den PackageCalculator schreiben
-- [ ] Glass-Box-Tests ergänzen, bis die Coverage möglichst vollständig ist
-- [ ] Zufallsbasierten JUnit-Test für 1000 Pakete implementieren
-- [ ] Wesentliche Metriken des Projekts erfassen
+- [X] JUnit-Testfälle für den PackageCalculator schreiben
+- [x] Glass-Box-Tests ergänzen, bis die Coverage möglichst vollständig ist
+- [x] Zufallsbasierten JUnit-Test für 1000 Pakete implementieren
+- [x] Wesentliche Metriken des Projekts erfassen
 - [x] Gesamtfortschritt der Use Cases bewerten
 - [x] Refactoring-Report mit 3 geeigneten Patterns schreiben
 - [x] Vier Software-Problem-Reports als Tickets.pdf erstellen
