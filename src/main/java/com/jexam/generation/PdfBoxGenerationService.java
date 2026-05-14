@@ -387,13 +387,6 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return writeText(context, text == null ? "" : text, x, y, font, fontSize);
     }
 
-    private void drawHorizontalRule(final RenderContext context, final float y) throws IOException {
-        context.content.setLineWidth(0.6f);
-        context.content.moveTo(LEFT_MARGIN, y);
-        context.content.lineTo(LEFT_MARGIN + CONTENT_WIDTH, y);
-        context.content.stroke();
-    }
-
     private float writeWrappedLines(
         final RenderContext context,
         final List<String> lines,
@@ -500,13 +493,6 @@ public class PdfBoxGenerationService implements PdfGenerationService {
             value /= 26;
         }
         return builder + ")";
-    }
-
-    private String padRight(final String value, final int width) {
-        if (value.length() >= width) {
-            return value.substring(0, width);
-        }
-        return value + " ".repeat(width - value.length());
     }
 
     private String padLeft(final String value, final int width) {

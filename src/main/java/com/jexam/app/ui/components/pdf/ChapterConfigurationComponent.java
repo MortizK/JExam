@@ -291,6 +291,11 @@ public final class ChapterConfigurationComponent extends VBox {
         List<ChapterRow> includedRows = new ArrayList<>();
         for (int chapterIndex : includedChapterIndices) {
             if (chapterIndex >= 0 && chapterIndex < chapterNames.size()) {
+                Chapter chapter = chapterByIndex.get(chapterIndex);
+                if (chapter == null || chapter.getTasks().isEmpty()) {
+                    continue;
+                }
+
                 includedRows.add(new ChapterRow(chapterIndex, chapterNames.get(chapterIndex)));
                 GoalPointField field = goalFieldByChapter.computeIfAbsent(chapterIndex, GoalPointField::new);
                 field.setAvailablePoints(achievablePointsByChapter.getOrDefault(chapterIndex, List.of()));

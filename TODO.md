@@ -192,7 +192,7 @@ Dieses Dokument ist ein vollständiger Arbeitsplan für das Projekt JExam. Es f�
 - [x] Alle Texte sollen Deutsch, Englisch Support bekommen.
 - [x] PDF Gen von Aufgaben überarbeiten
 - [x] PDF Gen von Deckblatt überarbeiten
-- [ ] BUG: PDF Generiert nicht, wenn chapter keine Tasks hat.
+- [x] BUG: PDF Generiert nicht, wenn chapter keine Tasks hat.
 - [ ] Fix Difficulty Distribution für PDF Gen
   - [ ] Silent Error oder Vereinfachung der Aktuellen Fehlermeldung
   - [ ] Difficulty Distribution soll für die Ganze Klausur gelten, nicht nur pro Chapter
@@ -201,6 +201,9 @@ Dieses Dokument ist ein vollständiger Arbeitsplan für das Projekt JExam. Es f�
   - [ ] Nicht nur Volumen Metriken
   - [ ] Noch Kohäsion messen und hinzufügen
 - [ ] PDF Gen Secret Zitate für Mock Exams und Exams einfügen
+- [ ] JavaDocs for each function 
+  - [ ] Comments on mayor code blocks (for, while, if)
+  - [ ] Comments on other mayor code functionalities, which are not clear from the function JavaDoc
 
 ## To Dos für die Live Demo am 20.05.2026
 
@@ -219,7 +222,7 @@ Dieses Dokument ist ein vollständiger Arbeitsplan für das Projekt JExam. Es f�
 
 - [ ] Fix Dark-Theme
 - [ ] PDF Gen soll einstellungen haben
-  - [ ] Mit Ohne Deckblatt
+  - [x] Mit Ohne Deckblatt
   - [ ] Fußzeile Auswahl (Seitenzahl mit/ ohne, Start mit ...)
 - [ ] Einstellungen für Standard Out von PDFs
 - [ ] Dark/ Light Mode in die Einstellungen

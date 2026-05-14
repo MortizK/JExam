@@ -589,6 +589,11 @@ public class ExamApplicationService {
         for (int chapterIndex : generationChapterIndices) {
             if (chapterIndex >= 0 && chapterIndex < currentExam.chapterCount()) {
                 Chapter sourceChapter = currentExam.chapterAt(chapterIndex);
+                // if chapter has no tasks, skip it to avoid generation failing due to infeasible goals
+                // error when chapter has no task for specified mode are still possible
+                if (sourceChapter.getTasks().isEmpty()) {
+                    continue;
+                }
                 chapters.add(buildChapterForGeneration(sourceChapter, chapterIndex, mode, random));
             }
         }
