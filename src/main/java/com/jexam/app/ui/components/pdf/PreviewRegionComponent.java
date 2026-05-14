@@ -29,9 +29,9 @@ public final class PreviewRegionComponent extends VBox {
     private static final String STATE_STALE = "preview-stale";
     private static final String STATE_ERROR = "preview-error";
 
-    private final Label stateLabel = new Label("No preview generated yet.");
-    private final Button refreshButton = new Button("Refresh Preview");
-    private final Button exportButton = new Button("Export PDF");
+    private final Label stateLabel = new Label();
+    private final Button refreshButton = new Button();
+    private final Button exportButton = new Button();
     private final HBox actionBar = new HBox(8, refreshButton, exportButton);
     private final VBox pageContainer = new VBox(12);
     private final ScrollPane previewScroll = new ScrollPane(pageContainer);
@@ -40,6 +40,13 @@ public final class PreviewRegionComponent extends VBox {
     private Runnable exportHandler = () -> { };
     private Path previewPath;
     private final List<Path> previewImagePaths = new ArrayList<>();
+
+    private String idleStateText = "No preview generated yet.";
+    private String loadingStateText = "Generating preview...";
+    private String readyStateText = "Preview ready";
+    private String staleStateText = "Preview is stale. Refresh required.";
+    private String failedStateText = "Preview failed";
+    private String unavailableStateText = "Embedded preview unavailable";
 
     /**
      * Creates the PDF preview region with refresh/export controls and page rendering.
@@ -66,6 +73,16 @@ public final class PreviewRegionComponent extends VBox {
         exportButton.setOnAction(event -> exportHandler.run());
         exportButton.setDisable(false);
         setPreviewState(STATE_IDLE);
+        setLocalizedTexts(
+            "Refresh Preview",
+            "Export PDF",
+            "No preview generated yet.",
+            "Generating preview...",
+            "Preview ready",
+            "Preview is stale. Refresh required.",
+            "Preview failed",
+            "Embedded preview unavailable"
+        );
         stateLabel.setAccessibleText("Preview state message");
         refreshButton.setAccessibleText("Refresh the preview image");
         exportButton.setAccessibleText("Export the selected PDF");
@@ -73,11 +90,58 @@ public final class PreviewRegionComponent extends VBox {
     }
 
     /**
+     * Applies localized visible texts and messages.
+     *
+     * @param refreshButtonText text for the refresh button
+     * @param exportButtonText text for the export button
+     * @param idleStateText message for idle state
+     * @param loadingStateText message for loading state
+     * @param readyStateText message for ready state
+     * @param staleStateText message for stale state
+     * @param failedStateText message for failed state
+     * @param unavailableStateText message for unavailable state
+     */
+    public void setLocalizedTexts(
+        final String refreshButtonText,
+        final String exportButtonText,
+        final String idleStateText,
+        final String loadingStateText,
+        final String readyStateText,
+        final String staleStateText,
+        final String failedStateText,
+        final String unavailableStateText
+    ) {
+        if (refreshButtonText != null) {
+            refreshButton.setText(refreshButtonText);
+        }
+        if (exportButtonText != null) {
+            exportButton.setText(exportButtonText);
+        }
+        this.idleStateText = idleStateText;
+        this.loadingStateText = loadingStateText;
+        this.readyStateText = readyStateText;
+        this.staleStateText = staleStateText;
+        this.failedStateText = failedStateText;
+        this.unavailableStateText = unavailableStateText;
+        if (getStyleClass().contains(STATE_IDLE)) {
+            stateLabel.setText(idleStateText);
+        } else if (getStyleClass().contains(STATE_LOADING)) {
+            stateLabel.setText(loadingStateText);
+        } else if (getStyleClass().contains(STATE_READY)) {
+            stateLabel.setText(readyStateText);
+        } else if (getStyleClass().contains(STATE_STALE)) {
+            stateLabel.setText(staleStateText);
+        } else if (getStyleClass().contains(STATE_ERROR)) {
+            stateLabel.setText(failedStateText);
+        }
+    }
+
+    /**
      * Transitions to idle state and clears rendered preview.
      */
     public void setIdle() {
         setPreviewState(STATE_IDLE);
-        stateLabel.setText("No preview generated yet.");
+        stateLabel.setText(idleStateText);
         previewPath = null;
         pageContainer.getChildren().clear();
         deletePreviewImages();
@@ -88,7 +152,7 @@ public final class PreviewRegionComponent extends VBox {
      */
     public void setLoading() {
         setPreviewState(STATE_LOADING);
-        stateLabel.setText("Generating preview...");
+        stateLabel.setText(loadingStateText);
     }
 
     /**
@@ -111,7 +175,7 @@ public final class PreviewRegionComponent extends VBox {
         previewPath = path;
         if (path == null || !Files.exists(path)) {
             setPreviewState(STATE_ERROR);
-            stateLabel.setText("Preview failed");
+            stateLabel.setText(failedStateText);
             pageContainer.getChildren().clear();
             return;
         }
@@ -136,11 +200,11 @@ public final class PreviewRegionComponent extends VBox {
                 pageContainer.getChildren().add(pageImage);
             }
             setPreviewState(STATE_READY);
-            stateLabel.setText("Preview ready");
+            stateLabel.setText(readyStateText);
         } catch (IOException e) {
             setPreviewState(STATE_ERROR);
             pageContainer.getChildren().clear();
-            stateLabel.setText("Embedded preview unavailable");
+            stateLabel.setText(unavailableStateText);
         }
     }
 
@@ -152,7 +216,7 @@ public final class PreviewRegionComponent extends VBox {
     public void setStale(final boolean stale) {
         if (stale) {
             setPreviewState(STATE_STALE);
-            stateLabel.setText("Preview is stale. Refresh required.");
+            stateLabel.setText(staleStateText);
         }
     }
 
@@ -163,7 +227,7 @@ public final class PreviewRegionComponent extends VBox {
      */
     public void setError(final String message) {
         setPreviewState(STATE_ERROR);
-        stateLabel.setText("Preview failed");
+        stateLabel.setText(failedStateText);
         pageContainer.getChildren().clear();
     }
 

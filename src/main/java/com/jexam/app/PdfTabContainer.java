@@ -142,6 +142,31 @@ public final class PdfTabContainer extends BorderPane {
             ui.text("checkbox.include.cover"),
             ui.text("button.export.pdf")
         );
+        chapterConfiguration.setLocalizedTexts(
+            ui.text("chapterConfiguration.includedLabel"),
+            ui.text("chapterConfiguration.excludedLabel"),
+            ui.text("chapterConfiguration.up"),
+            ui.text("chapterConfiguration.down"),
+            ui.text("chapterConfiguration.exclude"),
+            ui.text("chapterConfiguration.include"),
+            ui.text("chapterConfiguration.reset"),
+            ui.text("chapterConfiguration.includedList"),
+            ui.text("chapterConfiguration.excludedList"),
+            ui.text("chapterConfiguration.moveUp"),
+            ui.text("chapterConfiguration.moveDown"),
+            ui.text("chapterConfiguration.excludeChapter"),
+            ui.text("chapterConfiguration.includeChapter")
+        );
+        previewRegion.setLocalizedTexts(
+            ui.text("preview.refresh"),
+            ui.text("preview.export"),
+            ui.text("preview.idle"),
+            ui.text("preview.loading"),
+            ui.text("preview.ready"),
+            ui.text("preview.stale"),
+            ui.text("preview.failed"),
+            ui.text("preview.unavailable")
+        );
         previewRegion.setTooltips(
             ui.text("tooltip.pdf.preview.refresh"),
             ui.text("tooltip.pdf.preview.export"),

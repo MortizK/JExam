@@ -42,6 +42,32 @@ button.export.pdf,Export PDF,PDF exportieren
 cover.title,Cover,Deckblatt
 cover.course,Course / Module,Kurs / Modul
 cover.date,Date,Datum
-cover.studentId,Student ID / Matrikelnummer,Matrikelnummer
+cover.studentId,Student ID,Matrikelnummer
+cover.examType,Exam,Klausur
 cover.pointsTotal,Total points,Gesamtpunkte
-cover.instruction,Instructions: Answer all questions. Kurze Instruktionen: Beantworte alle Aufgaben.
+cover.instruction,Instructions: Answer all questions.,Kurze Instruktionen: Beantworte alle Aufgaben.
+cover.examType.Exam,Exam,Klausur
+cover.examType.Mock,Mock Exam,Probeklausur
+cover.bonus,Bonus:,Bonus:
+cover.total,Points:,Punkte:
+chapterConfiguration.up,Move up,Nach oben
+chapterConfiguration.down,Move down,Nach unten
+chapterConfiguration.exclude,Exclude,Ausschließen
+chapterConfiguration.include,Include,Einbeziehen
+chapterConfiguration.reset,Reset chapter selection to all chapters,Kapitelauswahl auf alle Kapitel zurücksetzen
+chapterConfiguration.includedLabel,Included Chapters,Eingeschlossene Kapitel
+chapterConfiguration.excludedLabel,Excluded Chapters,Ausgeschlossene Kapitel
+chapterConfiguration.includedList,Included chapters list,Liste der eingeschlossenen Kapitel
+chapterConfiguration.excludedList,Excluded chapters list,Liste der ausgeschlossenen Kapitel
+chapterConfiguration.moveUp,Move the selected chapter up,Das ausgewählte Kapitel nach oben verschieben
+chapterConfiguration.moveDown,Move the selected chapter down,Das ausgewählte Kapitel nach unten verschieben
+chapterConfiguration.excludeChapter,Exclude this chapter,Dieses Kapitel ausschließen
+chapterConfiguration.includeChapter,Include this chapter,Dieses Kapitel einschließen
+preview.refresh,Refresh Preview,Vorschau aktualisieren
+preview.export,Export PDF,PDF exportieren
+preview.idle,No preview generated yet.,Es wurde noch keine Vorschau generiert.
+preview.loading,Generating preview...,Vorschau wird generiert...
+preview.ready,Preview ready,Vorschau bereit
+preview.stale,Preview is stale. Refresh required.,Vorschau ist veraltet. Aktualisierung erforderlich.
+preview.failed,Preview failed,Vorschau fehlgeschlagen
+preview.unavailable,Embedded preview unavailable,Eingebettete Vorschau nicht verfügbar

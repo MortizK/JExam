@@ -3,6 +3,8 @@ package com.jexam.app.ui.components.pdf;
 import com.jexam.model.Chapter;
 import com.jexam.model.Task;
 import com.jexam.model.enums.Scope;
+import com.jexam.app.UiTextCatalog;
+import com.jexam.app.UiLanguage;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -49,9 +51,18 @@ public final class ChapterConfigurationComponent extends VBox {
     private final Map<Integer, Chapter> chapterByIndex = new HashMap<>();
     private final Map<Integer, List<Double>> achievablePointsByChapter = new HashMap<>();
     private final Map<Integer, GoalPointField> goalFieldByChapter = new HashMap<>();
-    private final Label includedLabel = new Label("Included Chapters");
-    private final Label excludedLabel = new Label("Excluded Chapters");
+    private final Label includedLabel = new Label();
+    private final Label excludedLabel = new Label();
+    private final Button upButton = new Button();
+    private final Button downButton = new Button();
+    private final Button excludeButton = new Button();
+    private final Button includeButton = new Button();
+    private final Button resetButton = new Button();
     private final HBox excludedActions;
+
+    // Localization
+    private UiTextCatalog uiTextCatalog = UiTextCatalog.loadDefault();
+    private UiLanguage uiLanguage = UiLanguage.ENGLISH;
 
     private Consumer<Integer> moveUpHandler = index -> { };
     private Consumer<Integer> moveDownHandler = index -> { };
@@ -83,12 +94,6 @@ public final class ChapterConfigurationComponent extends VBox {
         includedList.setFixedCellSize(36);
         excludedList.setFixedCellSize(36);
 
-        Button upButton = new Button("Up");
-        Button downButton = new Button("Down");
-        Button excludeButton = new Button("Exclude");
-        Button includeButton = new Button("Include");
-        Button resetButton = new Button("Reset");
-
         includedLabel.getStyleClass().add("section-label");
         excludedLabel.getStyleClass().add("section-label");
         includedList.getStyleClass().add("included-chapter-list");
@@ -99,13 +104,13 @@ public final class ChapterConfigurationComponent extends VBox {
         includeButton.getStyleClass().add("secondary-action");
         resetButton.getStyleClass().add("secondary-action");
 
-        includedList.setAccessibleText("Included chapters list");
-        excludedList.setAccessibleText("Excluded chapters list");
-        upButton.setAccessibleText("Move selected chapter up");
-        downButton.setAccessibleText("Move selected chapter down");
-        excludeButton.setAccessibleText("Exclude selected chapter from generation");
-        includeButton.setAccessibleText("Include selected chapter in generation");
-        resetButton.setAccessibleText("Reset chapter selection to all chapters");
+        includedList.setAccessibleText(uiTextCatalog.text(uiLanguage, "chapterConfiguration.includedList"));
+        excludedList.setAccessibleText(uiTextCatalog.text(uiLanguage, "chapterConfiguration.excludedList"));
+        upButton.setAccessibleText(uiTextCatalog.text(uiLanguage, "chapterConfiguration.moveUp"));
+        downButton.setAccessibleText(uiTextCatalog.text(uiLanguage, "chapterConfiguration.moveDown"));
+        excludeButton.setAccessibleText(uiTextCatalog.text(uiLanguage, "chapterConfiguration.excludeChapter"));
+        includeButton.setAccessibleText(uiTextCatalog.text(uiLanguage, "chapterConfiguration.includeChapter"));
+        resetButton.setAccessibleText(uiTextCatalog.text(uiLanguage, "chapterConfiguration.reset"));
 
         upButton.setOnAction(event -> moveUpHandler.accept(includedList.getSelectionModel().getSelectedIndex()));
         downButton.setOnAction(event -> moveDownHandler.accept(includedList.getSelectionModel().getSelectedIndex()));
@@ -141,6 +146,85 @@ public final class ChapterConfigurationComponent extends VBox {
             excludedList,
             excludedActions
         );
+
+        setLocalizedTexts(
+            uiTextCatalog.text(uiLanguage, "chapterConfiguration.includedLabel"),
+            uiTextCatalog.text(uiLanguage, "chapterConfiguration.excludedLabel"),
+            uiTextCatalog.text(uiLanguage, "chapterConfiguration.up"),
+            uiTextCatalog.text(uiLanguage, "chapterConfiguration.down"),
+            uiTextCatalog.text(uiLanguage, "chapterConfiguration.exclude"),
+            uiTextCatalog.text(uiLanguage, "chapterConfiguration.include"),
+            uiTextCatalog.text(uiLanguage, "chapterConfiguration.reset"),
+            uiTextCatalog.text(uiLanguage, "chapterConfiguration.includedList"),
+            uiTextCatalog.text(uiLanguage, "chapterConfiguration.excludedList"),
+            uiTextCatalog.text(uiLanguage, "chapterConfiguration.moveUp"),
+            uiTextCatalog.text(uiLanguage, "chapterConfiguration.moveDown"),
+            uiTextCatalog.text(uiLanguage, "chapterConfiguration.excludeChapter"),
+            uiTextCatalog.text(uiLanguage, "chapterConfiguration.includeChapter")
+        );
+    }
+
+    /**
+     * Applies localized visible texts and accessibility labels.
+     *
+     * @param includedLabelText text for the included section label
+     * @param excludedLabelText text for the excluded section label
+     * @param upButtonText text for the move-up button
+     * @param downButtonText text for the move-down button
+     * @param excludeButtonText text for the exclude button
+     * @param includeButtonText text for the include button
+     * @param resetButtonText text for the reset button
+     * @param includedListAccessibleText accessible text for the included list
+     * @param excludedListAccessibleText accessible text for the excluded list
+     * @param moveUpAccessibleText accessible text for the move-up button
+     * @param moveDownAccessibleText accessible text for the move-down button
+     * @param excludeChapterAccessibleText accessible text for the exclude button
+     * @param includeChapterAccessibleText accessible text for the include button
+     */
+    public void setLocalizedTexts(
+        final String includedLabelText,
+        final String excludedLabelText,
+        final String upButtonText,
+        final String downButtonText,
+        final String excludeButtonText,
+        final String includeButtonText,
+        final String resetButtonText,
+        final String includedListAccessibleText,
+        final String excludedListAccessibleText,
+        final String moveUpAccessibleText,
+        final String moveDownAccessibleText,
+        final String excludeChapterAccessibleText,
+        final String includeChapterAccessibleText
+    ) {
+        if (includedLabelText != null) {
+            includedLabel.setText(includedLabelText);
+        }
+        if (excludedLabelText != null) {
+            excludedLabel.setText(excludedLabelText);
+        }
+        if (upButtonText != null) {
+            upButton.setText(upButtonText);
+        }
+        if (downButtonText != null) {
+            downButton.setText(downButtonText);
+        }
+        if (excludeButtonText != null) {
+            excludeButton.setText(excludeButtonText);
+        }
+        if (includeButtonText != null) {
+            includeButton.setText(includeButtonText);
+        }
+        if (resetButtonText != null) {
+            resetButton.setText(resetButtonText);
+        }
+
+        includedList.setAccessibleText(includedListAccessibleText);
+        excludedList.setAccessibleText(excludedListAccessibleText);
+        upButton.setAccessibleText(moveUpAccessibleText);
+        downButton.setAccessibleText(moveDownAccessibleText);
+        excludeButton.setAccessibleText(excludeChapterAccessibleText);
+        includeButton.setAccessibleText(includeChapterAccessibleText);
+        resetButton.setAccessibleText(resetButtonText);
     }
 
     /**
