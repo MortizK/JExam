@@ -36,6 +36,8 @@ tooltip.pdf.export,Export the selected PDF variant,Die ausgewählte PDF-Variante
 tooltip.pdf.preview.refresh,Refresh the preview image,Die Vorschau aktualisieren,Actualizar la imagen de vista previa
 tooltip.pdf.preview.export,Export the selected PDF,Das ausgewählte PDF exportieren,Exportar el PDF seleccionado
 tooltip.pdf.preview.state,Preview state message,Statusmeldung der Vorschau,Mensaje de estado de la vista previa
+pdf.generation.difficulty.current,Current difficulty distribution:,Aktuelle Schwierigkeitsverteilung:,Distribución actual de dificultad:
+pdf.generation.difficulty.result,Difficulty distribution:,Schwierigkeitsverteilung:,Distribución de dificultad:
 label.generation.mode,Generation Mode,Generierungsmodus,Modo de generación
 checkbox.include.cover,Include cover,Deckblatt einfügen,Incluir portada
 button.export.pdf,Export PDF,PDF exportieren,Exportar PDF

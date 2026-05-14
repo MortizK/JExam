@@ -1,6 +1,7 @@
 package com.jexam.app;
 
 import com.jexam.generation.GenerationMode;
+import com.jexam.model.DifficultyDistributionSummary;
 import com.jexam.model.Task;
 import com.jexam.model.enums.Difficulty;
 import com.jexam.model.enums.Scope;
@@ -57,7 +58,7 @@ class ExamApplicationServiceTest {
         assertDoesNotThrow(() -> service.generatePdf(GenerationMode.EXAM, output));
 
         assertTrue(Files.exists(output));
-        assertTrue(service.getLastGenerationWarnings().stream().anyMatch(w -> w.contains("roughly balanced by difficulty")));
+        assertTrue(service.getLastGenerationWarnings().stream().anyMatch(w -> w.contains("difficulty distribution")));
     }
 
     @Test
@@ -73,6 +74,10 @@ class ExamApplicationServiceTest {
         assertDoesNotThrow(
             () -> service.generatePdf(GenerationMode.EXAM, tempDir.resolve("valid-exam.pdf"))
         );
+
+        DifficultyDistributionSummary summary = service.getLastGenerationDifficultySummary();
+        assertNotNull(summary);
+        assertTrue(summary.isBalanced(1d / 3d, 0.10d));
     }
 
     @Test

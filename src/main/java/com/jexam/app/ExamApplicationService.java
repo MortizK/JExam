@@ -8,6 +8,7 @@ import com.jexam.io.ExamXmlException;
 import com.jexam.io.ExamXmlLoader;
 import com.jexam.io.ExamXmlWriter;
 import com.jexam.model.Chapter;
+import com.jexam.model.DifficultyDistributionSummary;
 import com.jexam.model.Exam;
 import com.jexam.model.Task;
 import com.jexam.model.Variant;
@@ -48,6 +49,7 @@ public class ExamApplicationService {
 
     private Exam currentExam;
     private Exam lastPreviewExam;
+    private Exam lastGeneratedExam;
     private GenerationMode lastPreviewMode;
     private GoalPointFallbackPreference goalPointFallbackPreference;
     private Long generationRandomSeed;
@@ -83,6 +85,7 @@ public class ExamApplicationService {
         this.generationChapterGoalPoints = new HashMap<>();
         this.lastGenerationWarnings = new ArrayList<>();
         this.lastPreviewExam = null;
+        this.lastGeneratedExam = null;
         this.lastPreviewMode = null;
         this.goalPointFallbackPreference = GoalPointFallbackPreference.LOWER;
         this.generationRandomSeed = null;
@@ -149,7 +152,7 @@ public class ExamApplicationService {
         if (!result.isValid()) {
             throw new IllegalStateException("Exam is invalid: " + result.getErrors());
         }
-        lastGenerationWarnings.addAll(collectGenerationWarnings(mode, generationExam));
+        updateGenerationOutcome(mode, generationExam);
         pdfGenerationService.generate(generationExam, mode, outputPath);
     }
 
@@ -193,7 +196,7 @@ public class ExamApplicationService {
             throw new IllegalStateException("Exam is invalid: " + result.getErrors());
         }
 
-        lastGenerationWarnings.addAll(collectGenerationWarnings(mode, generationExam));
+        updateGenerationOutcome(mode, generationExam);
 
         final Path primaryPath = outputPath;
         final Path solutionPath = solutionOutputPath(outputPath);
@@ -221,7 +224,7 @@ public class ExamApplicationService {
             throw new IllegalStateException("Exam is invalid: " + result.getErrors());
         }
 
-        lastGenerationWarnings.addAll(collectGenerationWarnings(mode, lastPreviewExam));
+        updateGenerationOutcome(mode, lastPreviewExam);
 
         final Path primaryPath = outputPath;
         final Path solutionPath = solutionOutputPath(outputPath);
@@ -237,6 +240,25 @@ public class ExamApplicationService {
      */
     public List<String> getLastGenerationWarnings() {
         return Collections.unmodifiableList(lastGenerationWarnings);
+    }
+
+    /**
+     * Returns the difficulty distribution from the most recently generated exam.
+     *
+     * @return summary for the most recent generation result, or null if none exists yet
+     */
+    public DifficultyDistributionSummary getLastGenerationDifficultySummary() {
+        return lastGeneratedExam == null ? null : summarizeDifficultyDistribution(lastGeneratedExam);
+    }
+
+    /**
+     * Returns the current difficulty distribution for the selected generation chapters.
+     *
+     * @param mode generation mode used to filter tasks
+     * @return summary for the current generation selection
+     */
+    public DifficultyDistributionSummary getGenerationDifficultySummary(final GenerationMode mode) {
+        return summarizeSelectedGenerationDifficulty(mode);
     }
 
     /**
@@ -256,7 +278,7 @@ public class ExamApplicationService {
             if (!result.isValid()) {
                 throw new IllegalStateException("Exam is invalid: " + result.getErrors());
             }
-            lastGenerationWarnings.addAll(collectGenerationWarnings(mode, generationExam));
+            updateGenerationOutcome(mode, generationExam);
             pdfGenerationService.generate(generationExam, mode, previewPath);
 
             lastPreviewExam = generationExam;
@@ -276,56 +298,52 @@ public class ExamApplicationService {
             return warnings;
         }
 
-        final int chapterCount = generationExam.chapterCount();
-        for (int chapterIndex = 0; chapterIndex < chapterCount; chapterIndex++) {
-            final Chapter chapter = generationExam.chapterAt(chapterIndex);
-            if (!hasDifficultyThirdsForExamScope(chapter)) {
-                warnings.add(
-                    "Chapter '" + chapter.getName()
-                        + "' is not roughly balanced by difficulty (33% +/- 10%). PDF was generated anyway."
-                );
-            }
+        DifficultyDistributionSummary summary = summarizeDifficultyDistribution(generationExam);
+        if (!summary.isBalanced(DIFFICULTY_TARGET_RATIO, DIFFICULTY_TOLERANCE)) {
+            warnings.add(
+                "Generated exam difficulty distribution is " + summary.toHumanReadableText()
+                    + " (recommended balance: 33% +/- 10%)."
+            );
         }
         return warnings;
     }
 
-    private boolean hasDifficultyThirdsForExamScope(final Chapter chapter) {
-        int easyCount = 0;
-        int mediumCount = 0;
-        int hardCount = 0;
+    private void updateGenerationOutcome(final GenerationMode mode, final Exam generationExam) {
+        lastGeneratedExam = generationExam;
+        lastGenerationWarnings.clear();
+        lastGenerationWarnings.addAll(collectGenerationWarnings(mode, generationExam));
+    }
 
-        for (Task task : chapter.getTasks()) {
-            if (task.getScope() != Scope.EXAM) {
+    private DifficultyDistributionSummary summarizeSelectedGenerationDifficulty(final GenerationMode mode) {
+        List<Task> selectedTasks = new ArrayList<>();
+        for (int chapterIndex : generationChapterIndices) {
+            if (chapterIndex < 0 || chapterIndex >= currentExam.chapterCount()) {
                 continue;
             }
 
-            Difficulty difficulty = task.getDifficulty();
-            if (difficulty == Difficulty.EASY) {
-                easyCount++;
-            } else if (difficulty == Difficulty.MEDIUM) {
-                mediumCount++;
-            } else if (difficulty == Difficulty.HARD) {
-                hardCount++;
+            Chapter chapter = currentExam.chapterAt(chapterIndex);
+            for (Task task : chapter.getTasks()) {
+                if (isTaskIncludedForMode(task, mode)) {
+                    selectedTasks.add(task);
+                }
             }
         }
-
-        final int totalExamTasks = easyCount + mediumCount + hardCount;
-        if (totalExamTasks < 3) {
-            return false;
-        }
-
-        if (easyCount == 0 || mediumCount == 0 || hardCount == 0) {
-            return false;
-        }
-
-        return withinTolerance(easyCount, totalExamTasks)
-            && withinTolerance(mediumCount, totalExamTasks)
-            && withinTolerance(hardCount, totalExamTasks);
+        return DifficultyDistributionSummary.fromTasks(selectedTasks);
     }
 
-    private boolean withinTolerance(final int count, final int total) {
-        final double ratio = (double) count / (double) total;
-        return Math.abs(ratio - DIFFICULTY_TARGET_RATIO) <= DIFFICULTY_TOLERANCE;
+    private DifficultyDistributionSummary summarizeDifficultyDistribution(final Exam exam) {
+        List<Task> tasks = new ArrayList<>();
+        for (int chapterIndex = 0; chapterIndex < exam.chapterCount(); chapterIndex++) {
+            tasks.addAll(exam.chapterAt(chapterIndex).getTasks());
+        }
+        return DifficultyDistributionSummary.fromTasks(tasks);
+    }
+
+    private boolean isTaskIncludedForMode(final Task task, final GenerationMode mode) {
+        if (mode == GenerationMode.MOCK_EXAM) {
+            return true;
+        }
+        return task.getScope() == Scope.EXAM;
     }
 
     /**
@@ -640,13 +658,6 @@ public class ExamApplicationService {
             }
         }
         return result;
-    }
-
-    private boolean isTaskIncludedForMode(final Task task, final GenerationMode mode) {
-        if (mode == GenerationMode.MOCK_EXAM) {
-            return true;
-        }
-        return task.getScope() == Scope.EXAM;
     }
 
     private List<Task> cloneAllTasksWithSingleVariant(final List<Task> sourceTasks, final Random random) {

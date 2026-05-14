@@ -1,6 +1,7 @@
 package com.jexam.generation;
 
 import com.jexam.model.Chapter;
+import com.jexam.model.DifficultyDistributionSummary;
 import com.jexam.model.Exam;
 import com.jexam.model.Task;
 import com.jexam.model.Variant;
@@ -118,10 +119,20 @@ public class PdfBoxGenerationService implements PdfGenerationService {
 
     private void applyMetadata(final PDDocument document, final Exam exam, final GenerationMode mode) {
         PDDocumentInformation information = new PDDocumentInformation();
+        DifficultyDistributionSummary summary = summarizeDifficultyDistribution(exam);
         information.setTitle(oneLine(exam.getName()));
         information.setSubject("Exam PDF - " + mode.name());
+        information.setKeywords(summary.toMetadataText());
         information.setCreator("JExam");
         document.setDocumentInformation(information);
+    }
+
+    private DifficultyDistributionSummary summarizeDifficultyDistribution(final Exam exam) {
+        List<Task> tasks = new ArrayList<>();
+        for (int chapterIndex = 0; chapterIndex < exam.chapterCount(); chapterIndex++) {
+            tasks.addAll(exam.chapterAt(chapterIndex).getTasks());
+        }
+        return DifficultyDistributionSummary.fromTasks(tasks);
     }
 
     private void applyOutline(final PDDocument document, final List<ChapterBookmark> chapterBookmarks) {

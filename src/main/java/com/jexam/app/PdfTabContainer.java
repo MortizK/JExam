@@ -7,6 +7,7 @@ import com.jexam.app.ui.components.pdf.PreviewRegionComponent;
 import com.jexam.app.ui.components.pdf.ValidationSummaryComponent;
 import com.jexam.generation.GenerationMode;
 import com.jexam.model.Chapter;
+import com.jexam.model.DifficultyDistributionSummary;
 import com.jexam.validation.ValidationResult;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
@@ -45,6 +46,7 @@ public final class PdfTabContainer extends BorderPane {
     private final ValidationSummaryComponent validationSummary = new ValidationSummaryComponent();
     private final ChapterConfigurationComponent chapterConfiguration = new ChapterConfigurationComponent();
     private final PreviewRegionComponent previewRegion = new PreviewRegionComponent();
+    private final Label generationDifficultySummaryLabel = new Label();
     private final Label generationStatusLabel = new Label();
     private final VBox leftColumn = new VBox(10, generationControls, chapterConfiguration, generationStatusLabel);
     private final SplitPane contentSplit = new SplitPane(leftColumn, previewRegion);
@@ -73,6 +75,8 @@ public final class PdfTabContainer extends BorderPane {
         getStyleClass().add("pdf-tab");
 
         setPadding(new Insets(8));
+        generationDifficultySummaryLabel.getStyleClass().add("pdf-generation-summary");
+        generationDifficultySummaryLabel.setWrapText(true);
         generationStatusLabel.getStyleClass().add("pdf-generation-status");
         generationStatusLabel.setWrapText(true);
         generationStatusLabel.setText("");
@@ -127,6 +131,7 @@ public final class PdfTabContainer extends BorderPane {
         validationSummary.setValidationResult(validationResult);
         generationControls.setFallbackPreference(appService.getGoalPointFallbackPreference());
         generationControls.setRandomSeed(appService.getGenerationRandomSeed());
+        updateGenerationDifficultySummary();
         if (previewRegion.getPreviewPath() == null) {
             previewRegion.setIdle();
         }
@@ -207,7 +212,7 @@ public final class PdfTabContainer extends BorderPane {
             previewRegion.setReady(result.previewPath(), result.imagePaths());
             uiStateManager.clearPreviewStale();
             refreshFromService();
-            showGenerationWarnings("Preview generated with warnings");
+            setGenerationStatus(buildGenerationStatus("Preview generated", appService.getLastGenerationDifficultySummary(), appService.getLastGenerationWarnings()));
             setGenerationBusy(false);
         });
         task.setOnFailed(event -> {
@@ -237,7 +242,10 @@ public final class PdfTabContainer extends BorderPane {
     private void configureHandlers() {
         generationControls.setOnPreviewRequested(this::generatePreview);
         generationControls.setOnExportRequested(this::exportPdf);
-        generationControls.setOnModeChanged(mode -> uiStateManager.markPreviewStale());
+        generationControls.setOnModeChanged(mode -> {
+            uiStateManager.markPreviewStale();
+            refreshFromService();
+        });
         generationControls.setOnFallbackPreferenceChanged(preference -> {
             appService.setGoalPointFallbackPreference(preference);
             uiStateManager.markPreviewStale();
@@ -346,11 +354,11 @@ public final class PdfTabContainer extends BorderPane {
             String fileList = result.generatedFiles().stream()
                 .map(path -> path.getFileName().toString())
                 .collect(java.util.stream.Collectors.joining(", "));
-            if (result.warnings().isEmpty()) {
-                setGenerationStatus("Generated " + mode + " files: " + fileList);
-            } else {
-                setGenerationStatus("Generated " + mode + " files with warnings: " + String.join(" | ", result.warnings()));
-            }
+            setGenerationStatus(buildGenerationStatus(
+                "Generated " + mode + " files: " + fileList,
+                appService.getLastGenerationDifficultySummary(),
+                result.warnings()
+            ));
             setGenerationBusy(false);
         });
         task.setOnFailed(event -> {
@@ -389,11 +397,29 @@ public final class PdfTabContainer extends BorderPane {
      *
      * @param title dialog title used for the warning message
      */
-    private void showGenerationWarnings(final String title) {
-        List<String> warnings = appService.getLastGenerationWarnings();
-        if (!warnings.isEmpty()) {
-            setGenerationStatus(title + ": " + String.join(" | ", warnings));
+    private void updateGenerationDifficultySummary() {
+        DifficultyDistributionSummary summary = appService.getGenerationDifficultySummary(generationControls.getSelectedMode());
+        generationDifficultySummaryLabel.setText(
+            ui.text("pdf.generation.difficulty.current") + " " + summary.toHumanReadableText()
+        );
+    }
+
+    private String buildGenerationStatus(
+        final String prefix,
+        final DifficultyDistributionSummary summary,
+        final List<String> warnings
+    ) {
+        StringBuilder builder = new StringBuilder(prefix);
+        if (summary != null) {
+            builder.append(" | ")
+                .append(ui.text("pdf.generation.difficulty.result"))
+                .append(' ')
+                .append(summary.toHumanReadableText());
         }
+        if (warnings != null && !warnings.isEmpty()) {
+            builder.append(" | ").append(String.join(" | ", warnings));
+        }
+        return builder.toString();
     }
 
     private void setGenerationStatus(final String message) {

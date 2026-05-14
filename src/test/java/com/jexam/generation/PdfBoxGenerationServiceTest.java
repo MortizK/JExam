@@ -168,6 +168,9 @@ class PdfBoxGenerationServiceTest {
             assertEquals("Two Chapters", document.getDocumentInformation().getTitle());
             assertEquals("Exam PDF - EXAM", document.getDocumentInformation().getSubject());
             assertEquals("JExam", document.getDocumentInformation().getCreator());
+            assertTrue(document.getDocumentInformation().getKeywords().contains("Difficulty distribution:"));
+            assertTrue(document.getDocumentInformation().getKeywords().contains("easy 1"));
+            assertTrue(document.getDocumentInformation().getKeywords().contains("hard 1"));
         }
     }
 

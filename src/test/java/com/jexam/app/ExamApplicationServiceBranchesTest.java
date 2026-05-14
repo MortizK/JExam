@@ -1,6 +1,7 @@
 package com.jexam.app;
 
 import com.jexam.generation.GenerationMode;
+import com.jexam.model.DifficultyDistributionSummary;
 import com.jexam.model.enums.Difficulty;
 import com.jexam.model.enums.Scope;
 import org.junit.jupiter.api.Test;
@@ -140,6 +141,25 @@ class ExamApplicationServiceBranchesTest {
         service.generatePdf(GenerationMode.MOCK_EXAM, tempDir.resolve("mock.pdf"));
 
         assertTrue(service.getLastGenerationWarnings().isEmpty());
+    }
+
+    @Test
+    void generationDifficultySummaryShouldReflectSelectedMode() {
+        ExamApplicationService service = new ExamApplicationService();
+
+        service.updateTaskDetails(0, 0, "Exam task", 1.0, Difficulty.EASY, Scope.EXAM);
+        service.addTask(0, "Mock task");
+        service.updateTaskDetails(0, 1, "Mock task", 1.0, Difficulty.HARD, Scope.MOCK_EXAM);
+
+        DifficultyDistributionSummary examSummary = service.getGenerationDifficultySummary(GenerationMode.EXAM);
+        assertEquals(1, examSummary.easyCount());
+        assertEquals(0, examSummary.mediumCount());
+        assertEquals(0, examSummary.hardCount());
+
+        DifficultyDistributionSummary mockSummary = service.getGenerationDifficultySummary(GenerationMode.MOCK_EXAM);
+        assertEquals(1, mockSummary.easyCount());
+        assertEquals(0, mockSummary.mediumCount());
+        assertEquals(1, mockSummary.hardCount());
     }
 
     @Test
