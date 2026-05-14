@@ -7,7 +7,8 @@ package com.jexam.app;
  */
 public enum UiLanguage {
     ENGLISH("English"),
-    GERMAN("Deutsch");
+    GERMAN("Deutsch"),
+    SPANISH("Español");
 
     private final String label;
 

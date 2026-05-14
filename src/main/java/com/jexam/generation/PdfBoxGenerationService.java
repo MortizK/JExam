@@ -96,7 +96,7 @@ public class PdfBoxGenerationService implements PdfGenerationService {
 
             try (PDDocument document = new PDDocument()) {
                 List<ChapterBookmark> chapterBookmarks;
-                try (RenderContext context = new RenderContext(document, mode, exam)) {
+                try (RenderContext context = new RenderContext(document, mode, exam, uiTextCatalog.text(uiLanguage, "footer.page"))) {
                     if (coverEnabled) {
                         writeCoverPage(context, exam);
                         if (exam.chapterCount() > 0) {
@@ -665,10 +665,16 @@ public class PdfBoxGenerationService implements PdfGenerationService {
          */
         private float y;
 
-        private RenderContext(final PDDocument document, final GenerationMode currentMode, final Exam currentExam) throws IOException {
+        /**
+         * Localized label for the page footer (e.g. "Page" / "Seite").
+         */
+        private final String footerPageLabel;
+
+        private RenderContext(final PDDocument document, final GenerationMode currentMode, final Exam currentExam, final String footerPageLabel) throws IOException {
             this.document = document;
             this.mode = currentMode;
             this.exam = currentExam;
+            this.footerPageLabel = footerPageLabel == null ? "Page" : footerPageLabel;
             this.pageNumber = 0;
             startNewPage();
         }
@@ -705,7 +711,7 @@ public class PdfBoxGenerationService implements PdfGenerationService {
 
         context.content.beginText();
         context.content.newLineAtOffset(PAGE_WIDTH - RIGHT_MARGIN - 60, 24);
-        context.content.showText("Page " + context.pageNumber);
+        context.content.showText(context.footerPageLabel + " " + context.pageNumber);
         context.content.endText();
     }
 

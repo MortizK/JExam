@@ -189,9 +189,10 @@ Dieses Dokument ist ein vollst채ndiger Arbeitsplan f체r das Projekt JExam. Es f�
 
 ## Offene To Dos
 
-- [ ] Alle Texte sollen Deutsch, Englisch Support bekommen.
+- [x] Alle Texte sollen Deutsch, Englisch Support bekommen.
 - [x] PDF Gen von Aufgaben 체berarbeiten
 - [x] PDF Gen von Deckblatt 체berarbeiten
+- [ ] BUG: PDF Generiert nicht, wenn chapter keine Tasks hat.
 - [ ] Fix Difficulty Distribution f체r PDF Gen
   - [ ] Silent Error oder Vereinfachung der Aktuellen Fehlermeldung
   - [ ] Difficulty Distribution soll f체r die Ganze Klausur gelten, nicht nur pro Chapter

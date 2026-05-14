@@ -1,73 +1,74 @@
-key,ENGLISH,GERMAN
-app.subtitle,v.1.0,v.1.0
-app.title,JExam,JExam
-button.load.xml,Load XML,XML laden
-button.create.exam,Create New Exam,Neues Examen erstellen
-button.refresh.preview,Refresh Preview,Vorschau aktualisieren
-button.open.external,Open External,Extern öffnen
-label.xml.empty.title,No XML loaded,Kein XML geladen
-label.xml.empty.subtitle,Create a new exam or load an existing XML file to begin.,Erstellen Sie ein neue Klausur oder laden Sie eine XML-Datei, um zu beginnen.
-label.unsaved.close.title,Unsaved changes,Ungespeicherte Änderungen
-label.unsaved.close.message,XML auto-saves to a temporary folder, but closing now may still lose progress. Continue?,XML wird zwar temporär gespeichert, aber beim Schließen kann dennoch Fortschritt verloren gehen. Fortfahren?
-button.new,New,Neu
-button.open,Open,Öffnen
-button.save,Save,Speichern
-button.validate,Validieren,
-button.preview,Preview Exam PDF,Klausur-PDF Vorschau
-button.generate.exam,Generate Exam PDF,Klausur-PDF erzeugen
-button.generate.solution,Generate Solution PDF,Lösungs-PDF erzeugen
-button.generate.mock,Generate Mock PDF,Probe-PDF erzeugen
-label.language,Language,Sprache
-dialog.value,Value:,Wert:
-file.xml.title,JExam XML File,JExam XML-Datei
-file.pdf.title,Export PDF,PDF exportieren
-tree.filter.prompt,Filter...,Filtern...
-tree.filter.accessible,Filter exam chapters and tasks,Klausurkapitel und Aufgaben filtern
-button.expand.all,Expand All,Alle aufklappen
-button.collapse.all,Collapse All,Alle einklappen
-tooltip.header.new,Create a new exam in memory,Neues Examen im Speicher erstellen
-tooltip.header.open,Open an existing exam XML file,Eine vorhandene XML-Datei öffnen
-tooltip.header.save,Save the current exam to XML,Die aktuelle Klausur als XML speichern
-tooltip.header.validate,Validate the current exam,Die aktuelle Klausur validieren
-tooltip.header.language,Switch the application language,Die Anwendungssprache wechseln
-tooltip.header.dirty,Unsaved changes in the current exam,Ungespeicherte Änderungen in der aktuellen Klausur
-tooltip.pdf.mode,Select the PDF generation mode,Das PDF-Generierungsformat wählen
-tooltip.pdf.export,Export the selected PDF variant,Die ausgewählte PDF-Variante exportieren
-tooltip.pdf.preview.refresh,Refresh the preview image,Die Vorschau aktualisieren
-tooltip.pdf.preview.export,Export the selected PDF,Das ausgewählte PDF exportieren
-tooltip.pdf.preview.state,Preview state message,Statusmeldung der Vorschau
-label.generation.mode,Generation Mode,Generierungsmodus
-checkbox.include.cover,Include cover,Deckblatt einfügen
-button.export.pdf,Export PDF,PDF exportieren
-cover.title,Cover,Deckblatt
-cover.course,Course / Module,Kurs / Modul
-cover.date,Date,Datum
-cover.studentId,Student ID,Matrikelnummer
-cover.examType,Exam,Klausur
-cover.pointsTotal,Total points,Gesamtpunkte
-cover.instruction,Instructions: Answer all questions.,Kurze Instruktionen: Beantworte alle Aufgaben.
-cover.examType.Exam,Exam,Klausur
-cover.examType.Mock,Mock Exam,Probeklausur
-cover.bonus,Bonus:,Bonus:
-cover.total,Points:,Punkte:
-chapterConfiguration.up,Move up,Nach oben
-chapterConfiguration.down,Move down,Nach unten
-chapterConfiguration.exclude,Exclude,Ausschließen
-chapterConfiguration.include,Include,Einbeziehen
-chapterConfiguration.reset,Reset chapter selection to all chapters,Kapitelauswahl auf alle Kapitel zurücksetzen
-chapterConfiguration.includedLabel,Included Chapters,Eingeschlossene Kapitel
-chapterConfiguration.excludedLabel,Excluded Chapters,Ausgeschlossene Kapitel
-chapterConfiguration.includedList,Included chapters list,Liste der eingeschlossenen Kapitel
-chapterConfiguration.excludedList,Excluded chapters list,Liste der ausgeschlossenen Kapitel
-chapterConfiguration.moveUp,Move the selected chapter up,Das ausgewählte Kapitel nach oben verschieben
-chapterConfiguration.moveDown,Move the selected chapter down,Das ausgewählte Kapitel nach unten verschieben
-chapterConfiguration.excludeChapter,Exclude this chapter,Dieses Kapitel ausschließen
-chapterConfiguration.includeChapter,Include this chapter,Dieses Kapitel einschließen
-preview.refresh,Refresh Preview,Vorschau aktualisieren
-preview.export,Export PDF,PDF exportieren
-preview.idle,No preview generated yet.,Es wurde noch keine Vorschau generiert.
-preview.loading,Generating preview...,Vorschau wird generiert...
-preview.ready,Preview ready,Vorschau bereit
-preview.stale,Preview is stale. Refresh required.,Vorschau ist veraltet. Aktualisierung erforderlich.
-preview.failed,Preview failed,Vorschau fehlgeschlagen
-preview.unavailable,Embedded preview unavailable,Eingebettete Vorschau nicht verfügbar
+key,ENGLISH,GERMAN,SPANISH
+app.subtitle,v.1.0,v.1.0,v.1.0
+app.title,JExam,JExam,JExam
+button.load.xml,Load XML,XML laden,Cargar XML
+button.create.exam,Create New Exam,Neues Examen erstellen,Crear nuevo examen
+button.refresh.preview,Refresh Preview,Vorschau aktualisieren,Actualizar vista previa
+button.open.external,Open External,Extern öffnen,Abrir externo
+label.xml.empty.title,No XML loaded,Kein XML geladen,No hay XML cargado
+label.xml.empty.subtitle,Create a new exam or load an existing XML file to begin.,Erstellen Sie ein neue Klausur oder laden Sie eine XML-Datei, um zu beginnen.,Cree un examen nuevo o cargue un archivo XML existente para comenzar.
+label.unsaved.close.title,Unsaved changes,Ungespeicherte Änderungen,Cambios no guardados
+label.unsaved.close.message,XML auto-saves to a temporary folder, but closing now may still lose progress. Continue?,XML wird zwar temporär gespeichert, aber beim Schließen kann dennoch Fortschritt verloren gehen. Fortfahren?,El XML se guarda automáticamente en una carpeta temporal, pero cerrar ahora puede perder progreso. ¿Continuar?
+button.new,New,Neu,Nuevo
+button.open,Open,Öffnen,Abrir
+button.save,Save,Speichern,Guardar
+button.validate,Validieren,,Validar
+button.preview,Preview Exam PDF,Klausur-PDF Vorschau,Previsualizar PDF de examen
+button.generate.exam,Generate Exam PDF,Klausur-PDF erzeugen,Generar PDF del examen
+button.generate.solution,Generate Solution PDF,Lösungs-PDF erzeugen,Generar PDF de soluciones
+button.generate.mock,Generate Mock PDF,Probe-PDF erzeugen,Generar PDF de prueba
+label.language,Language,Sprache,Idioma
+dialog.value,Value:,Wert:,Valor:
+file.xml.title,JExam XML File,JExam XML-Datei,Archivo XML de JExam
+file.pdf.title,Export PDF,PDF exportieren,Exportar PDF
+tree.filter.prompt,Filter...,Filtern...,Filtro...
+tree.filter.accessible,Filter exam chapters and tasks,Klausurkapitel und Aufgaben filtern,Filtrar capítulos y tareas del examen
+button.expand.all,Expand All,Alle aufklappen,Expandir todo
+button.collapse.all,Collapse All,Alle einklappen,Colapsar todo
+tooltip.header.new,Create a new exam in memory,Neues Examen im Speicher erstellen,Crear un nuevo examen en memoria
+tooltip.header.open,Open an existing exam XML file,Eine vorhandene XML-Datei öffnen,Abrir un archivo XML existente
+tooltip.header.save,Save the current exam to XML,Die aktuelle Klausur als XML speichern,Guardar el examen actual como XML
+tooltip.header.validate,Validate the current exam,Die aktuelle Klausur validieren,Validar el examen actual
+tooltip.header.language,Switch the application language,Die Anwendungssprache wechseln,Cambiar el idioma de la aplicación
+tooltip.header.dirty,Unsaved changes in the current exam,Ungespeicherte Änderungen in der aktuellen Klausur,Cambios no guardados en el examen actual
+tooltip.pdf.mode,Select the PDF generation mode,Das PDF-Generierungsformat wählen,Seleccionar el modo de generación de PDF
+tooltip.pdf.export,Export the selected PDF variant,Die ausgewählte PDF-Variante exportieren,Exportar la variante de PDF seleccionada
+tooltip.pdf.preview.refresh,Refresh the preview image,Die Vorschau aktualisieren,Actualizar la imagen de vista previa
+tooltip.pdf.preview.export,Export the selected PDF,Das ausgewählte PDF exportieren,Exportar el PDF seleccionado
+tooltip.pdf.preview.state,Preview state message,Statusmeldung der Vorschau,Mensaje de estado de la vista previa
+label.generation.mode,Generation Mode,Generierungsmodus,Modo de generación
+checkbox.include.cover,Include cover,Deckblatt einfügen,Incluir portada
+button.export.pdf,Export PDF,PDF exportieren,Exportar PDF
+cover.title,Cover,Deckblatt,Portada
+cover.course,Course / Module,Kurs / Modul,Curso / Módulo
+cover.date,Date,Datum,Fecha
+cover.studentId,Student ID,Matrikelnummer,ID de estudiante
+cover.examType,Exam,Klausur,Examen
+cover.pointsTotal,Total points,Gesamtpunkte,Puntos totales
+cover.instruction,Instructions: Answer all questions.,Kurze Instruktionen: Beantworte alle Aufgaben.,Instrucciones: Responda todas las preguntas.
+cover.examType.Exam,Exam,Klausur,Examen
+cover.examType.Mock,Mock Exam,Probeklausur,Examen de prueba
+cover.bonus,Bonus:,Bonus:,Bono:
+cover.total,Points:,Punkte:,Puntos:
+chapterConfiguration.up,Move up,Nach oben,Subir
+chapterConfiguration.down,Move down,Nach unten,Bajar
+chapterConfiguration.exclude,Exclude,Ausschließen,Excluir
+chapterConfiguration.include,Include,Einbeziehen,Incluir
+chapterConfiguration.reset,Reset chapter selection to all chapters,Kapitelauswahl auf alle Kapitel zurücksetzen,Restablecer selección de capítulos a todos los capítulos
+chapterConfiguration.includedLabel,Included Chapters,Eingeschlossene Kapitel,Capítulos incluidos
+chapterConfiguration.excludedLabel,Excluded Chapters,Ausgeschlossene Kapitel,Capítulos excluidos
+chapterConfiguration.includedList,Included chapters list,Liste der eingeschlossenen Kapitel,Lista de capítulos incluidos
+chapterConfiguration.excludedList,Excluded chapters list,Liste der ausgeschlossenen Kapitel,Lista de capítulos excluidos
+chapterConfiguration.moveUp,Move the selected chapter up,Das ausgewählte Kapitel nach oben verschieben,Mover el capítulo seleccionado hacia arriba
+chapterConfiguration.moveDown,Move the selected chapter down,Das ausgewählte Kapitel nach unten verschieben,Mover el capítulo seleccionado hacia abajo
+chapterConfiguration.excludeChapter,Exclude this chapter,Dieses Kapitel ausschließen,Excluir este capítulo
+chapterConfiguration.includeChapter,Include this chapter,Dieses Kapitel einschließen,Incluir este capítulo
+preview.refresh,Refresh Preview,Vorschau aktualisieren,Actualizar vista previa
+preview.export,Export PDF,PDF exportieren,Exportar PDF
+preview.idle,No preview generated yet.,Es wurde noch keine Vorschau generiert.,No se ha generado ninguna vista previa todavía.
+preview.loading,Generating preview...,Vorschau wird generiert...,Generando vista previa...
+preview.ready,Preview ready,Vorschau bereit,Vista previa lista
+preview.stale,Preview is stale. Refresh required.,Vorschau ist veraltet. Aktualisierung erforderlich.,La vista previa está desactualizada. Requiere actualización.
+preview.failed,Preview failed,Vorschau fehlgeschlagen,La vista previa falló
+preview.unavailable,Embedded preview unavailable,Eingebettete Vorschau nicht verfügbar,Vista previa integrada no disponible
+footer.page,Page,Seite,Página
