@@ -193,9 +193,9 @@ Dieses Dokument ist ein vollst채ndiger Arbeitsplan f체r das Projekt JExam. Es f�
 - [x] PDF Gen von Aufgaben 체berarbeiten
 - [x] PDF Gen von Deckblatt 체berarbeiten
 - [x] BUG: PDF Generiert nicht, wenn chapter keine Tasks hat.
-- [ ] Fix Difficulty Distribution f체r PDF Gen
-  - [ ] Silent Error oder Vereinfachung der Aktuellen Fehlermeldung
-  - [ ] Difficulty Distribution soll f체r die Ganze Klausur gelten, nicht nur pro Chapter
+- [x] Fix Difficulty Distribution f체r PDF Gen
+  - [x] Silent Error oder Vereinfachung der Aktuellen Fehlermeldung
+  - [x] Difficulty Distribution soll f체r die Ganze Klausur gelten, nicht nur pro Chapter
 - [ ] Remove Custom Keyboard movement
 - [ ] Metriken
   - [ ] Nicht nur Volumen Metriken

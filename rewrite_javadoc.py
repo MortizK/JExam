@@ -1,4 +1,6 @@
-package com.jexam.model;
+file_path = r"src/main/java/com/jexam/model/DifficultyDistributionSummary.java"
+
+content = '''package com.jexam.model;
 
 import java.util.List;
 import java.util.Locale;
@@ -267,3 +269,9 @@ public final class DifficultyDistributionSummary {
         return String.format(Locale.ROOT, "%.1f%%", ratio * 100d);
     }
 }
+'''
+
+with open(file_path, 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print("File rewritten successfully")
