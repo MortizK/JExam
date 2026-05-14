@@ -80,7 +80,6 @@ class PdfBoxGenerationServiceTest {
         }
 
         String text = readPdfText(out);
-        assertTrue(text.contains("Deckblatt"));
         assertTrue(text.contains("Aufgabe 1: First Chapter (2.0 Punkte)"));
         assertTrue(text.contains("Aufgabe 2: Second Chapter (3.0 Punkte)"));
     }
@@ -124,7 +123,6 @@ class PdfBoxGenerationServiceTest {
 
         String text = readPdfText(out);
         assertTrue(text.contains("Empty"));
-        assertTrue(text.contains("Datum:"));
         assertTrue(!text.contains("Aufgabe 1:"));
     }
 

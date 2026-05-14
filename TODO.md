@@ -191,7 +191,7 @@ Dieses Dokument ist ein vollständiger Arbeitsplan für das Projekt JExam. Es f�
 
 - [ ] Alle Texte sollen Deutsch, Englisch Support bekommen.
 - [x] PDF Gen von Aufgaben überarbeiten
-- [ ] PDF Gen von Deckblatt überarbeiten
+- [x] PDF Gen von Deckblatt überarbeiten
 - [ ] Fix Difficulty Distribution für PDF Gen
   - [ ] Silent Error oder Vereinfachung der Aktuellen Fehlermeldung
   - [ ] Difficulty Distribution soll für die Ganze Klausur gelten, nicht nur pro Chapter
@@ -200,7 +200,6 @@ Dieses Dokument ist ein vollständiger Arbeitsplan für das Projekt JExam. Es f�
   - [ ] Nicht nur Volumen Metriken
   - [ ] Noch Kohäsion messen und hinzufügen
 - [ ] PDF Gen Secret Zitate für Mock Exams und Exams einfügen
-- [ ] Fix Dark-Theme
 
 ## To Dos für die Live Demo am 20.05.2026
 
@@ -217,6 +216,7 @@ Dieses Dokument ist ein vollständiger Arbeitsplan für das Projekt JExam. Es f�
 
 ## To Dos für V.2
 
+- [ ] Fix Dark-Theme
 - [ ] PDF Gen soll einstellungen haben
   - [ ] Mit Ohne Deckblatt
   - [ ] Fußzeile Auswahl (Seitenzahl mit/ ohne, Start mit ...)

@@ -160,50 +160,98 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return destination;
     }
 
-    // TODO: Redo the Cover Page
+    // Cover Page layout
     private void writeCoverPage(final RenderContext context, final Exam exam)
         throws IOException {
-        context.content.setFont(BOLD_FONT, TITLE_FONT_SIZE);
-        String coverTitle = uiTextCatalog.text(uiLanguage, "cover.title");
-        context.y = writeCenteredLine(context, context.y, coverTitle, BOLD_FONT, TITLE_FONT_SIZE);
-        context.y -= SECTION_GAP;
+        
+        // Draw 7 squares below the label as placeholders
+        int squares = 7;
+        float squareSize = 12f;
+        float squareSpacing = 6f;
+        float squaresTop = context.y - 6f; // slight offset under the label baseline
+        float squaresBottom = squaresTop - squareSize;
+        float squaresStartX = LEFT_MARGIN;
+        context.content.setLineWidth(0.8f);
+        for (int i = 0; i < squares; i++) {
+            float x = squaresStartX + i * (squareSize + squareSpacing);
+            context.content.addRect(x, squaresBottom, squareSize, squareSize);
+        }
+        context.content.stroke();
 
-        context.content.setFont(BODY_FONT, SUBTITLE_FONT_SIZE);
-        context.y = writeCenteredLine(context, context.y, oneLine(exam.getName()), BODY_FONT, SUBTITLE_FONT_SIZE);
-        context.y -= 6f;
-        drawHorizontalRule(context, context.y);
-        context.y -= CHAPTER_GAP - 6f;
-
-        context.y = writeLine(context, context.y, uiTextCatalog.text(uiLanguage, "cover.date") + ": ________________________________");
-        context.y = writeLine(context, context.y, uiTextCatalog.text(uiLanguage, "cover.studentId") + ": _______________________");
-        context.y -= SECTION_GAP;
-
-        context.y = writeSectionTitle(context, "Punkteuebersicht");
-        context.y = writeLine(context, context.y, uiTextCatalog.text(uiLanguage, "cover.pointsTotal") + ": " + formatPoints(totalPoints(exam, context.mode)));
-        context.y -= SECTION_GAP;
-
+        // Top-left: Matrikelnummer label + 7 small squares
         context.content.setFont(BOLD_FONT, BODY_FONT_SIZE);
-        context.y = writeLine(context, context.y, "Aufgabe" + padLeft("Teilaufgaben", 20) + padLeft("Punkte", 10));
-        drawHorizontalRule(context, context.y + 4f);
+        // Use localized label for student id
+        String studentIdLabel = uiTextCatalog.text(uiLanguage, "cover.studentId");
+        // Keep a snapshot of y to compute square positions
+        context.y = writeText(context, studentIdLabel + ":", LEFT_MARGIN, context.y, BOLD_FONT, BODY_FONT_SIZE);
+
+        // increase spacing after the student id line
+        context.y -= SECTION_GAP * 2f;
+
+        // Exam type (centered) - uses localization key "cover.examType" if available
+        String examType = uiTextCatalog.text(uiLanguage, "cover.examType");
+        if (examType != null && !examType.isBlank()) {
+            context.content.setFont(BOLD_FONT, SUBTITLE_FONT_SIZE);
+            context.y = writeCenteredLine(context, context.y, examType, BOLD_FONT, SUBTITLE_FONT_SIZE);
+            context.y -= SECTION_GAP;
+        }
+
+        // Exam name (centered)
+        context.content.setFont(BODY_FONT, TITLE_FONT_SIZE);
+        context.y = writeCenteredLine(context, context.y, oneLine(exam.getName()), BODY_FONT, SUBTITLE_FONT_SIZE);
+        context.y -= CHAPTER_GAP;
+
+        // Instruction text (centered under the cover header)
         context.content.setFont(BODY_FONT, BODY_FONT_SIZE);
+        context.y = writeCenteredLine(context, context.y, uiTextCatalog.text(uiLanguage, "cover.instruction"), BODY_FONT, BODY_FONT_SIZE);
+        context.y -= SECTION_GAP;
+
+        // Header row for the points table
+        context.content.setFont(BOLD_FONT, BODY_FONT_SIZE);
+        context.y = writeText(context, "Aufgabe", LEFT_MARGIN, context.y, BOLD_FONT, BODY_FONT_SIZE);
+        // reserve a box for reached points and print total on the right
+        float pointsBoxWidth = 50f;
+        float pointsBoxHeight = LINE_HEIGHT - 4f;
+        context.content.setFont(BODY_FONT, BODY_FONT_SIZE);
+        context.y -= SECTION_GAP;
 
         final int chapterCount = exam.chapterCount();
-        for (int index = 0; index < exam.chapterCount(); index++) {
+        for (int index = 0; index < chapterCount; index++) {
             Chapter chapter = exam.chapterAt(index);
-            context.y = ensureSpace(context, LINE_HEIGHT * 2.5f);
+            context.y = ensureSpace(context, LINE_HEIGHT * 2.0f);
+            // Compose left text for chapter
             String chapterLabel = chapterHeading(index, chapterCount, chapter.getName(), totalPoints(chapter, context.mode));
-            context.y = writeLine(
-                context,
-                context.y,
-                padRight(chapterLabel, 36)
-                    + padLeft(Integer.toString(includedTasks(chapter, context.mode).size()), 4)
-                    + "           "
-                    + padLeft(formatPoints(totalPoints(chapter, context.mode)), 6)
-            );
+            float beforeY = context.y;
+            context.y = writeText(context, oneLine(chapterLabel), LEFT_MARGIN, context.y, BODY_FONT, BODY_FONT_SIZE);
+
+            // Draw placeholder box for reached points (empty)
+            float boxX = LEFT_MARGIN + CONTENT_WIDTH - pointsBoxWidth - 10f;
+            context.content.addRect(boxX, beforeY - 1f, pointsBoxWidth, pointsBoxHeight);
+            context.content.stroke();
+
+            // Draw total points for chapter to the right of the box
+            String totalPts = padLeft(formatPoints(totalPoints(chapter, context.mode)), 6);
+            // write total points slightly above the boxBottom so they align
+            writeText(context, totalPts, boxX + pointsBoxWidth + 6f, beforeY, BODY_FONT, BODY_FONT_SIZE);
         }
+
         context.y -= SECTION_GAP;
-        // Instruction
-        context.y = writeLine(context, context.y, uiTextCatalog.text(uiLanguage, "cover.instruction"));
+        float beforeY = context.y;
+        float boxX = LEFT_MARGIN + CONTENT_WIDTH - pointsBoxWidth - 10f;
+        writeText(context, uiTextCatalog.text(uiLanguage, "cover.bonus"), LEFT_MARGIN, beforeY, BOLD_FONT, BODY_FONT_SIZE);
+        // Draw placeholder box for bonus points (empty)
+        context.content.addRect(boxX, beforeY - 1f, pointsBoxWidth, pointsBoxHeight);
+        context.content.stroke();
+        
+        context.y -= LINE_HEIGHT;
+        beforeY = context.y;
+        writeText(context, uiTextCatalog.text(uiLanguage, "cover.total"), LEFT_MARGIN, context.y, BOLD_FONT, BODY_FONT_SIZE);
+        // Draw placeholder box for total points (empty)
+        context.content.addRect(boxX, beforeY - 1f, pointsBoxWidth, pointsBoxHeight);
+        context.content.stroke();
+        // Draw total points for the exam to the right of the box
+        String totalPts = padLeft(formatPoints(totalPoints(exam, context.mode)), 6);
+        writeText(context, totalPts, boxX + pointsBoxWidth + 6f, beforeY, BODY_FONT, BODY_FONT_SIZE);
     }
 
     private List<ChapterBookmark> writeChapters(final RenderContext context, final Exam exam)

@@ -4,7 +4,6 @@ import com.jexam.generation.GenerationMode;
 import com.jexam.model.Task;
 import com.jexam.model.enums.Difficulty;
 import com.jexam.model.enums.Scope;
-import com.jexam.app.UiLanguage;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
