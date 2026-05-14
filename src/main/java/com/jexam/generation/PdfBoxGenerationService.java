@@ -31,6 +31,27 @@ import com.jexam.app.UiLanguage;
  *
  * @author Moritz
  */
+/**
+ * PDF generation service backed by Apache PDFBox.
+ *
+ * <p>This implementation renders an {@link com.jexam.model.Exam} into a PDF using
+ * a simple layout model: a cover (optional), then one chapter per section with
+ * tasks and variants rendered in sequence. Coordinates use the A4 page
+ * coordinate space where the origin (0,0) is the bottom-left corner; the
+ * renderer maintains a descending Y cursor that moves down the page as lines
+ * and blocks are written. When remaining space is insufficient the renderer
+ * starts a new page.</p>
+ *
+ * <p>Key responsibilities:</p>
+ * - Layout tasks and answer boxes with heuristics to estimate heights.
+ * - Wrap and split long text to fit available width.
+ * - Produce an outline (bookmarks) and basic metadata with difficulty summary.
+ *
+ * The class favors readability and predictable output over sophisticated
+ * typographic features.</p>
+ *
+ * @author Moritz
+ */
 public class PdfBoxGenerationService implements PdfGenerationService {
     private static final PDType1Font BODY_FONT = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
     private static final PDType1Font BOLD_FONT = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
@@ -118,6 +139,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
     }
 
     private void applyMetadata(final PDDocument document, final Exam exam, final GenerationMode mode) {
+        // Populate basic PDF document metadata. The keywords field contains a
+        // compact difficulty summary so external tools can index generated
+        // documents by difficulty distribution.
         PDDocumentInformation information = new PDDocumentInformation();
         DifficultyDistributionSummary summary = summarizeDifficultyDistribution(exam);
         information.setTitle(oneLine(exam.getName()));
@@ -128,6 +152,11 @@ public class PdfBoxGenerationService implements PdfGenerationService {
     }
 
     private DifficultyDistributionSummary summarizeDifficultyDistribution(final Exam exam) {
+        /**
+         * Create a difficulty summary for the whole exam by collecting all
+         * tasks across chapters. This mirrors the summary used for metadata and
+         * warnings and treats the exam as a flat list of tasks.
+         */
         List<Task> tasks = new ArrayList<>();
         for (int chapterIndex = 0; chapterIndex < exam.chapterCount(); chapterIndex++) {
             tasks.addAll(exam.chapterAt(chapterIndex).getTasks());
@@ -136,6 +165,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
     }
 
     private void applyOutline(final PDDocument document, final List<ChapterBookmark> chapterBookmarks) {
+        // Build a simple document outline (bookmarks) referencing the cover
+        // and chapter/task locations recorded while rendering. This improves
+        // navigation in PDF viewers.
         PDDocumentOutline outline = new PDDocumentOutline();
 
         if (document.getNumberOfPages() > 0) {
@@ -164,6 +196,11 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         document.getDocumentCatalog().setDocumentOutline(outline);
     }
 
+    /**
+     * Create a page destination positioned at the top of the provided page.
+     * Used by the document outline (bookmarks) so items jump to the top of a
+     * page in PDF viewers.
+     */
     private PDPageXYZDestination destinationForPage(final PDPage page) {
         PDPageXYZDestination destination = new PDPageXYZDestination();
         destination.setPage(page);
@@ -172,6 +209,16 @@ public class PdfBoxGenerationService implements PdfGenerationService {
     }
 
     // Cover Page layout
+    /**
+     * Render the optional cover page. This method writes localized labels,
+     * exam title, per-chapter placeholders and totals. It does not advance to
+     * the next page; the caller is responsible for creating a new page when
+     * appropriate.
+     *
+     * @param context current render context with document and cursor
+     * @param exam exam model to render cover content for
+     * @throws IOException on PDFBox I/O errors
+     */
     private void writeCoverPage(final RenderContext context, final Exam exam)
         throws IOException {
         
@@ -265,6 +312,12 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         writeText(context, totalPts, boxX + pointsBoxWidth + 6f, beforeY, BODY_FONT, BODY_FONT_SIZE);
     }
 
+    /**
+     * Render all chapters of the exam. Starts a new page before each
+     * subsequent chapter to ensure chapters begin on fresh pages.
+     *
+     * @return list of chapter bookmarks with their start pages and task anchors
+     */
     private List<ChapterBookmark> writeChapters(final RenderContext context, final Exam exam)
         throws IOException {
         List<ChapterBookmark> chapterBookmarks = new ArrayList<>();
@@ -278,6 +331,10 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return chapterBookmarks;
     }
 
+    /**
+     * Render chapter header and its tasks, returning a bookmark representing
+     * the chapter start page and task anchors for the outline.
+     */
     private ChapterBookmark writeChapter(final RenderContext context, final int chapterIndex, final Chapter chapter)
         throws IOException {
         PDPage chapterPage = context.currentPage;
@@ -292,6 +349,13 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return new ChapterBookmark(heading, chapterPage, taskBookmarks);
     }
 
+    /**
+     * Render all tasks for a chapter. For each task the method:
+     * - estimates the vertical space required,
+     * - ensures there is room on the page or starts a new one,
+     * - writes the task title and variants, and
+     * - collects task bookmarks for the outline.
+     */
     private List<TaskBookmark> writeTasks(final RenderContext context, final Chapter chapter)
         throws IOException {
         List<Task> tasks = includedTasks(chapter, context.mode);
@@ -303,9 +367,14 @@ public class PdfBoxGenerationService implements PdfGenerationService {
             displayTaskIndex++;
 
             float taskHeight = estimateTaskBlockHeight(task, context.mode);
+            // If the whole task block fits on the remaining page use the
+            // estimated height; otherwise ensure a small header space and let
+            // the content flow to the next page as needed.
             if (taskHeight <= CONTENT_HEIGHT) {
                 context.y = ensureSpace(context, taskHeight);
             } else {
+                // Large blocks are split — reserve at least a couple of lines
+                // so the title is not orphaned at the page bottom.
                 context.y = ensureSpace(context, LINE_HEIGHT * 2.5f);
             }
             PDPage taskStartPage = context.currentPage;
@@ -414,6 +483,8 @@ public class PdfBoxGenerationService implements PdfGenerationService {
     }
 
     private float ensureSpace(final RenderContext context, final float requiredHeight) throws IOException {
+        // If the required height would cross the bottom margin, start a new
+        // page so the block is rendered cleanly at the top of the next page.
         if (context.y - requiredHeight < BOTTOM_MARGIN) {
             context.startNewPage();
         }
@@ -566,6 +637,7 @@ public class PdfBoxGenerationService implements PdfGenerationService {
                 }
 
                 String candidate = currentLine.isEmpty() ? word : currentLine + " " + word;
+                // If the candidate fits add it to the current line.
                 if (textWidth(font, fontSize, candidate) <= maxWidth) {
                     currentLine.setLength(0);
                     currentLine.append(candidate);
@@ -573,10 +645,13 @@ public class PdfBoxGenerationService implements PdfGenerationService {
                 }
 
                 if (!currentLine.isEmpty()) {
+                    // flush current line before handling the too-long candidate
                     lines.add(currentLine.toString());
                     currentLine.setLength(0);
                 }
 
+                // Word itself might be longer than the available width. In
+                // that case split it into chunks that fit.
                 if (textWidth(font, fontSize, word) <= maxWidth) {
                     currentLine.append(word);
                 } else {
@@ -610,6 +685,8 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         StringBuilder current = new StringBuilder();
         for (char character : word.toCharArray()) {
             String candidate = current + String.valueOf(character);
+            // Grow current chunk until adding the next character would exceed
+            // the available width, then flush the chunk.
             if (current.length() > 0 && textWidth(font, fontSize, candidate) > maxWidth) {
                 chunks.add(current.toString());
                 current.setLength(0);

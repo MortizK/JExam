@@ -598,6 +598,13 @@ public class ExamApplicationService {
         return new Exam("New Exam", List.of(new Chapter("New Chapter", List.of(defaultTask()))));
     }
 
+    /**
+     * Build a new Exam instance containing only the selected chapters and
+     * tasks suitable for the given {@link GenerationMode}.
+     *
+     * <p>The method clones chapter/task content as necessary and applies mode
+     * filtering (e.g. excludes non-exam scoped tasks for EXAM mode).</p>
+     */
     private Exam buildExamForGeneration(final GenerationMode mode, final Random random) {
         if (generationChapterIndices.isEmpty()) {
             throw new IllegalStateException("No chapters selected for PDF generation.");
@@ -622,6 +629,14 @@ public class ExamApplicationService {
         return new Exam(currentExam.getName(), chapters);
     }
 
+    /**
+     * Build a chapter tailored for random generation.
+     *
+     * <p>For MOCK_EXAM mode this returns all tasks cloned with a single
+     * randomized variant. For EXAM mode the method resolves a chapter
+     * point goal and selects a subset of tasks whose summed points match
+     * the resolved target (with fallback preferences applied).</p>
+     */
     private Chapter buildChapterForGeneration(
         final Chapter sourceChapter,
         final int chapterIndex,
@@ -676,6 +691,12 @@ public class ExamApplicationService {
         return Math.max(0.5d, normalizeHalfPoint(totalPoints(candidates)));
     }
 
+    /**
+     * Select a subset of tasks from candidates whose total points best
+     * match the requested goalPoints. The algorithm treats points as
+     * discrete units (half-point granularity) and computes reachable
+     * sums using a dynamic programming style subset enumeration.
+     */
     private List<Task> selectTasksForGoal(
         final List<Task> candidates,
         final double goalPoints,
@@ -685,6 +706,7 @@ public class ExamApplicationService {
         List<Task> shuffledCandidates = new ArrayList<>(candidates);
         Collections.shuffle(shuffledCandidates, random);
 
+        // Map achievable sum (in point units) -> example subset producing that sum
         Map<Integer, List<Task>> subsetByUnits = new HashMap<>();
         subsetByUnits.put(0, List.of());
 
@@ -730,6 +752,7 @@ public class ExamApplicationService {
     }
 
     private Integer resolveTargetUnits(final java.util.Set<Integer> sums, final int targetUnits) {
+        // Prefer an exact match when available
         if (sums.contains(targetUnits)) {
             return targetUnits;
         }
@@ -749,6 +772,7 @@ public class ExamApplicationService {
             }
         }
 
+        // Apply configured fallback preference when no exact sum is found.
         if (goalPointFallbackPreference == GoalPointFallbackPreference.LOWER) {
             return nearestLower != null ? nearestLower : nearestHigher;
         }
@@ -806,6 +830,11 @@ public class ExamApplicationService {
         double bestScore = Double.MAX_VALUE;
         int bestPointsUnits = 0;
 
+        // Evaluate every non-empty subset of tasks (bitmask enumeration).
+        // For each subset compute a simple imbalance score based on the
+        // deviation from the target difficulty ratio (easy/medium/hard).
+        // Keep the subset with minimal imbalance; in tie cases prefer the
+        // subset with the larger point sum to maximize coverage.
         for (int mask = 1; mask < subsetLimit; mask++) {
             int easy = 0;
             int medium = 0;
