@@ -582,18 +582,30 @@ public class ExamApplicationService {
         variant.setAnswer(answer);
     }
 
+    /**
+     * Convenience wrapper for accessing a chapter from the current exam.
+     */
     private Chapter chapterAt(int chapterIndex) {
         return currentExam.chapterAt(chapterIndex);
     }
 
+    /**
+     * Convenience wrapper for accessing a task from the current exam.
+     */
     private Task taskAt(int chapterIndex, int taskIndex) {
         return currentExam.taskAt(chapterIndex, taskIndex);
     }
 
+    /**
+     * Convenience wrapper for accessing a variant from the current exam.
+     */
     private Variant variantAt(int chapterIndex, int taskIndex, int variantIndex) {
         return currentExam.variantAt(chapterIndex, taskIndex, variantIndex);
     }
 
+    /**
+     * Create the default exam template used when starting a new document.
+     */
     private Exam createDefaultExam() {
         return new Exam("New Exam", List.of(new Chapter("New Chapter", List.of(defaultTask()))));
     }
@@ -665,6 +677,9 @@ public class ExamApplicationService {
         return new Chapter(sourceChapter.getName(), selectedTasks);
     }
 
+    /**
+     * Filter the chapter tasks according to the active generation mode.
+     */
     private List<Task> modeFilteredTasks(final Chapter chapter, final GenerationMode mode) {
         List<Task> result = new ArrayList<>();
         for (Task task : chapter.getTasks()) {
@@ -675,6 +690,9 @@ public class ExamApplicationService {
         return result;
     }
 
+    /**
+     * Clone all tasks and reduce each one to a single randomly selected variant.
+     */
     private List<Task> cloneAllTasksWithSingleVariant(final List<Task> sourceTasks, final Random random) {
         List<Task> cloned = new ArrayList<>();
         for (Task task : sourceTasks) {
@@ -683,6 +701,10 @@ public class ExamApplicationService {
         return cloned;
     }
 
+    /**
+     * Resolve the target chapter points using either a configured override or
+     * a default based on the available candidate tasks.
+     */
     private double resolveChapterGoalPoints(final int chapterIndex, final List<Task> candidates) {
         Double configured = generationChapterGoalPoints.get(chapterIndex);
         if (configured != null && configured > 0d) {
@@ -779,6 +801,9 @@ public class ExamApplicationService {
         return nearestHigher != null ? nearestHigher : nearestLower;
     }
 
+    /**
+     * Clone a task and retain only one variant selected at random.
+     */
     private Task cloneTaskWithSingleVariant(final Task sourceTask, final Random random) {
         if (sourceTask.getVariants().isEmpty()) {
             throw new IllegalStateException("Task '" + sourceTask.getName() + "' has no variants.");
@@ -796,6 +821,10 @@ public class ExamApplicationService {
         );
     }
 
+    /**
+     * Recompute default chapter point targets for the current generation
+     * selection.
+     */
     private void resetGenerationGoalPoints() {
         generationChapterGoalPoints.clear();
         for (int chapterIndex = 0; chapterIndex < currentExam.chapterCount(); chapterIndex++) {
@@ -815,6 +844,12 @@ public class ExamApplicationService {
         }
     }
 
+    /**
+     * Determine a reasonable default goal point total for a chapter.
+     *
+     * For small task sets the method enumerates subsets and prefers a subset
+     * with the most balanced difficulty distribution.
+     */
     private double balancedDefaultGoalPoints(final List<Task> tasks) {
         if (tasks == null || tasks.isEmpty()) {
             return 0.5d;
@@ -878,6 +913,9 @@ public class ExamApplicationService {
         return bestPointsUnits / (double) POINT_SCALE;
     }
 
+    /**
+     * Score how far a subset deviates from the target difficulty ratio.
+     */
     private double difficultyImbalanceScore(final int easy, final int medium, final int hard, final int total) {
         if (total <= 0) {
             return Double.MAX_VALUE;
@@ -890,6 +928,9 @@ public class ExamApplicationService {
             + Math.abs(hardRatio - DIFFICULTY_TARGET_RATIO);
     }
 
+    /**
+     * Sum the points of the provided tasks.
+     */
     private double totalPoints(final List<Task> tasks) {
         double total = 0d;
         for (Task task : tasks) {
@@ -898,24 +939,43 @@ public class ExamApplicationService {
         return total;
     }
 
+    /**
+     * Convert a point value to integer half-point units.
+     */
     private int toPointUnits(final double points) {
         return (int) Math.round(points * POINT_SCALE);
     }
 
+    /**
+     * Round points to the nearest half point.
+     */
     private double normalizeHalfPoint(final double points) {
         return Math.round(points * POINT_SCALE) / (double) POINT_SCALE;
     }
 
+    /**
+     * Format points using one decimal place for user-facing text.
+     */
     private String formatPoints(final double points) {
         return String.format(java.util.Locale.ROOT, "%.1f", points);
     }
 
+    /**
+     * Create the random source used for generation.
+     *
+     * If a seed is configured the result is deterministic; otherwise a fresh
+     * seed from the current time is used. A mode-specific offset keeps exam and
+     * mock-exam exports different even with the same base seed.
+     */
     private Random generationRandom(final GenerationMode mode) {
         long baseSeed = generationRandomSeed == null ? System.nanoTime() : generationRandomSeed;
         long modeOffset = mode == GenerationMode.MOCK_EXAM ? 31L : 17L;
         return new Random(baseSeed + modeOffset);
     }
 
+    /**
+     * Derive the output path for the solution PDF from the primary path.
+     */
     private Path solutionOutputPath(final Path primaryPath) {
         String fileName = primaryPath.getFileName() == null ? "output.pdf" : primaryPath.getFileName().toString();
         String solutionName;
@@ -929,6 +989,9 @@ public class ExamApplicationService {
         return parent == null ? Path.of(solutionName) : parent.resolve(solutionName);
     }
 
+    /**
+     * Create the default placeholder task used in new exams and chapters.
+     */
     private Task defaultTask() {
         return new Task(
             "New Subtask",

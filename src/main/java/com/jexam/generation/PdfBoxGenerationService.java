@@ -138,6 +138,12 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         }
     }
 
+    /**
+     * Populate basic PDF metadata for the generated document.
+     *
+     * The difficulty summary is encoded in the keyword field so external PDF
+     * tools can index or filter the document by difficulty distribution.
+     */
     private void applyMetadata(final PDDocument document, final Exam exam, final GenerationMode mode) {
         // Populate basic PDF document metadata. The keywords field contains a
         // compact difficulty summary so external tools can index generated
@@ -164,6 +170,12 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return DifficultyDistributionSummary.fromTasks(tasks);
     }
 
+    /**
+     * Attach a document outline (bookmarks) to the PDF.
+     *
+     * The outline mirrors the rendered structure: optional cover, chapters,
+     * and tasks. This improves navigation in PDF viewers.
+     */
     private void applyOutline(final PDDocument document, final List<ChapterBookmark> chapterBookmarks) {
         // Build a simple document outline (bookmarks) referencing the cover
         // and chapter/task locations recorded while rendering. This improves
@@ -201,6 +213,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
      * Used by the document outline (bookmarks) so items jump to the top of a
      * page in PDF viewers.
      */
+    /**
+     * Create a top-of-page destination for bookmark navigation.
+     */
     private PDPageXYZDestination destinationForPage(final PDPage page) {
         PDPageXYZDestination destination = new PDPageXYZDestination();
         destination.setPage(page);
@@ -218,6 +233,13 @@ public class PdfBoxGenerationService implements PdfGenerationService {
      * @param context current render context with document and cursor
      * @param exam exam model to render cover content for
      * @throws IOException on PDFBox I/O errors
+     */
+    /**
+     * Render the cover page.
+     *
+     * The cover contains localized labels, the exam title, and point summary
+     * placeholders. It uses the current y cursor and keeps the layout within
+     * the configured page margins.
      */
     private void writeCoverPage(final RenderContext context, final Exam exam)
         throws IOException {
@@ -318,6 +340,12 @@ public class PdfBoxGenerationService implements PdfGenerationService {
      *
      * @return list of chapter bookmarks with their start pages and task anchors
      */
+    /**
+     * Render all chapters in order.
+     *
+     * Each chapter begins on a fresh page so the outline and visual layout are
+     * predictable.
+     */
     private List<ChapterBookmark> writeChapters(final RenderContext context, final Exam exam)
         throws IOException {
         List<ChapterBookmark> chapterBookmarks = new ArrayList<>();
@@ -334,6 +362,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
     /**
      * Render chapter header and its tasks, returning a bookmark representing
      * the chapter start page and task anchors for the outline.
+     */
+    /**
+     * Render one chapter heading and its tasks.
      */
     private ChapterBookmark writeChapter(final RenderContext context, final int chapterIndex, final Chapter chapter)
         throws IOException {
@@ -355,6 +386,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
      * - ensures there is room on the page or starts a new one,
      * - writes the task title and variants, and
      * - collects task bookmarks for the outline.
+     */
+    /**
+     * Render all tasks for a chapter and collect outline bookmarks.
      */
     private List<TaskBookmark> writeTasks(final RenderContext context, final Chapter chapter)
         throws IOException {
@@ -396,6 +430,12 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return taskBookmarks;
     }
 
+    /**
+     * Render the variants of one task.
+     *
+     * Each variant writes the question text, reserves space for the answer
+     * box, and fills the box with solution text when rendering solutions.
+     */
     private void writeVariants(final RenderContext context, final Task task)
         throws IOException {
         for (int i = 0; i < task.getVariants().size(); i++) {
@@ -416,6 +456,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         }
     }
 
+    /**
+     * Decide whether a task belongs into the selected generation mode.
+     */
     private boolean shouldIncludeTask(final Task task, final GenerationMode mode) {
         if (mode == GenerationMode.EXAM) {
             return task.getScope() == Scope.EXAM;
@@ -423,6 +466,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return true;
     }
 
+    /**
+     * Write a single line at the left page margin.
+     */
     private float writeLine(
         final RenderContext context,
         final float y,
@@ -431,6 +477,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return writeText(context, oneLine(text), LEFT_MARGIN, y, BODY_FONT, BODY_FONT_SIZE);
     }
 
+    /**
+     * Write a chapter or section title using the subtitle font.
+     */
     private float writeSectionTitle(final RenderContext context, final String text) throws IOException {
         context.content.setFont(BOLD_FONT, SUBTITLE_FONT_SIZE);
         float result = writeText(context, oneLine(text), LEFT_MARGIN, context.y, BOLD_FONT, SUBTITLE_FONT_SIZE);
@@ -438,6 +487,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return result;
     }
 
+    /**
+     * Write raw text at a fixed position and advance the logical cursor.
+     */
     private float writeText(
         final RenderContext context,
         final String text,
@@ -455,6 +507,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return y - LINE_HEIGHT;
     }
 
+    /**
+     * Write text centered within the content width.
+     */
     private float writeCenteredLine(
         final RenderContext context,
         final float y,
@@ -467,6 +522,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return writeText(context, text == null ? "" : text, x, y, font, fontSize);
     }
 
+    /**
+     * Write pre-wrapped lines with a custom logical line height.
+     */
     private float writeWrappedLines(
         final RenderContext context,
         final List<String> lines,
@@ -482,6 +540,12 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return currentY;
     }
 
+    /**
+     * Ensure enough vertical room remains for a block.
+     *
+     * If the current page cannot fit the requested height the renderer starts
+     * a new page and resets the cursor.
+     */
     private float ensureSpace(final RenderContext context, final float requiredHeight) throws IOException {
         // If the required height would cross the bottom margin, start a new
         // page so the block is rendered cleanly at the top of the next page.
@@ -491,6 +555,12 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return context.y;
     }
 
+    /**
+     * Draw the answer box for a variant.
+     *
+     * In solution mode the answer text is written inside the box; otherwise
+     * the box remains blank for handwritten responses.
+     */
     private void drawAnswerBox(final RenderContext context, final Variant variant, final float boxHeight)
         throws IOException {
         float boxWidth = CONTENT_WIDTH;
@@ -517,6 +587,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         context.y = bottomY - ANSWER_LABEL_GAP;
     }
 
+    /**
+     * Collapse multi-line text into a single trimmed line.
+     */
     private String oneLine(final String text) {
         if (text == null) {
             return "";
@@ -524,6 +597,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return text.replace('\n', ' ').replace('\r', ' ').trim();
     }
 
+    /**
+     * Calculate total points across all exam chapters for the active mode.
+     */
     private float totalPoints(final Exam exam, final GenerationMode mode) {
         float total = 0f;
         for (Chapter chapter : exam.getChapters()) {
@@ -532,6 +608,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return total;
     }
 
+    /**
+     * Calculate total points for a single chapter after mode filtering.
+     */
     private float totalPoints(final Chapter chapter, final GenerationMode mode) {
         float total = 0f;
         for (Task task : includedTasks(chapter, mode)) {
@@ -540,6 +619,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return total;
     }
 
+    /**
+     * Return tasks that should be included for the selected generation mode.
+     */
     private List<Task> includedTasks(final Chapter chapter, final GenerationMode mode) {
         List<Task> tasks = new ArrayList<>();
         for (Task task : chapter.getTasks()) {
@@ -550,10 +632,16 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return tasks;
     }
 
+    /**
+     * Format a point value using a stable one-decimal representation.
+     */
     private String formatPoints(final double points) {
         return String.format(java.util.Locale.ROOT, "%.1f", points);
     }
 
+    /**
+     * Build the visible chapter heading with chapter number and point total.
+     */
     private String chapterHeading(
         final int chapterIndex,
         final int chapterCount,
@@ -566,6 +654,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return "Aufgabe " + (chapterIndex + 1) + ": " + oneLine(chapterName) + " (" + formatPoints(points) + " Punkte)";
     }
 
+    /**
+     * Convert a zero-based index to a lowercase alphabetical ordinal.
+     */
     private String taskOrdinal(final int index) {
         int value = index + 1;
         StringBuilder builder = new StringBuilder();
@@ -577,6 +668,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return builder + ")";
     }
 
+    /**
+     * Left-pad a string to the requested width.
+     */
     private String padLeft(final String value, final int width) {
         if (value.length() >= width) {
             return value;
@@ -584,6 +678,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return " ".repeat(width - value.length()) + value;
     }
 
+    /**
+     * Estimate the height required for a full task block.
+     */
     private float estimateTaskBlockHeight(final Task task, final GenerationMode mode) throws IOException {
         float totalHeight = LINE_HEIGHT + SECTION_GAP;
         for (Variant variant : task.getVariants()) {
@@ -593,6 +690,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return totalHeight;
     }
 
+    /**
+     * Estimate the vertical space needed for one variant.
+     */
     private float estimateVariantBlockHeight(final Task task, final Variant variant, final GenerationMode mode)
         throws IOException {
         float questionHeight = wrapText(variant.getQuestion(), BODY_FONT, BODY_FONT_SIZE, CONTENT_WIDTH - 20).size() * LINE_HEIGHT;
@@ -603,6 +703,12 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return LINE_HEIGHT + questionHeight + QUESTION_GAP + Math.max(answerHeight, answerTextHeight + ANSWER_PADDING * 2) + LINE_HEIGHT;
     }
 
+    /**
+     * Estimate the height of an answer box.
+     *
+     * The estimate is based on wrapped answer text and a handwritten-writing
+     * allowance derived from the task points.
+     */
     static float estimateAnswerBoxHeight(final String answerText, final double points) throws IOException {
         List<String> wrapped = wrapText(answerText, BODY_FONT, BODY_FONT_SIZE, CONTENT_WIDTH - 2 * ANSWER_PADDING);
         float textHeight = wrapped.size() * ANSWER_LINE_HEIGHT;
@@ -610,6 +716,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return Math.max(MIN_ANSWER_BOX_HEIGHT, textHeight + handwrittenPadding + (2 * ANSWER_PADDING));
     }
 
+    /**
+     * Wrap text to the given width using the provided font metrics.
+     */
     private static List<String> wrapText(
         final String text,
         final PDFont font,
@@ -675,6 +784,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return lines;
     }
 
+    /**
+     * Split a single overlong word into smaller chunks that fit.
+     */
     private static List<String> splitWord(
         final String word,
         final PDFont font,
@@ -699,6 +811,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         return chunks;
     }
 
+    /**
+     * Measure text width in PDF user space units for the given font size.
+     */
     private static float textWidth(final PDFont font, final float fontSize, final String text) throws IOException {
         return font.getStringWidth(text == null ? "" : text) / 1000f * fontSize;
     }
@@ -744,6 +859,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
          */
         private final String footerPageLabel;
 
+        /**
+         * Create a render context and initialize the first page.
+         */
         private RenderContext(final PDDocument document, final GenerationMode currentMode, final Exam currentExam, final String footerPageLabel) throws IOException {
             this.document = document;
             this.mode = currentMode;
@@ -753,6 +871,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
             startNewPage();
         }
 
+        /**
+         * Close the current stream if needed and start a fresh page.
+         */
         private void startNewPage() throws IOException {
             if (content != null) {
                 content.close();
@@ -769,6 +890,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         }
 
         @Override
+        /**
+         * Close the current content stream when rendering is finished.
+         */
         public void close() throws IOException {
             if (content != null) {
                 content.close();
@@ -776,6 +900,9 @@ public class PdfBoxGenerationService implements PdfGenerationService {
         }
     }
 
+    /**
+     * Draw a small footer on the current page.
+     */
     private static void drawFooter(final RenderContext context) throws IOException {
         context.content.setFont(BODY_FONT, SMALL_FONT_SIZE);
         context.content.beginText();
