@@ -197,9 +197,9 @@ Dieses Dokument ist ein vollst채ndiger Arbeitsplan f체r das Projekt JExam. Es f�
   - [x] Silent Error oder Vereinfachung der Aktuellen Fehlermeldung
   - [x] Difficulty Distribution soll f체r die Ganze Klausur gelten, nicht nur pro Chapter
 - [ ] Remove Custom Keyboard movement
-- [ ] Metriken
-  - [ ] Nicht nur Volumen Metriken
-  - [ ] Noch Koh채sion messen und hinzuf체gen
+- [x] Metriken
+  - [x] Nicht nur Volumen Metriken
+  - [x] Noch Koh채sion messen und hinzuf체gen
 - [ ] PDF Gen Secret Zitate f체r Mock Exams und Exams einf체gen
 - [x] JavaDocs for each function 
   - [x] Comments on mayor code blocks (for, while, if)
