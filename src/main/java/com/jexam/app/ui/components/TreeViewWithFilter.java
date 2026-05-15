@@ -22,6 +22,11 @@ import java.util.function.Function;
 /**
  * Tree navigation with text filtering and selection forwarding.
  *
+ * <p>This generic helper wraps a TreeView with a filter field and expand/
+ * collapse actions. It rebuilds the visible tree on each filter change and
+ * forwards selected item values to a callback so the surrounding container can
+ * keep its own selection state in sync.</p>
+ *
  * @param <T> hierarchy item type
  * @author Moritz
  */
@@ -228,6 +233,8 @@ public final class TreeViewWithFilter<T> extends BorderPane {
         root.setExpanded(true);
 
         for (TreeItem<T> sourceRoot : sourceRoots) {
+            // Keep only the matching subtree and any ancestors needed to reach
+            // a match so the user can still navigate contextually.
             TreeItem<T> filteredRoot = filterTree(sourceRoot, filterText == null ? "" : filterText.trim().toLowerCase());
             if (filteredRoot != null) {
                 root.getChildren().add(filteredRoot);
@@ -268,6 +275,8 @@ public final class TreeViewWithFilter<T> extends BorderPane {
 
         List<TreeItem<T>> filteredChildren = new ArrayList<>();
         for (TreeItem<T> child : sourceItem.getChildren()) {
+            // Recursively retain matching descendants; non-matching branches
+            // are dropped entirely when they do not lead to a match.
             TreeItem<T> filteredChild = filterTree(child, filterText);
             if (filteredChild != null) {
                 filteredChildren.add(filteredChild);
@@ -316,6 +325,7 @@ public final class TreeViewWithFilter<T> extends BorderPane {
     private void setExpandedRecursive(final TreeItem<T> item, final boolean expanded) {
         item.setExpanded(expanded);
         for (TreeItem<T> child : item.getChildren()) {
+            // Apply the same expansion state to every descendant.
             setExpandedRecursive(child, expanded);
         }
     }

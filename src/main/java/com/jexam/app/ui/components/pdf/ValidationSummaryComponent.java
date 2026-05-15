@@ -15,6 +15,10 @@ import java.util.function.Consumer;
 /**
  * Displays validation issues grouped by top-level path segment.
  *
+ * <p>The summary gives the user a quick pass/fail status and a navigable tree
+ * of validation errors. Each leaf keeps the original model path so selecting
+ * an issue can drive the rest of the UI to the exact offending element.</p>
+ *
  * @author Moritz
  */
 public final class ValidationSummaryComponent extends VBox {
@@ -68,6 +72,8 @@ public final class ValidationSummaryComponent extends VBox {
         getStyleClass().removeAll(CLASS_STATE_SUCCESS, CLASS_STATE_ERROR);
 
         if (result == null || result.isValid()) {
+            // Clear error styling and show the success state when the current
+            // exam validates cleanly.
             getStyleClass().add(CLASS_STATE_SUCCESS);
             summary.setText("All validations passed. Ready to generate.");
             issueTree.setRoot(root);
@@ -86,6 +92,8 @@ public final class ValidationSummaryComponent extends VBox {
                 groupKey = path.substring(0, splitIndex);
             }
 
+            // Group issues by the first meaningful path segment so the tree is
+            // compact but still useful for navigation.
             TreeItem<String> group = groups.computeIfAbsent(groupKey, key -> {
                 TreeItem<String> item = new TreeItem<>(key);
                 item.setExpanded(true);

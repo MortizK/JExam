@@ -38,6 +38,10 @@ import java.util.function.Consumer;
 /**
  * Included/excluded chapter configuration with reorder actions.
  *
+ * <p>The component keeps the generation chapter order, chapter goal points,
+ * and the included/excluded lists synchronized. It also provides a compact
+ * inline control for editing the goal point of each included chapter.</p>
+ *
  * @author Moritz
  */
 public final class ChapterConfigurationComponent extends VBox {
@@ -342,6 +346,8 @@ public final class ChapterConfigurationComponent extends VBox {
     }
 
     private void setExcludedSectionVisible(final boolean visible) {
+        // Hide the entire excluded section when there is nothing to include
+        // later, which keeps the panel compact for small exams.
         excludedLabel.setManaged(visible);
         excludedLabel.setVisible(visible);
         excludedList.setManaged(visible);
@@ -353,6 +359,8 @@ public final class ChapterConfigurationComponent extends VBox {
     }
 
     private static void setListHeight(final ListView<ChapterRow> listView, final int itemCount) {
+        // Keep list heights stable so the included/excluded panels do not jump
+        // as chapters are moved between them.
         double rowHeight = listView.getFixedCellSize() <= 0 ? 36 : listView.getFixedCellSize();
         double height = Math.max(rowHeight, itemCount * rowHeight + 2);
         listView.setMinHeight(Region.USE_PREF_SIZE);
@@ -518,6 +526,8 @@ public final class ChapterConfigurationComponent extends VBox {
                     int fromIndex = Integer.parseInt(event.getDragboard().getString());
                     int toIndex = getIndex();
                     if (fromIndex != toIndex && fromIndex >= 0 && toIndex >= 0) {
+                        // Reordering is delegated to the controller so the model
+                        // and all selection state can be updated together.
                         reorderHandler.accept(fromIndex, toIndex);
                     }
                     event.setDropCompleted(true);
@@ -542,6 +552,8 @@ public final class ChapterConfigurationComponent extends VBox {
                 HBox row = new HBox(8, nameLabel, goalField);
                 row.setAlignment(Pos.CENTER_LEFT);
                 HBox.setHgrow(goalField, Priority.ALWAYS);
+                // The row combines the chapter label with the inline goal field
+                // so users can reorder and adjust points without leaving the list.
                 setGraphic(row);
             }
         });
@@ -685,6 +697,8 @@ public final class ChapterConfigurationComponent extends VBox {
          */
         private void setAvailablePoints(final List<Double> points) {
             availablePoints = points == null ? List.of() : List.copyOf(points);
+            // Rebuild the dropdown each time the underlying chapter changes so
+            // the options always match the current achievable sums.
             setItems(FXCollections.observableArrayList(availablePoints.stream().map(this::toOption).toList()));
         }
 
@@ -709,6 +723,8 @@ public final class ChapterConfigurationComponent extends VBox {
          * Performs fuzzy matching to nearest achievable point and signals goalChangedHandler.
          */
         private void commitCurrentValue() {
+            // Commit from free-form text so typed values still work when they
+            // match an achievable point sum.
             String rawText = getEditor().getText();
             double resolvedValue = resolveValueFromInput(rawText);
             commitResolvedValue(resolvedValue);
@@ -775,6 +791,8 @@ public final class ChapterConfigurationComponent extends VBox {
                 return exact.value();
             }
 
+            // Fallback to the closest achievable value before accepting the raw
+            // typed number to keep the generation goal feasible.
             PointOption nearest = nearestOption(parsedValue);
             if (nearest != null) {
                 return nearest.value();

@@ -16,6 +16,11 @@ import java.util.function.Consumer;
 /**
  * Top-left generation mode and actions section.
  *
+ * <p>The component exposes the core PDF generation settings that the user
+ * needs before exporting: generation mode, whether to include the cover page,
+ * and the export action itself. The component intentionally keeps some legacy
+ * API hooks as no-ops because the surrounding application still calls them.</p>
+ *
  * @author Moritz
  */
 public final class GenerationControlsComponent extends VBox {
@@ -116,6 +121,7 @@ public final class GenerationControlsComponent extends VBox {
     public void setOnFallbackPreferenceChanged(
         final Consumer<ExamApplicationService.GoalPointFallbackPreference> handler
     ) {
+        // Fallback preference is handled elsewhere in the current UI layout.
         // Fallback selector was removed from UI by request.
     }
 
@@ -125,6 +131,7 @@ public final class GenerationControlsComponent extends VBox {
      * @param handler callback receiving raw seed text; {@code null} resets to no-op
      */
     public void setOnSeedChanged(final Consumer<String> handler) {
+        // Seed input is no longer rendered in this component.
         // Seed input is not currently rendered.
     }
 
@@ -134,6 +141,7 @@ public final class GenerationControlsComponent extends VBox {
      * @param preference ignored because fallback selector is not currently rendered
      */
     public void setFallbackPreference(final ExamApplicationService.GoalPointFallbackPreference preference) {
+        // The hidden fallback selector does not need to mirror state here.
         // Fallback selector was removed from UI by request.
     }
 
@@ -143,6 +151,7 @@ public final class GenerationControlsComponent extends VBox {
      * @param seed seed value, or {@code null} to clear
      */
     public void setRandomSeed(final Long seed) {
+        // No visible seed field exists in this trimmed-down layout.
         updatingControls = true;
         updatingControls = false;
     }
@@ -153,6 +162,7 @@ public final class GenerationControlsComponent extends VBox {
      * @param handler preview action callback; {@code null} resets to no-op
      */
     public void setOnPreviewRequested(final Runnable handler) {
+        // Preview generation is triggered from the preview panel instead.
         // Preview action is handled from the preview region controls.
     }
 

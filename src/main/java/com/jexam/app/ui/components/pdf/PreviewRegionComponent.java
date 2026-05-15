@@ -20,6 +20,11 @@ import java.util.List;
 /**
  * Right-hand preview region with lifecycle states.
  *
+ * <p>The preview region owns the rendered PDF preview lifecycle. It displays
+ * status text, exposes refresh/export actions, and swaps between idle,
+ * loading, ready, stale, and error states. When preview images are available
+ * they are rendered into a scrollable page stack.</p>
+ *
  * @author Moritz
  */
 public final class PreviewRegionComponent extends VBox {
@@ -123,6 +128,7 @@ public final class PreviewRegionComponent extends VBox {
         this.staleStateText = staleStateText;
         this.failedStateText = failedStateText;
         this.unavailableStateText = unavailableStateText;
+        // Keep the visible state label aligned with the active lifecycle style.
         if (getStyleClass().contains(STATE_IDLE)) {
             stateLabel.setText(idleStateText);
         } else if (getStyleClass().contains(STATE_LOADING)) {
@@ -187,6 +193,7 @@ public final class PreviewRegionComponent extends VBox {
                 throw new IOException("PDF preview has no pages.");
             }
 
+            // Render each generated preview image as a scrollable page preview.
             for (int pageIndex = 0; pageIndex < imagePaths.size(); pageIndex++) {
                 Path imagePath = imagePaths.get(pageIndex);
                 previewImagePaths.add(imagePath);
@@ -281,6 +288,8 @@ public final class PreviewRegionComponent extends VBox {
      * Performs best-effort deletion and continues on I/O errors.
      */
     private void deletePreviewImages() {
+        // Remove temporary PNGs on a best-effort basis so preview refreshes do
+        // not accumulate stale files on disk.
         for (Path imagePath : previewImagePaths) {
             try {
                 Files.deleteIfExists(imagePath);

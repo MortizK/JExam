@@ -11,6 +11,11 @@ import java.util.function.Consumer;
 /**
  * Empty state shown when no XML has been loaded yet.
  *
+ * <p>The panel is intentionally action-oriented: it provides the two entry
+ * points for the XML workflow, either creating a fresh exam or loading an
+ * existing XML file. This keeps the app usable even before any document is
+ * open.</p>
+ *
  * @author Moritz
  */
 public final class XmlLoadingState extends VBox {

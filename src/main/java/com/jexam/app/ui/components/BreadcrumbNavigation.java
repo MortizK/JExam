@@ -13,6 +13,10 @@ import java.util.function.IntConsumer;
 /**
  * Displays the current hierarchy path and allows navigation to ancestors.
  *
+ * <p>The component renders the path from exam to the currently selected
+ * chapter/task/variant. Intermediate segments are clickable, while the last
+ * segment is shown as the active location.</p>
+ *
  * @author Moritz
  */
 public final class BreadcrumbNavigation extends HBox {
@@ -63,12 +67,16 @@ public final class BreadcrumbNavigation extends HBox {
             final int segmentIndex = i;
             final String segment = segments.get(i);
             final String displaySegment = shorten(segment);
+            // Separate the path with a visual delimiter so users can scan the
+            // hierarchy quickly.
             if (i > 0) {
                 Label separator = new Label(">");
                 separator.getStyleClass().add("breadcrumb-separator");
                 getChildren().add(separator);
             }
 
+            // The current location is shown as plain text; ancestors stay
+            // clickable so navigation remains one tap away.
             if (i == segments.size() - 1) {
                 Label current = new Label(displaySegment);
                 current.getStyleClass().add("breadcrumb-current");

@@ -15,7 +15,12 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * Top-level app header with tab switching, global actions, language selection, and dirty state.
+ * Top-level app header with global actions, language selection, and dirty state.
+ *
+ * <p>The header keeps the highest-level exam actions visible at all times:
+ * create, open, save, language selection, and the unsaved-changes indicator.
+ * It is intentionally compact so it stays usable on narrow layouts while still
+ * exposing the most important workflow controls.</p>
  *
  * @author Moritz
  */
@@ -181,6 +186,9 @@ public final class AppHeaderNavigation extends HBox {
         saveHandler = handler == null ? () -> { } : handler;
     }
 
+    /**
+     * Apply a tooltip only when the supplied text is non-empty.
+     */
     private static void setTooltip(final javafx.scene.control.Control control, final String text) {
         if (text == null || text.isBlank()) {
             control.setTooltip(null);
