@@ -201,9 +201,9 @@ Dieses Dokument ist ein vollst채ndiger Arbeitsplan f체r das Projekt JExam. Es f�
   - [ ] Nicht nur Volumen Metriken
   - [ ] Noch Koh채sion messen und hinzuf체gen
 - [ ] PDF Gen Secret Zitate f체r Mock Exams und Exams einf체gen
-- [ ] JavaDocs for each function 
-  - [ ] Comments on mayor code blocks (for, while, if)
-  - [ ] Comments on other mayor code functionalities, which are not clear from the function JavaDoc
+- [x] JavaDocs for each function 
+  - [x] Comments on mayor code blocks (for, while, if)
+  - [x] Comments on other mayor code functionalities, which are not clear from the function JavaDoc
 
 ## To Dos f체r die Live Demo am 20.05.2026
 
