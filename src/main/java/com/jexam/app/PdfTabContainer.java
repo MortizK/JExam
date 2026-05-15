@@ -28,11 +28,27 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * PDF tab shell with generation controls, chapter configuration, validation, and preview.
+ * PDF tab shell with generation controls, chapter configuration, validation,
+ * and preview.
+ *
+ * <p>This container is the state hub for the PDF workflow. It keeps the
+ * generation controls, chapter configuration, validation summary, and preview
+ * panel in sync with the current application service state. It also owns the
+ * asynchronous preview/export tasks and the temporary busy state that disables
+ * the tab while generation runs.</p>
+ *
+ * <p>Major responsibilities:</p>
+ * - mirror the current generation settings into the UI,
+ * - coordinate preview rendering and PDF export,
+ * - keep the preview stale/ready state in sync with edits,
+ * - surface validation issues and generation warnings.
  *
  * @author Moritz
  */
 public final class PdfTabContainer extends BorderPane {
+    /**
+     * Result container for preview generation and image rendering.
+     */
     private record PreviewRenderResult(Path previewPath, List<Path> imagePaths) {
     }
 
@@ -85,6 +101,8 @@ public final class PdfTabContainer extends BorderPane {
         contentSplit.setDividerPositions(0.34);
         setCenter(contentSplit);
 
+        // Hook up event handlers before the first refresh so the UI can react
+        // immediately to user interactions.
         configureHandlers();
         applyLocalizedTexts();
         ui.addLanguageChangeListener(this::applyLocalizedTexts);
@@ -101,6 +119,7 @@ public final class PdfTabContainer extends BorderPane {
      * @param width current scene width in pixels
      */
     public void updateLayout(final double width) {
+        // Collapse the preview on narrow windows to prioritize controls.
         if (width < 1024) {
             leftColumn.setPrefWidth(Double.MAX_VALUE);
             previewRegion.setVisible(false);
@@ -121,6 +140,8 @@ public final class PdfTabContainer extends BorderPane {
     public void refreshFromService() {
         List<Chapter> chapters = appService.getCurrentExam().getChapters();
         List<String> chapterNames = chapters.stream().map(Chapter::getName).toList();
+        // Keep the chapter list, ordering, and goal points synchronized with
+        // the underlying application service state.
         chapterConfiguration.setChapterData(
             chapterNames,
             appService.generationChapterOrder(),
@@ -137,6 +158,9 @@ public final class PdfTabContainer extends BorderPane {
         }
     }
 
+    /**
+     * Apply localized labels and tooltips to all controls in the PDF tab.
+     */
     private void applyLocalizedTexts() {
         generationControls.setTooltips(
             ui.text("tooltip.pdf.mode"),
@@ -183,6 +207,8 @@ public final class PdfTabContainer extends BorderPane {
      * Moves focus to the first meaningful control in the PDF tab.
      */
     public void focusDefaultControl() {
+        // Validation issues take precedence because they are the most useful
+        // thing for the user to fix before export.
         if (validationSummary.hasIssues()) {
             validationSummary.requestIssueTreeFocus();
             return;
@@ -222,6 +248,8 @@ public final class PdfTabContainer extends BorderPane {
             setGenerationBusy(false);
         });
 
+        // Generate the preview on a background thread so the UI stays
+        // responsive while PDF rendering and image conversion happen.
         Thread worker = new Thread(task, "jexam-preview-generation");
         worker.setDaemon(true);
         worker.start();
@@ -238,6 +266,9 @@ public final class PdfTabContainer extends BorderPane {
 
     /**
      * Wires all child-component event handlers to service operations and UI state updates.
+     */
+    /**
+     * Wire child-component callbacks to application service operations.
      */
     private void configureHandlers() {
         generationControls.setOnPreviewRequested(this::generatePreview);
@@ -296,6 +327,8 @@ public final class PdfTabContainer extends BorderPane {
         });
         chapterConfiguration.setOnReorder((fromIndex, toIndex) -> {
             int chapterIndex = chapterConfiguration.selectedIncludedChapterIndex();
+            // Reorder by repeatedly stepping the selected chapter so the model
+            // preserves the relative order of all other chapters.
             if (fromIndex < toIndex) {
                 for (int index = fromIndex; index < toIndex; index++) {
                     appService.moveGenerationChapterDown(index);
@@ -319,6 +352,8 @@ public final class PdfTabContainer extends BorderPane {
      */
     private void exportPdf() {
         GenerationMode mode = generationControls.getSelectedMode();
+        // Only the exportable modes can produce a PDF pair or preview-based
+        // export. Other modes are rejected immediately with a user-facing error.
         if (mode != GenerationMode.EXAM && mode != GenerationMode.MOCK_EXAM) {
             ui.showError("Unsupported mode", "Please select EXAM or MOCK_EXAM.");
             return;
@@ -342,6 +377,8 @@ public final class PdfTabContainer extends BorderPane {
         Task<ExportResult> task = new Task<>() {
             @Override
             protected ExportResult call() {
+                // Reuse the last preview when possible so the exported PDFs match
+                // the already rendered preview exactly.
                 List<Path> generatedFiles = canReusePreview
                     ? appService.generatePdfPairFromLastPreview(mode, outputPath)
                     : appService.generatePdfPair(mode, outputPath);
@@ -367,6 +404,8 @@ public final class PdfTabContainer extends BorderPane {
             setGenerationBusy(false);
         });
 
+        // Export also runs off the FX thread because it can produce multiple
+        // PDFs and take noticeably longer than a small UI update.
         Thread worker = new Thread(task, "jexam-export-generation");
         worker.setDaemon(true);
         worker.start();
@@ -397,18 +436,29 @@ public final class PdfTabContainer extends BorderPane {
      *
      * @param title dialog title used for the warning message
      */
+    /**
+     * Refresh the generation difficulty summary label from the current mode.
+     */
     private void updateGenerationDifficultySummary() {
+        // Always refresh the label from the currently selected generation mode
+        // so the UI reflects the same task selection rules as export.
         DifficultyDistributionSummary summary = appService.getGenerationDifficultySummary(generationControls.getSelectedMode());
         generationDifficultySummaryLabel.setText(
             ui.text("pdf.generation.difficulty.current") + " " + summary.toHumanReadableText()
         );
     }
 
+    /**
+     * Combine the generation prefix, difficulty summary, and warnings into one
+     * status line for the PDF tab.
+     */
     private String buildGenerationStatus(
         final String prefix,
         final DifficultyDistributionSummary summary,
         final List<String> warnings
     ) {
+        // Build one compact status line so the tab can surface both the result
+        // summary and any non-fatal generation warnings.
         StringBuilder builder = new StringBuilder(prefix);
         if (summary != null) {
             builder.append(" | ")
@@ -422,11 +472,19 @@ public final class PdfTabContainer extends BorderPane {
         return builder.toString();
     }
 
+    /**
+     * Update the visible generation status label.
+     */
     private void setGenerationStatus(final String message) {
         generationStatusLabel.setText(message == null ? "" : message);
     }
 
+    /**
+     * Toggle the busy state for the entire PDF tab.
+     */
     private void setGenerationBusy(final boolean busy) {
+        // Disable the entire tab while a generation task runs so edits do not
+        // race against preview/export work.
         if (stage.getScene() == null) {
             return;
         }
@@ -439,6 +497,9 @@ public final class PdfTabContainer extends BorderPane {
         contentSplit.setDisable(busy);
     }
 
+    /**
+     * Result payload for PDF export tasks.
+     */
     private record ExportResult(List<Path> generatedFiles, List<String> warnings) {
     }
 }

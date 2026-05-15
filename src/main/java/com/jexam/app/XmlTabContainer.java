@@ -36,7 +36,20 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * XML tab shell that wires the existing app service to chapter/task/variant editors.
+ * XML tab shell that wires the application service to the XML editors and
+ * navigation widgets.
+ *
+ * <p>The container owns the selection state for the XML editing workflow:
+ * it keeps the chapter/task/variant indices in sync across the tree view,
+ * breadcrumb navigation, tables, and inline editors. It also mediates dirty
+ * state and loading state so the tab can switch between an empty/new-exam
+ * screen and the full editor layout.</p>
+ *
+ * <p>Major responsibilities:</p>
+ * - keep navigation widgets synchronized,
+ * - route editor changes back into the application service,
+ * - update visibility based on the current selection depth, and
+ * - surface create/load actions when no exam is present.
  *
  * @author Moritz
  */
@@ -107,6 +120,9 @@ public final class XmlTabContainer extends BorderPane {
 
         setPadding(new Insets(8));
 
+        // Wire the tab shell in a predictable order: loading state, text,
+        // editors, tables, and navigation so callbacks can safely reference
+        // already-initialized controls.
         configureLoadingState();
         configureNavigationTreeTexts();
         configureHeaderEditors();
@@ -140,6 +156,8 @@ public final class XmlTabContainer extends BorderPane {
      * @param width current scene width in pixels
      */
     public void updateLayout(final double width) {
+        // Narrow scenes stack the columns vertically; wider scenes keep the
+        // navigation tree and editor area side by side.
         if (width < 1024) {
             contentSplit.setOrientation(Orientation.VERTICAL);
             contentSplit.setDividerPositions(0.40);
@@ -206,6 +224,10 @@ public final class XmlTabContainer extends BorderPane {
     /**
      * Moves focus to the most specific editor matching the current selection depth.
      */
+    /**
+     * Move keyboard focus to the editor that matches the current selection
+     * depth.
+     */
     private void focusActiveContent() {
         if (selectedVariantIndex >= 0) {
             variantEditor.requestEditorFocus();
@@ -240,6 +262,8 @@ public final class XmlTabContainer extends BorderPane {
             return;
         }
 
+        // Pull the current model state into the visible editors and all
+        // navigation widgets before focusing the most specific active control.
         examHeaderEditor.setExamName(currentExam.getName());
         examNameChangedHandler.accept(currentExam.getName());
 
@@ -272,6 +296,8 @@ public final class XmlTabContainer extends BorderPane {
             return;
         }
 
+        // Clamp requested indices to the available hierarchy depth so callers
+        // can request navigation without pre-validating every boundary.
         int boundedChapter = Math.max(0, Math.min(chapterIndex, selectionModel.lastChapterIndex()));
         selectedChapterIndex = boundedChapter;
 
@@ -294,6 +320,7 @@ public final class XmlTabContainer extends BorderPane {
      * Navigates one hierarchy level up within the XML tab selection.
      */
     public void navigateOneLevelUp() {
+        // Unwind the selection from the deepest currently active editor level.
         if (selectedVariantIndex >= 0) {
             selectedVariantIndex = -1;
         } else if (selectedTaskIndex >= 0) {
@@ -311,6 +338,8 @@ public final class XmlTabContainer extends BorderPane {
      */
     private void configureNavigation() {
         breadcrumbNavigation.setOnSegmentClicked(segmentIndex -> {
+            // Breadcrumb clicks collapse the selection back to the clicked
+            // hierarchy level and refresh all mirrored views.
             if (segmentIndex <= 0) {
                 selectedChapterIndex = -1;
                 selectedTaskIndex = -1;
@@ -335,6 +364,8 @@ public final class XmlTabContainer extends BorderPane {
                 return;
             }
 
+            // Tree selections can arrive from multiple sources; guard against
+            // recursive updates while we mirror the chosen hierarchy level.
             syncingNavigation = true;
             try {
                 if (node.type == NavigationType.EXAM) {
@@ -362,6 +393,8 @@ public final class XmlTabContainer extends BorderPane {
      * Applies localized strings to the XML empty/loading state panel.
      */
     private void configureLoadingState() {
+        // Empty-state labels are localized up front so the loading panel can be
+        // shown immediately when no exam is loaded.
         loadingState.setTitleText(ui.text("label.xml.empty.title"));
         loadingState.setSubtitleText(ui.text("label.xml.empty.subtitle"));
         loadingState.setCreateButtonText(ui.text("button.create.exam"));
@@ -372,6 +405,8 @@ public final class XmlTabContainer extends BorderPane {
      * Applies localized texts for tree header controls and filter prompt.
      */
     private void configureNavigationTreeTexts() {
+        // The tree header includes search and accessibility prompts, plus the
+        // expand/collapse controls used for large exam hierarchies.
         navigationTree.setHeaderTexts(
             ui.text("tree.filter.prompt"),
             ui.text("tree.filter.accessible"),
@@ -385,6 +420,8 @@ public final class XmlTabContainer extends BorderPane {
      */
     private void configureHeaderEditors() {
         examHeaderEditor.setOnChange(() -> {
+            // Exam title changes propagate directly into the root model and the
+            // navigation/breadcrumb labels that mirror it.
             appService.getCurrentExam().setName(examHeaderEditor.getExamName());
             examNameChangedHandler.accept(examHeaderEditor.getExamName());
             refreshNavigationTree();
@@ -409,6 +446,8 @@ public final class XmlTabContainer extends BorderPane {
                     if (points <= 0 || !isHalfStep(points)) {
                         return;
                     }
+                    // Task metadata is validated before writing back to the
+                    // model so invalid point drafts stay visible but harmless.
                     appService.updateTaskDetails(
                         selectedChapterIndex,
                         selectedTaskIndex,
@@ -448,6 +487,8 @@ public final class XmlTabContainer extends BorderPane {
      */
     private void configureTables() {
         chapterTable.setOnSelect(index -> {
+            // Table selections drive the current hierarchy focus and clear the
+            // deeper task/variant state because that content is no longer valid.
             selectedChapterIndex = index;
             selectedTaskIndex = -1;
             selectedVariantIndex = -1;
@@ -467,6 +508,8 @@ public final class XmlTabContainer extends BorderPane {
                 ui.showError("Cannot remove chapter", "At least one chapter must remain.");
                 return;
             }
+            // Destructive actions are always confirmed explicitly so accidental
+            // deletes do not silently remove nested tasks and variants.
             if (DeleteConfirmationDialog.confirm(null, "Remove chapter", "Remove selected chapter?", "This will remove all tasks in the chapter.")) {
                 appService.removeChapter(index);
                 selectedChapterIndex = -1;
@@ -478,6 +521,8 @@ public final class XmlTabContainer extends BorderPane {
         });
 
         taskTable.setOnSelect(index -> {
+            // Selecting a task keeps the chapter selected but clears variant focus
+            // until a concrete variant row is chosen.
             selectedTaskIndex = index;
             selectedVariantIndex = -1;
             refreshTaskSelection();
@@ -503,6 +548,8 @@ public final class XmlTabContainer extends BorderPane {
                 ui.showError("Cannot remove task", "At least one task must remain per chapter.");
                 return;
             }
+            // Keep the chapter intact while removing only the currently selected
+            // task and its nested variants after confirmation.
             if (DeleteConfirmationDialog.confirm(null, "Remove task", "Remove selected task?", "This will remove all variants in the task.")) {
                 appService.removeTask(selectedChapterIndex, index);
                 selectedTaskIndex = -1;
@@ -513,6 +560,7 @@ public final class XmlTabContainer extends BorderPane {
         });
 
         variantList.setOnSelect(index -> {
+            // Variant selection is the deepest selection level in the XML tab.
             selectedVariantIndex = index;
             refreshVariantSelection();
             refreshNavigationSelection();
@@ -538,6 +586,8 @@ public final class XmlTabContainer extends BorderPane {
                 ui.showError("Cannot remove variant", "Each task must have at least one variant.");
                 return;
             }
+            // Keep at least one variant per task so the model remains valid
+            // after deletion.
             if (DeleteConfirmationDialog.confirm(null, "Remove variant", "Remove selected variant?", "This will remove the variant text immediately.")) {
                 appService.removeVariant(selectedChapterIndex, selectedTaskIndex, index);
                 selectedVariantIndex = -1;
@@ -560,6 +610,8 @@ public final class XmlTabContainer extends BorderPane {
     private void refreshChapterSelection() {
         Chapter chapter = selectionModel.chapterAt(selectedChapterIndex);
         if (chapter == null) {
+            // No chapter selected means the task/variant editors must be cleared
+            // and hidden because their backing model objects are unavailable.
             taskTable.setItems(List.of());
             taskTable.setSelectedIndex(-1);
             chapterHeaderEditor.clear();
@@ -586,6 +638,8 @@ public final class XmlTabContainer extends BorderPane {
     private void refreshTaskSelection() {
         Task task = selectionModel.taskAt(selectedChapterIndex, selectedTaskIndex);
         if (task == null) {
+            // Without a task the variant list and editor would point at stale
+            // state, so reset them together.
             taskHeaderEditor.clear();
             variantList.setItems(List.of());
             variantList.setSelectedIndex(-1);
@@ -624,11 +678,16 @@ public final class XmlTabContainer extends BorderPane {
      * Marks XML state as dirty and preview as stale, then notifies listeners.
      */
     private void markDirty() {
+        // A content edit invalidates both the saved state and any preview that
+        // was generated from the previous version of the XML.
         uiStateManager.markDirty();
         uiStateManager.markPreviewStale();
         dirtyStateChangedHandler.accept(true);
     }
 
+    /**
+     * Check whether a point value is aligned to the half-point grid.
+     */
     private boolean isHalfStep(final double points) {
         final double scaled = points * 2.0;
         return Math.abs(scaled - Math.rint(scaled)) < 1e-9;
@@ -644,6 +703,8 @@ public final class XmlTabContainer extends BorderPane {
             return;
         }
 
+        // Rebuild the tree from scratch so the textual labels and counts always
+        // reflect the current model without needing incremental tree updates.
         TreeItem<NavigationNode> root = new TreeItem<>(NavigationNode.exam(shortenTreeLabel(exam.getName())));
         root.setExpanded(true);
 
@@ -670,6 +731,8 @@ public final class XmlTabContainer extends BorderPane {
      * Updates navigation tree selection to mirror current chapter/task selection.
      */
     private void refreshNavigationSelection() {
+        // Mirror the current selection depth into the tree so keyboard and tree
+        // focus stay aligned.
         if (selectedTaskIndex >= 0) {
             navigationTree.setSelectedItem(NavigationNode.task(selectedChapterIndex, selectedTaskIndex, ""));
             return;
@@ -688,6 +751,7 @@ public final class XmlTabContainer extends BorderPane {
         List<String> segments = new ArrayList<>();
         segments.add("Exam");
 
+        // Add path segments only while the corresponding selection exists.
         Chapter chapter = selectionModel.chapterAt(selectedChapterIndex);
         if (chapter != null) {
             segments.add(chapter.getName());
@@ -714,6 +778,8 @@ public final class XmlTabContainer extends BorderPane {
         boolean hasExam = appService.getCurrentExam() != null;
 
         if (!hasExam) {
+            // When no exam is loaded, hide all editors and tables to leave only
+            // the empty/loading panel visible.
             setSectionVisible(examHeaderEditor, false);
             setSectionVisible(chapterHeaderEditor, false);
             setSectionVisible(taskHeaderEditor, false);
@@ -725,6 +791,8 @@ public final class XmlTabContainer extends BorderPane {
         }
 
         if (selectedVariantIndex >= 0) {
+            // Deepest focus: show only the variant editor when a concrete
+            // variant is selected.
             setSectionVisible(examHeaderEditor, false);
             setSectionVisible(chapterHeaderEditor, false);
             setSectionVisible(taskHeaderEditor, false);
@@ -736,6 +804,7 @@ public final class XmlTabContainer extends BorderPane {
         }
 
         if (selectedTaskIndex >= 0) {
+            // Task focus exposes the task editor and the variant list together.
             setSectionVisible(examHeaderEditor, false);
             setSectionVisible(chapterHeaderEditor, false);
             setSectionVisible(taskHeaderEditor, true);
@@ -747,6 +816,7 @@ public final class XmlTabContainer extends BorderPane {
         }
 
         if (selectedChapterIndex >= 0) {
+            // Chapter focus shows the chapter editor and the task table.
             setSectionVisible(examHeaderEditor, false);
             setSectionVisible(chapterHeaderEditor, true);
             setSectionVisible(taskHeaderEditor, false);
@@ -757,6 +827,7 @@ public final class XmlTabContainer extends BorderPane {
             return;
         }
 
+        // No chapter selected: show the exam-level editor and chapter table.
         setSectionVisible(examHeaderEditor, true);
         setSectionVisible(chapterHeaderEditor, false);
         setSectionVisible(taskHeaderEditor, false);
@@ -783,6 +854,12 @@ public final class XmlTabContainer extends BorderPane {
      * @param chapter chapter to summarize
      * @return multi-line chapter label used in the chapter table
      */
+    /**
+     * Build the chapter row label shown in the chapter table.
+     *
+     * The label summarizes task count, variant count, total points, and a
+     * compact difficulty/scope distribution.
+     */
     private String chapterRowLabel(final Chapter chapter) {
         List<Task> tasks = chapter.getTasks();
         int taskCount = tasks.size();
@@ -791,6 +868,8 @@ public final class XmlTabContainer extends BorderPane {
 
         Map<Difficulty, Integer> difficulties = new EnumMap<>(Difficulty.class);
         Map<Scope, Integer> scopes = new EnumMap<>(Scope.class);
+        // Count difficulty and scope distribution so the chapter table can show
+        // a short but informative summary line.
         for (Task task : tasks) {
             difficulties.merge(task.getDifficulty(), 1, Integer::sum);
             scopes.merge(task.getScope(), 1, Integer::sum);
@@ -852,6 +931,9 @@ public final class XmlTabContainer extends BorderPane {
             + "/" + Scope.MOCK_EXAM.toXmlValue() + " " + scopes.getOrDefault(Scope.MOCK_EXAM, 0);
     }
 
+    /**
+     * Shorten long tree labels while preserving whole words when possible.
+     */
     private String shortenTreeLabel(final String label) {
         if (label == null) {
             return "";
@@ -872,6 +954,9 @@ public final class XmlTabContainer extends BorderPane {
         return candidate + "...";
     }
 
+    /**
+     * Return the last whitespace position in a string, or {@code -1}.
+     */
     private int lastWhitespaceIndex(final String value) {
         for (int i = value.length() - 1; i >= 0; i--) {
             if (Character.isWhitespace(value.charAt(i))) {
@@ -881,6 +966,9 @@ public final class XmlTabContainer extends BorderPane {
         return -1;
     }
 
+    /**
+     * Navigation depth used by the tree and breadcrumb selection model.
+     */
     private enum NavigationType {
         EXAM,
         CHAPTER,
