@@ -159,6 +159,8 @@ public class ExamApplicationService {
     /**
      * Sets whether the PDF generator should include the cover page.
      * This is a best-effort call and only affects PdfBoxGenerationService instances.
+     *
+     * @param enabled whether the cover page should be rendered
      */
     public void setCoverEnabled(final boolean enabled) {
         if (pdfGenerationService instanceof PdfBoxGenerationService) {
@@ -168,6 +170,8 @@ public class ExamApplicationService {
 
     /**
      * Sets the UI language for any PDF generator that can render localized texts.
+     *
+     * @param language UI language to forward to the PDF generator
      */
     public void setUiLanguage(final UiLanguage language) {
         if (pdfGenerationService instanceof PdfBoxGenerationService) {

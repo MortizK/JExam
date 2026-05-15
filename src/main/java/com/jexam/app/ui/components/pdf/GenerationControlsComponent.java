@@ -84,6 +84,8 @@ public final class GenerationControlsComponent extends VBox {
 
     /**
      * Returns whether the cover page should be included when exporting.
+     *
+     * @return {@code true} when the cover page is selected
      */
     public boolean isCoverIncluded() {
         return coverCheckbox.isSelected();
@@ -91,6 +93,10 @@ public final class GenerationControlsComponent extends VBox {
 
     /**
      * Applies localized visible texts for this component.
+     *
+     * @param modeLabelText label for the generation mode selector
+     * @param coverCheckboxText label for the cover checkbox
+     * @param exportButtonText label for the export button
      */
     public void setLocalizedTexts(final String modeLabelText, final String coverCheckboxText, final String exportButtonText) {
         if (modeLabelText != null) {

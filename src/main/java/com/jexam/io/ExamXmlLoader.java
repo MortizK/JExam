@@ -24,6 +24,7 @@ import java.util.List;
  * Loads {@link com.jexam.model.Exam} instances from the JExam XML format.
  * 
  * Parses a hierarchical XML document with structure:
+ * <pre>{@code
  * <exam name="...">
  *   <chapter name="...">
  *     <task name="..." points="..." difficulty="..." scope="...">
@@ -34,6 +35,7 @@ import java.util.List;
  *     </task>
  *   </chapter>
  * </exam>
+ * }</pre>
  * 
  * The loader is stateless and thread-safe. XML parsing errors and enum value
  * errors are wrapped in {@link ExamXmlException} with descriptive messages.
@@ -56,7 +58,7 @@ public class ExamXmlLoader {
      *
      * @param path path to the XML file to parse
      * @return fully-populated Exam instance with all chapters, tasks, and variants
-     * @throws ExamXmlException if XML parsing fails, root element is not <exam>,
+    * @throws ExamXmlException if XML parsing fails, root element is not {@code <exam>},
      *         or enum values (Difficulty, Scope) are invalid
      */
     public Exam load(final Path path) throws ExamXmlException {
@@ -80,14 +82,14 @@ public class ExamXmlLoader {
     /**
      * Loads and validates the root XML element.
      * 
-     * Parses the XML document and verifies that the root element is named <exam>.
+    * Parses the XML document and verifies that the root element is named {@code <exam>}.
      * 
      * @param path path to XML file
      * @return root Element (guaranteed to be named "exam")
      * @throws ParserConfigurationException if XML parser cannot be configured
      * @throws SAXException if XML is malformed
      * @throws IOException if file cannot be read
-     * @throws ExamXmlException if root element is not <exam>
+    * @throws ExamXmlException if root element is not {@code <exam>}
      */
     private Element loadExamRootElement(final Path path)
         throws ParserConfigurationException, SAXException, IOException,

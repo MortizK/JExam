@@ -25,6 +25,7 @@ import org.w3c.dom.Element;
  * Writes {@link com.jexam.model.Exam} instances to the JExam XML format.
  * 
  * Serializes the exam object graph to an XML document matching the hierarchical structure:
+ * <pre>{@code
  * <exam name="...">
  *   <chapter name="...">
  *     <task name="..." points="..." difficulty="..." scope="...">
@@ -35,6 +36,7 @@ import org.w3c.dom.Element;
  *     </task>
  *   </chapter>
  * </exam>
+ * }</pre>
  * 
  * Output is formatted with 2-space indentation for human readability. Parent directories
  * are created automatically if they do not exist. The writer is stateless and thread-safe.

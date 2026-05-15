@@ -29,11 +29,6 @@ import com.jexam.app.UiLanguage;
 /**
  * PDF generation service backed by Apache PDFBox.
  *
- * @author Moritz
- */
-/**
- * PDF generation service backed by Apache PDFBox.
- *
  * <p>This implementation renders an {@link com.jexam.model.Exam} into a PDF using
  * a simple layout model: a cover (optional), then one chapter per section with
  * tasks and variants rendered in sequence. Coordinates use the A4 page
@@ -43,11 +38,13 @@ import com.jexam.app.UiLanguage;
  * starts a new page.</p>
  *
  * <p>Key responsibilities:</p>
- * - Layout tasks and answer boxes with heuristics to estimate heights.
- * - Wrap and split long text to fit available width.
- * - Produce an outline (bookmarks) and basic metadata with difficulty summary.
+ * <ul>
+ * <li>Layout tasks and answer boxes with heuristics to estimate heights.</li>
+ * <li>Wrap and split long text to fit available width.</li>
+ * <li>Produce an outline (bookmarks) and basic metadata with difficulty summary.</li>
+ * </ul>
  *
- * The class favors readability and predictable output over sophisticated
+ * <p>The class favors readability and predictable output over sophisticated
  * typographic features.</p>
  *
  * @author Moritz
@@ -84,6 +81,8 @@ public class PdfBoxGenerationService implements PdfGenerationService {
 
     /**
      * Sets UI language to be used for localized cover texts.
+     *
+     * @param language selected UI language; {@code null} falls back to English
      */
     public void setUiLanguage(final UiLanguage language) {
         this.uiLanguage = language == null ? UiLanguage.ENGLISH : language;
@@ -91,6 +90,8 @@ public class PdfBoxGenerationService implements PdfGenerationService {
 
     /**
      * Enable or disable generation of the cover page. Default: true.
+     *
+     * @param enabled whether the cover page should be rendered
      */
     public void setCoverEnabled(final boolean enabled) {
         this.coverEnabled = enabled;
