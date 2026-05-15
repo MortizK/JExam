@@ -294,7 +294,7 @@ def render_markdown_report(metrics: dict[str, object]) -> str:
         "### Kohäsion",
         "",
         "- Kohäsion wird hier nicht direkt als IEEE-/Metrics-Tool-Wert berechnet.",
-        "- Für eine strengere Messung eignet sich ein statisches Analysewerkzeug wie CodeMR, SonarQube oder eine IDE-Erweiterung mit LCOM-/Cohesion-Unterstützung.",
+        "- Für eine strengere Messung eignet sich ein statisches Analysewerkzeug wie CodeMR, [SonarQube](https://docs.sonarsource.com/sonarqube-server/try-out-sonarqube) oder eine IDE-Erweiterung mit LCOM-/Cohesion-Unterstützung.",
         "",
         "### Rohdaten",
         "",
