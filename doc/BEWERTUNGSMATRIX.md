@@ -1,254 +1,146 @@
-# 🎯 BEWERTUNGSMATRIX - JExam Projekt
-## Software Engineering 1 - Modul (2 Semester)
-**Datum:** Mai 2026 | **Projekt:** Klausurgenerator (Exam-Management-System)
+# Bewertungsmatrix - JExam
+## Software Engineering 1 - Abgabe nach zwei Semestern
+
+**Bewertungsbasis:** aktueller Workspace-Stand, `TODO.md`, `README.md`, `doc/Metriken.md`, vorhandene PDFs, Java-Quellstruktur und Test-Artefakte.
 
 ---
 
-## 📊 ÜBERSICHT BEWERTUNGSSKALA
+## Bewertungsskala
 
-| Bewertung | Symbol | Bedeutung | Punkte |
-|-----------|--------|-----------|--------|
-| Nicht implementiert | ❌ | Aufgabe nicht erfüllt | 0 |
-| Teilweise implementiert | 🟡 | Aufgabe zu 50-80% erfüllt | 1-2 |
-| Implementiert | ✅ | Aufgabe vollständig erfüllt | 3 |
-| Hervorragend | 🌟 | Aufgabe mit hoher Qualität erfüllt | 4 |
+| Punkte | Bedeutung |
+|---|---|
+| 0 | nicht vorhanden / nicht erkennbar |
+| 1 | ansatzweise vorhanden |
+| 2 | weitgehend vorhanden |
+| 3 | vollständig bzw. überzeugend umgesetzt |
+| n.v. | bewusst nicht bewertet |
 
----
-
-## 📋 AUFGABENBEWERTUNG
-
-### **PHASE 1: VORBEREITUNG**
-
-| Aufgabe | Anforderung | Status | Punkte | Bewertung | Evidenz & Kommentare |
-|---------|-----------|--------|--------|-----------|---------------------|
-| **1** | Versionsverwaltung mit Git | ✅ | 3 | **Implementiert** | Git-Repository vorhanden, regelmäßige Commits erkennbar. Commit-History zeigt mehrere Branches und Merges. |
-| **2** | Vorbereitung Anforderungsanalyse | ✅ | 3 | **Implementiert** | Analysefragen systematisch dokumentiert. Strukturierte Fragen verschiedener Kategorien erkennbar. |
-| **3** | Befragung des Kunden | ✅ | 3 | **Implementiert** | Umfassende Kundengespräche dokumentiert. Anforderungen präzise erfasst. LaTeX-Quelle vorhanden. |
-| **4** | Begriffslexikon erstellen | ✅ | 3 | **Implementiert** | [GLOSSARY.md](doc/GLOSSARY.md) mit 15+ standardisierten Fachbegriffen. Präzise, kompakte Beschreibungen. |
-| **5** | Use Cases modellieren | ✅ | 4 | **Hervorragend** | 🌟 Use Cases vollständig dokumentiert. 19 Anforderungen in [BACKEND_TRACEABILITY.md](doc/BACKEND_TRACEABILITY.md) zu Code gemappt. |
-
-**Summe Vorbereitung: 16/20 Punkte (80%)**
+Hinweis: Bei UI- und Usability-Bewertungen bleiben die Bewertungsfelder absichtlich leer.
 
 ---
 
-### **PHASE 2: SPEZIFIKATION**
+## Phase 1 - Vorbereitung
 
-| Aufgabe | Anforderung | Status | Punkte | Bewertung | Evidenz & Kommentare |
-|---------|-----------|--------|--------|-----------|---------------------|
-| **6** | Benutzeroberfläche modellieren | 🟡 | 2 | **Teilweise implementiert** | UI-Prototypen in [UI_STRUCTURE.md](doc/UI_STRUCTURE.md) dokumentiert. Jedoch: Keine Figma/Pencil-Mockups vorhanden, nur konzeptionelle Beschreibungen. |
-| **7** | Paketdiagramm & Klassendiagramme | ✅ | 3 | **Implementiert** | [ARCHITECTURE.md](doc/ARCHITECTURE.md) mit Paketstruktur. Klare Separation: Model, UI, Services, I/O, Generation, Validation. |
-| **8** | Spezifikation finalisieren | ✅ | 3 | **Implementiert** | Vollständige Spezifikation (02_Spezifikation.pdf). Einleitung, Mengengerüst, nicht-funktionale Anforderungen vorhanden. |
+| Aufgabe | Status | Punkte | Kurzbewertung | Evidenz / Einordnung |
+|---|---|---:|---|---|
+| 1 - Versionsverwaltung mit Git | erfüllt | 3 | sauber umgesetzt | Die Git-Historie ist vorhanden, es gibt mehrere Commits sowie Branches wie `main`, `Refactoring` und `docs/developer-guide`. |
+| 2 - Vorbereitung der Anforderungsanalyse | erfüllt | 3 | vollständig dokumentiert | `01_Analysefragen.pdf` ist als Abgabe vorhanden; die Aufgabe wurde im TODO als erledigt markiert. |
+| 3 - Befragung des Kunden | erfüllt | 3 | fachlich sinnvoll vorbereitet | Die Anforderungsbasis ist im Spezifikationspaket erkennbar; die Aufgabe ist im TODO als erledigt markiert. |
+| 4 - Begriffslexikon | erfüllt | 3 | konsistent und verwendbar | Das Glossar ist laut TODO abgeschlossen und wird durch die Spezifikationsartefakte gestützt. |
+| 5 - Use Cases modellieren | erfüllt | 3 | sauber in die Spezifikation integriert | Die Use-Cases sind Teil der Spezifikation; die TODO-Liste führt die Aufgabe als erledigt. |
 
-**Summe Spezifikation: 8/12 Punkte (67%)**
-
----
-
-### **PHASE 3: IMPLEMENTIERUNG**
-
-| Aufgabe | Anforderung | Status | Punkte | Bewertung | Evidenz & Kommentare |
-|---------|-----------|--------|--------|-----------|---------------------|
-| **9** | Start der Implementierung | ✅ | 3 | **Implementiert** | Java 17 Standalone-Anwendung mit JavaFX. ~2500 LOC. Regelmäßiges Committing erkennbar. |
-| **10** | Grundgerüst & UI-Implementierung | ✅ | 4 | **Hervorragend** | 🌟 Alle wesentlichen UI-Ansichten implementiert: XML-Tab, PDF-Tab, Preferences. UI functional und ansprechend. |
-| **11** | *(nicht im TODO enthalten)* | - | - | - | - |
-| **12** | Prüfling als PDF erstellen | ✅ | 3 | **Implementiert** | Spezifikation als einzelne PDF-Datei vorhanden. Enthält Use Cases, Glossar, UI-Designs. |
-
-**Summe Implementierung: 10/12 Punkte (83%)**
+**Zwischensumme Phase 1: 15 / 15 Punkte**
 
 ---
 
-### **PHASE 4: TESTING**
+## Phase 2 - Spezifikation
 
-| Aufgabe | Anforderung | Status | Punkte | Bewertung | Evidenz & Kommentare |
-|---------|-----------|--------|--------|-----------|---------------------|
-| **13** | Vorbereitung technisches Review | ✅ | 3 | **Implementiert** | Review vorbereitet. Rollen verteilt, Protokoll-Struktur angelegt. |
-| **14** | Durchführung technisches Review | ✅ | 3 | **Implementiert** | Review durchgeführt. Erkenntnisse dokumentiert und in nachfolgende Phasen integriert. |
-| **15** | JUnit-Testfälle schreiben | ✅ | 4 | **Hervorragend** | 🌟 23 Unit-Test-Klassen. Äquivalenzklassen-Partitionierung erkennbar. Tests für: Validation, XML-I/O, PDF-Generation, App-Services. Testabdeckung: 70%+ (JaCoCo aktiviert). |
-| **16** | Glass-Box-Test & Coverage | ✅ | 4 | **Hervorragend** | 🌟 JaCoCo Maven Plugin integriert. Baseline: 166 PMD-Violations vor Refactoring. Ziel >80% Statement Coverage erreicht. |
-| **17** | Zufallsbasierte Tests | 🟡 | 2 | **Teilweise implementiert** | Struktur für Mutation-Tests vorhanden, aber nicht explizit als separater 1000-Paket-Randomizer implementiert. Könnte durch zusätzlichen PropertyBasedTest realisiert werden. |
-| **18** | Metriken erfassen | ✅ | 4 | **Hervorragend** | 🌟 [METRICS_BASELINE.md](doc/METRICS_BASELINE.md) dokumentiert McCabe, Cyclomatic Complexity, LOC. PMD/Checkstyle Reports. Detaillierte Vorher/Nachher-Analyse. |
-| **19** | Gesamtfortschritt Use Cases | ✅ | 3 | **Implementiert** | Alle 19 Requirements in [BACKEND_TRACEABILITY.md](doc/BACKEND_TRACEABILITY.md) als implementiert markiert (Status: 80-100%). |
+| Aufgabe | Status | Punkte | Kurzbewertung | Evidenz / Einordnung |
+|---|---|---:|---|---|
+| 6 - Benutzeroberfläche modellieren | weitgehend erfüllt | 2 | gute Grundlage, aber nicht vollständig nachweisbar | Im aktuellen Workspace sind vor allem die umgesetzten UI-Komponenten sichtbar; explizite Prototypen-Dateien aus einem Zeichenwerkzeug sind nicht auffindbar. |
+| 7 - Paketdiagramm und Klassendiagramme | weitgehend erfüllt | 2 | Architektur klar, Diagramm-Artefakt nicht direkt prüfbar | Die Paketstruktur ist im Code sehr klar: `com.jexam.app`, `io`, `generation`, `model`, `validation` sowie UI-Unterpakete. |
+| 8 - Abschluss der Spezifikation | erfüllt | 3 | abgabereif | `02_Spezifikation.pdf` ist vorhanden und wurde laut TODO finalisiert. |
 
-**Summe Testing: 23/28 Punkte (82%)**
+**Zwischensumme Phase 2: 7 / 9 Punkte**
 
 ---
 
-### **PHASE 5: WARTUNG, REFACTORING & QUALITÄTSSICHERUNG**
+## Phase 3 - Implementierung
 
-| Aufgabe | Anforderung | Status | Punkte | Bewertung | Evidenz & Kommentare |
-|---------|-----------|--------|--------|-----------|---------------------|
-| **20** | Refactoring-Report | ✅ | 4 | **Hervorragend** | 🌟 [REFACTORING_EVALUATION.md](doc/REFACTORING_EVALUATION.md) dokumentiert 3 Refactoring-Pattern mit Begründung. PMD reduziert um 22% (-37 Violations). Checkstyle um 62% (-337 Findings). Detaillierte vor/nach Metriken. |
-| **21** | Bug Reporting / Tickets | ✅ | 3 | **Implementiert** | [Tickets.pdf](doc/Tickets.pdf) dokumentiert 4 verschiedene Wartungstypen (Corr., Adapt., Perf., Enhanc.). Professionelle Bug-Report-Struktur. |
-| **22** | UI-Verbesserung (ELEGANCE-Prinzipien) | 🟡 | 2 | **Teilweise implementiert** | Empathy & Guidance teilweise implementiert (Fehlermeldungen, Tooltips). Novelty-Elemente begrenzt. Code-Kommentare für UI/UX-Rules gesetzt. |
+| Aufgabe | Status | Punkte | Kurzbewertung | Evidenz / Einordnung |
+|---|---|---:|---|---|
+| 9 - Start der Implementierung | erfüllt | 3 | tragfähiges Grundgerüst | Unter `src/main/java` liegt eine vollständige Java-Standalone-Anwendung mit den Kernpaketen für App, IO, Generation, Model und Validation vor. |
+| 10 - Grundgerüst der Anwendung | erfüllt | 3 | umfangreiche UI umgesetzt | Es gibt mehrere Komponenten für XML- und PDF-Ansichten, Auswahl, Layout und Stil. |
+| 11 - nicht im TODO enthalten | n.v. | n.v. | nicht Teil dieser Matrix | Im vorliegenden TODO wird diese Nummer übersprungen. |
+| 12 - Prüfling als einzelne PDF-Datei | erfüllt | 3 | vorhanden | Die PDF-Abgabe ist vorhanden; die Spezifikation wurde als einzelne Datei exportiert. |
 
-**Summe Wartung & Refactoring: 9/12 Punkte (75%)**
-
----
-
-### **PHASE 6: QUALITATIVE ANFORDERUNGEN**
-
-| Anforderung | Status | Punkte | Bewertung | Evidenz & Kommentare |
-|-----------|--------|--------|-----------|---------------------|
-| **Code-Kommentierung & JavaDoc** | ✅ | 3 | **Implementiert** | JavaDoc-Struktur vorhanden. Klassen und wichtige Methoden dokumentiert. Package-info.java in Core-Packages. |
-| **Architektur & Design-Patterns** | ✅ | 4 | **Hervorragend** | 🌟 Klare MVC-Decomposition. Service-Layer etabliert (ExamApplicationService, Validation, I/O). Observer-Pattern für UI-Updates. |
-| **Fehlerbehandlung & Validierung** | ✅ | 4 | **Hervorragend** | 🌟 Umfassende ExamValidator Klasse. ValidationResult mit DetailedErrors. Geschäftsregeln durchgesetzt. Keine unkontrollierten Exceptions. |
-| **Persistence & Datensicherheit** | ✅ | 3 | **Implementiert** | XML Serialization stabil. Exam-Daten mit Validierung laden/speichern. RoundTrip-Tests vorhanden. |
-| **PDF-Generierung** | ✅ | 3 | **Implementiert** | Apache PDFBox 3.0.3 integriert. PdfBoxGenerationService + Stub für Tests. Layout-Analyse dokumentiert. |
-| **Internationalisierung (i18n)** | ✅ | 3 | **Implementiert** | UiLanguage & UiTextCatalog implementiert. Deutsche Texte vorhanden. Framework für mehrsprachige Unterstützung. |
-| **Deployment & Build** | ✅ | 3 | **Implementiert** | Maven POM konfiguriert. Java 17 Target. Reproduzierbarer Build. JAR-Artifacts generiert. |
-
-**Summe Qualitative Anforderungen: 23/28 Punkte (82%)**
+**Zwischensumme Phase 3: 9 / 9 Punkte**
 
 ---
 
-### **PHASE 7: UI/UX BEWERTUNG** 
-*[Spalten freigegeben für externe Bewertung]*
+## Phase 4 - Testing
 
-| Aspekt | Status | Bewertung | Kommentare |
-|--------|--------|-----------|-----------|
-| **Usability - Ergonomie & Navigation** | 🟡 | | **Frei** |
-| **Usability - Fehlerprävention & Meldungen** | ✅ | | **Frei** |
-| **Visual Design - Layout & Konsistenz** | 🟡 | | **Frei** |
-| **Visual Design - Farbschema & Lesbarkeit** | 🟡 | | **Frei** |
-| **Accessibility - Tastaturnavigation** | 🟡 | | **Frei** |
-| **Accessibility - Screenreader-Unterstützung** | ❌ | | **Frei** |
-| **Empathy - Kontextualisierung** | 🟡 | | **Frei** |
-| **Guidance - Benutzerführung** | 🟡 | | **Frei** |
-| **Novelty - Innovative Features** | 🟡 | | **Frei** |
+| Aufgabe | Status | Punkte | Kurzbewertung | Evidenz / Einordnung |
+|---|---|---:|---|---|
+| 13 - Vorbereitung des technischen Reviews | weitgehend erfüllt | 2 | als erledigt markiert, Artefakt nicht direkt sichtbar | Die TODO-Liste führt die Aufgabe als erledigt. Ein separates Review-Protokoll lag im aktuellen Workspace jedoch nicht als direkt prüfbares Artefakt vor. |
+| 14 - Durchführung des technischen Reviews | weitgehend erfüllt | 2 | plausibel abgeschlossen | Auch diese Aufgabe ist im TODO abgehakt. |
+| 15 - JUnit-Testfälle | erfüllt | 3 | breiter Testunterbau | Es existieren 23 Testklassen in `src/test/java`, darunter Tests für Modell, IO, Generation, App-Layer und Workflow. |
+| 16 - Glass-Box-Test | erfüllt | 3 | Tooling vorhanden | `pom.xml` bindet JaCoCo ein, und im Workspace liegen Metrik- und Report-Artefakte vor. |
+| 17 - Zufallsbasierter Test | erfüllt | 3 | direkt nachweisbar | `src/test/java/com/jexam/workflow/RandomDatasetWorkflowTest.java` ist vorhanden. |
+| 18 - Metriken erfassen | erfüllt | 3 | sehr gut dokumentiert | `doc/Metriken.md` dokumentiert reproduzierbare Projektmetriken wie Dateianzahl, Paketanzahl, Kommentaranteil, durchschnittliche Methodengröße und Kopplungswerte. |
+| 19 - Gesamtfortschritt der Use Cases | weitgehend erfüllt | 2 | als Projektziel erkennbar, aber nicht als separate Tabelle belegt | Die TODO-Liste markiert die Aufgabe als erledigt. Ein explizites Scoring-Dokument pro Use Case liegt im aktuellen Workspace nicht direkt vor. |
 
----
-
-## 📈 ZUSAMMENFASSENDE STATISTIK
-
-### **Punkte nach Phase**
-
-| Phase | Erreicht | Maximal | Quote | Status |
-|-------|----------|---------|-------|--------|
-| 1. Vorbereitung | 16 | 20 | 80% | ✅ Sehr gut |
-| 2. Spezifikation | 8 | 12 | 67% | 🟡 Befriedigend |
-| 3. Implementierung | 10 | 12 | 83% | ✅ Sehr gut |
-| 4. Testing | 23 | 28 | 82% | ✅ Sehr gut |
-| 5. Wartung & Refactoring | 9 | 12 | 75% | ✅ Gut |
-| 6. Qualitative Anforderungen | 23 | 28 | 82% | ✅ Sehr gut |
-| **GESAMT (ohne UI/UX)** | **89** | **112** | **79,5%** | **✅ GUT BIS SEHR GUT** |
+**Zwischensumme Phase 4: 18 / 21 Punkte**
 
 ---
 
-## 🎓 GESAMTBEWERTUNG & ANALYSE
+## Phase 5 - Wartung, Refactoring und Qualitätssicherung
 
-### **STÄRKEN**
+| Aufgabe | Status | Punkte | Kurzbewertung | Evidenz / Einordnung |
+|---|---|---:|---|---|
+| 20 - Refactoring | erfüllt | 3 | klar dokumentiert | `Refactoring_Report.pdf` ist vorhanden; zusätzlich dokumentiert `doc/Metriken.md` konkrete Qualitätskennzahlen. |
+| 21 - Bug Reporting | erfüllt | 3 | sauber abgegeben | `Tickets.pdf` ist vorhanden und als Abgabe markiert. |
+| 22 - Ergänzung der UI | n.v. | n.v. | UI/Usability-Bewertung bewusst leer | Die inhaltliche Aufgabe ist im TODO als erledigt markiert, aber die eigentliche UI-/Usability-Bewertung bleibt hier absichtlich frei. |
 
-| # | Stärke | Beweise |
-|----|--------|--------|
-| 1️⃣ | **Exzellente Dokumentation** | Spec + Design + Traceability + Wiki. Alle Anforderungen nachverfolgbar. |
-| 2️⃣ | **Fundierte Testabdeckung** | 23 Unit-Tests, JaCoCo-Integration, 70%+ Coverage-Quote. |
-| 3️⃣ | **Proaktive Qualitätssicherung** | Refactoring-Zyklus abgeschlossen. PMD um 22%, Checkstyle um 62% reduziert. |
-| 4️⃣ | **Solide Architektur** | Klare Separation of Concerns (Model, Services, UI, I/O). |
-| 5️⃣ | **Vollständige Anforderungsabdeckung** | 19/21 Requirements implementiert (90%). |
-| 6️⃣ | **Moderne Tech-Stack** | Java 17, JavaFX 21, Apache PDFBox 3.0, Maven. |
-| 7️⃣ | **Systematisches Projektmanagement** | Git-Workflow, Reviews, Metriken, Refactoring-Planung. |
+**Zwischensumme Phase 5: 6 / 6 Punkte**
 
 ---
 
-### **SCHWÄCHEN & VERBESSERUNGSPOTENZIALE**
+## Projektmetriken aus der vorhandenen Dokumentation
 
-| # | Schwäche | Empfohlene Maßnahme | Priorität |
-|----|----------|---------------------|-----------|
-| 1️⃣ | **UI-Prototypen nur konzeptionell** | Figma/Pencil-Mockups erstellen oder detaillierte Wireframes hinzufügen | Mittel |
-| 2️⃣ | **Zufallsbasierte Tests nicht explizit** | PropertyBased-Test (z.B. QuickCheck-Style) hinzufügen | Niedrig |
-| 3️⃣ | **Komplexe Hotspots verbleibend** | `PdfBoxGenerationService` (McCabe 11) & `ExamXmlLoader` (McCabe 10) weiter refaktorieren | Mittel |
-| 4️⃣ | **PDF-Layout-Polishing ausstehend** | Final visual fine-tuning vs. Referenz-PDFs durchführen | Niedrig |
-| 5️⃣ | **Screenreader-Unterstützung fehlt** | JavaFX Accessibility APIs (javafx.scene.AccessibleAction) implementieren | Niedrig |
-| 6️⃣ | **ELEGANCE-Novelty begrenzt** | Innovative UI-Features hinzufügen (z.B. Drag-and-drop, Live-Vorschau) | Niedrig |
-| 7️⃣ | **Internationale Lokalisierung** | Weitere Sprachen (EN, FR, etc.) hinzufügen | Niedrig |
-
----
-
-### **ERFÜLLUNG DER MODULZIELE**
-
-| Modulziel | Erfüllt | Qualität | Notizen |
-|-----------|---------|----------|--------|
-| Anforderungsanalyse durchführen | ✅ | Hervorragend | Systematische Kundenbefragung mit Glossar |
-| Softwarespezifikation erstellen | ✅ | Gut | Spec vollständig, UI-Prototypen nur konzeptionell |
-| Systemarchitektur entwerfen | ✅ | Hervorragend | Klare MVC-Decomposition, Service-Layer, gut dokumentiert |
-| Implementierung durchführen | ✅ | Sehr gut | 2500+ LOC, 19 Requirements implemented, moderne Tech |
-| Teststrategien entwickeln | ✅ | Hervorragend | Unit-Tests + Coverage-Analyse + Refactoring-Metriken |
-| Qualitätssicherung anwenden | ✅ | Sehr gut | Systematisches Refactoring, Hotspot-Identifikation, Metriken |
-| Dokumentation erstellen | ✅ | Hervorragend | Spec, Design, Traceability, Wiki, Technische Berichte |
+| Kennzahl | Wert | Einordnung |
+|---|---:|---|
+| Java-Dateien gesamt | 79 | ausreichend groß für ein Semesterprojekt mit klarer Schichtung |
+| Java-Dateien in `src/main/java` | 56 | zeigt ein substantielles Implementierungsvolumen |
+| Java-Dateien in `src/test/java` | 23 | solide Testbasis |
+| Pakete gesamt | 14 | gute funktionale Zerlegung |
+| Klassen / Interfaces / Enums / Records | 24 | überschaubare, aber strukturierte Domäne |
+| Methoden / Konstruktoren | 658 | deutlicher Funktionsumfang |
+| Kommentaranteil | 24,68 % | für ein gut dokumentiertes Studienprojekt ordentlich |
+| Durchschnittliche Methodengröße | 12,52 Code-Zeilen | im akzeptablen Bereich, aber mit weiterem Optimierungspotenzial |
+| Efferente Kopplung | 35 | für die Größe des Projekts plausibel, aber nicht minimal |
 
 ---
 
-## 📋 DETAILLIERTE EVIDENCE-SAMMLUNG
+## UI- und Usability-Bewertung
 
-### **Verfügbare Artefakte**
+Die folgenden Spalten bleiben absichtlich leer, wie gewünscht.
 
-```
-doc/
-├── 01_Analysefragen.pdf ................... Anforderungsanalyse ✅
-├── 02_Spezifikation.pdf .................. Spezifikation mit Use Cases ✅
-├── 03_Entwurf.pdf ........................ Paketdiagramme + Klassendiagramme ✅
-├── ARCHITECTURE.md ....................... Domain Model + Services ✅
-├── GLOSSARY.md ........................... 15+ Fachbegriffe ✅
-├── BACKEND_TRACEABILITY.md ............... 19 Requirements → Code ✅
-├── METRICS_BASELINE.md ................... Komplexität + Coverage ✅
-├── REFACTORING_EVALUATION.md ............. Refactoring-Ergebnisse ✅
-├── Refactoring_Report.pdf ................ 3 Refactoring-Pattern ✅
-├── Tickets.pdf ........................... 4 Bug-Report-Beispiele ✅
-├── UI_STRUCTURE.md ....................... UI-Konzept ✅
-├── UI_COMPONENTS.md ...................... Komponenten-Hierarchie ✅
-├── UI_STYLING.md ......................... Style-Guide ✅
-├── USER_GUIDE.md ......................... Benutzerhandbuch ✅
-├── SETUP.md ............................. Entwickler-Setup ✅
-└── wiki/ ................................ 14 MD-Dateien (Github-Export) ✅
-
-src/main/java/
-├── com/jexam/app/ ....................... 12+ UI-Klassen
-├── com/jexam/model/ ..................... 4 Core-Modelle (Exam, Chapter, Task, Variant)
-├── com/jexam/validation/ ................ ExamValidator + Fehlerbehandlung
-├── com/jexam/io/ ........................ XML Loader/Writer
-├── com/jexam/generation/ ................ PdfBoxGenerationService
-└── ~55 Java-Dateien (2500+ LOC)
-
-src/test/java/
-├── 23 Unit-Test-Klassen ✅
-├── JaCoCo-Coverage-Integration ✅
-└── Surefire Reports ✅
-```
-
-### **Metriken-Zusammenfassung**
-
-| Metrik | Wert | Bewertung |
-|--------|------|-----------|
-| **Lines of Code (Main)** | ~2500 | ✅ Angemessen |
-| **Java-Dateien (Main)** | 55 | ✅ Gut organisiert |
-| **Testklassen** | 23 | ✅ Umfassend |
-| **Test-Abdeckung (JaCoCo)** | ~70% | ✅ Gut |
-| **PMD Violations (nach Refactoring)** | 129 (-22%) | ✅ Verbessert |
-| **Checkstyle Findings (nach Refactoring)** | 205 (-62%) | ✅ Stark verbessert |
-| **McCabe Complexity (Max)** | 11 | 🟡 Könnte reduziert werden |
-| **Requirements Coverage** | 19/21 (90%) | ✅ Hervorragend |
+| Aspekt | Status | Bewertung | Kommentar |
+|---|---|---|---|
+| Usability - Ergonomie und Navigation |  |  |  |
+| Usability - Fehlermeldungen und Nutzerführung |  |  |  |
+| Visual Design - Layout und Konsistenz |  |  |  |
+| Visual Design - Farbschema und Lesbarkeit |  |  |  |
+| Accessibility - Tastaturnavigation |  |  |  |
+| Accessibility - Screenreader-Unterstützung |  |  |  |
+| Empathy |  |  |  |
+| Guidance |  |  |  |
+| Novelty |  |  |  |
 
 ---
 
-## 🏆 ABSCHLIESSENDE EMPFEHLUNGEN
+## Gesamtbild
 
-### **FÜR NACHFOLGENDE ARBEITEN**
+| Bereich | Erreicht | Maximal | Quote |
+|---|---:|---:|---:|
+| Phase 1 - Vorbereitung | 15 | 15 | 100 % |
+| Phase 2 - Spezifikation | 7 | 9 | 77,8 % |
+| Phase 3 - Implementierung | 9 | 9 | 100 % |
+| Phase 4 - Testing | 18 | 21 | 85,7 % |
+| Phase 5 - Wartung und Qualität | 6 | 6 | 100 % |
+| **Gesamt ohne UI/UX** | **55** | **60** | **91,7 %** |
 
-1. **UI-Mockups digitalisieren** (Figma/Pencil) für bessere Visualisierung
-2. **Komplexe Hotspots weiter reduzieren** (Extract-method auf PDF-Generation)
-3. **Internationale Lokalisierung** auf weitere Sprachen erweitern
-4. **Accessibility-Features** (Screenreader, Tastaturnavigation) vollständig implementieren
-5. **Performance-Tests** hinzufügen (große Exam-Dateien)
-6. **Deployment-Dokumentation** für End-User Package (JAR/MSI) erweitern
+---
 
-### **GESAMTFAZIT**
+## Qualitative Gesamteinschätzung
 
-**JExam ist ein reifes, gut strukturiertes Softwareprojekt mit:**
-- ✅ **Ausgezeichneter Dokumentation** (Spec + Design + Traceability)
-- ✅ **Solider Implementierung** (2500+ LOC, moderne Stack, 90% Requirements)
-- ✅ **Umfassenden Tests** (23 Unit-Tests, 70% Coverage, JaCoCo)
-- ✅ **Proaktiver Qualitätssicherung** (Refactoring-Zyklus abgeschlossen)
-- 🟡 **Verbesserungspotenzial in Spezifikation** (UI-Prototypen nur konzeptionell)
-- 🟡 **Polish-Arbeiten verbleibend** (PDF-Layout, UI-Feinheiten)
+Das Projekt wirkt insgesamt reif und gut strukturiert. Besonders stark sind die Implementierung, die Testbasis und die Dokumentationsspur: Es gibt eine klare Paketstruktur, eine beachtliche Zahl an Tests, ein randomisiertes Test-Szenario, eine Metrikendokumentation und mehrere fertig abgegebene PDF-Artefakte.
 
-**Empfohlene Gesamtnote für SE1-Modul: 1,5–2,0 (A– bis B+)**
+Die Spezifikation und die Architektur sind insgesamt überzeugend, auch wenn die im Workspace sichtbaren Nachweise für grafische UI-Prototypen und formale Architekturdiagramme nicht ganz so stark sind wie die Nachweise für Code, Tests und Metriken. Das ist der Hauptgrund, warum ich bei den Spezifikationsaufgaben konservativer bewerte.
 
+Die größten offenen Punkte liegen im UI-nahen Feinschliff und in einigen Folgearbeiten aus dem TODO-Bereich, etwa Dark Theme, Keyboard-Movement und zusätzliche PDF-Optionen. Diese Punkte mindern den Gesamteindruck nicht stark, zeigen aber, dass das Projekt zwar abgabereif, aber noch nicht in jeder Hinsicht final poliert ist.
+
+## Kurzfazit
+
+Für ein SE1-Projekt mit zwei Semestern Bearbeitungszeit ist das eine sehr gute bis ausgezeichnete Abgabe. Ich würde das Gesamtbild klar im Bereich "gut bis sehr gut" einordnen, mit besonders starken Bereichen bei Implementierung, Testing, Refactoring und Metriken.
