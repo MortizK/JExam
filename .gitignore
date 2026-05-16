@@ -4,6 +4,10 @@ target/
 !**/src/test/**/target/
 .kotlin
 
+### GitHub copilot ###
+.copilot/
+.github/
+
 ### IntelliJ IDEA ###
 .idea/
 .idea/libraries/
