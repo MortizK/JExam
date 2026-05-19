@@ -76,8 +76,21 @@ public class ExamXmlWriter {
 
             // Serialize DOM tree to XML file
             writeDocument(document, path);
-        } catch (ParserConfigurationException | IOException | TransformerException e) {
-            throw new ExamXmlException("Failed to write exam XML.", e);
+        } catch (ParserConfigurationException e) {
+            throw new ExamXmlException(
+                "Failed to create XML document builder: " + e.getMessage(),
+                e
+            );
+        } catch (IOException e) {
+            throw new ExamXmlException(
+                "Failed to write XML file to " + path + ": " + e.getMessage(),
+                e
+            );
+        } catch (TransformerException e) {
+            throw new ExamXmlException(
+                "Failed to transform XML document: " + e.getMessage(),
+                e
+            );
         }
     }
 
