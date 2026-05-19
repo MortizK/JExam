@@ -151,7 +151,8 @@ class ExamApplicationServiceTest {
         service.generatePdf(GenerationMode.MOCK_EXAM, output);
 
         String text = readPdfText(output);
-        assertTrue(text.contains("Exam Scoped"));
+        // MOCK_EXAM mode should only include tasks with scope="mock-exam"
+        assertFalse(text.contains("Exam Scoped"));
         assertTrue(text.contains("Mock Scoped"));
         assertFalse(text.contains("Variant 2"));
     }

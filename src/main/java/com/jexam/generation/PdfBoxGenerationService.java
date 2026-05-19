@@ -459,10 +459,15 @@ public class PdfBoxGenerationService implements PdfGenerationService {
 
     /**
      * Decide whether a task belongs into the selected generation mode.
+     * - EXAM: only include tasks with scope="exam"
+     * - MOCK_EXAM: only include tasks with scope="mock-exam"
      */
     private boolean shouldIncludeTask(final Task task, final GenerationMode mode) {
         if (mode == GenerationMode.EXAM) {
             return task.getScope() == Scope.EXAM;
+        }
+        if (mode == GenerationMode.MOCK_EXAM) {
+            return task.getScope() == Scope.MOCK_EXAM;
         }
         return true;
     }

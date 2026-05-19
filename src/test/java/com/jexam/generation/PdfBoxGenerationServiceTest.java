@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -50,8 +51,9 @@ class PdfBoxGenerationServiceTest {
 
         assertTrue(Files.exists(out));
         assertTrue(Files.size(out) > 0);
+        // MOCK_EXAM mode should only include tasks with scope="mock-exam"
         assertTrue(readPdfText(out).contains("Scope MOCK task"));
-        assertTrue(readPdfText(out).contains("Scope EXAM task"));
+        assertFalse(readPdfText(out).contains("Scope EXAM task"));
     }
 
     @Test
