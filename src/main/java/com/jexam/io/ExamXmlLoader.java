@@ -16,6 +16,8 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,19 +96,22 @@ public class ExamXmlLoader {
     private Element loadExamRootElement(final Path path)
         throws ParserConfigurationException, SAXException, IOException,
         ExamXmlException {
-        // Parse XML document from file
-        Document document = DocumentBuilderFactory.newInstance()
-            .newDocumentBuilder()
-            .parse(path.toFile());
-        // Normalize document to collapse text nodes and handle whitespace
-        document.getDocumentElement().normalize();
+        // Parse XML document from file with properly managed input stream (try-with-resources)
+        // This ensures the file handle is properly closed even on Windows where file locking is strict
+        try (InputStream inputStream = Files.newInputStream(path)) {
+            Document document = DocumentBuilderFactory.newInstance()
+                .newDocumentBuilder()
+                .parse(inputStream);
+            // Normalize document to collapse text nodes and handle whitespace
+            document.getDocumentElement().normalize();
 
-        Element examElement = document.getDocumentElement();
-        // Validate that root element is <exam>, not <chapter> or other tag
-        if (!"exam".equals(examElement.getTagName())) {
-            throw new ExamXmlException("Root element must be <exam>.");
+            Element examElement = document.getDocumentElement();
+            // Validate that root element is <exam>, not <chapter> or other tag
+            if (!"exam".equals(examElement.getTagName())) {
+                throw new ExamXmlException("Root element must be <exam>.");
+            }
+            return examElement;
         }
-        return examElement;
     }
 
     /**
