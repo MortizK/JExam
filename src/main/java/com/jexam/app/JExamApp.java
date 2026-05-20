@@ -186,6 +186,16 @@ public class JExamApp extends Application {
                 return;
             }
 
+            // Attempt to autosave to temporary file before closing. If autosave fails,
+            // show an error and prevent the window from closing so the user can save manually.
+            try {
+                appService.saveExam(autoSavePath);
+            } catch (ExamXmlException e) {
+                ui.showError("Autosave failed", "Failed to autosave to temporary file: " + e.getMessage());
+                event.consume();
+                return;
+            }
+
             boolean shouldClose = ui.confirm(
                 ui.text("label.unsaved.close.title"),
                 ui.text("label.unsaved.close.message")
